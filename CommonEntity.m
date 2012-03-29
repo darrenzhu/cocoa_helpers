@@ -8,11 +8,18 @@
 
 #import "CommonEntity.h"
 #import <objc/runtime.h>
-#import "JSONKit.h"
+
+#import "CommonClient.h"
 
 @implementation CommonEntity
 
-- (void)postprocessJSON:(id)json InContext:(NSManagedObjectContext*)context {}
+- (NSDateFormatter *)dateFormatter {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
+                                 userInfo:nil];
+}
+
+- (void)postprocessJSON:(id)json withClient:(CommonClient*)client {}
 
 - (void)updateFromJSON:(id)json {
     
@@ -21,10 +28,6 @@
         unsigned int outCount;
         objc_property_t *properties = class_copyPropertyList([self class], &outCount);        
         
-        NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
-        [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
-        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];    
-        
         for(int i = 0; i < outCount; i++) {
             objc_property_t property = properties[i];
             
@@ -32,8 +35,9 @@
             id jsonValue = [json valueForKeyPath:propertyName];
             
             if (jsonValue != [NSNull null] && jsonValue != nil) {
-                if ([propertyName isEqualToString:@"date_updated"]) {  
-                    [self setValue:[dateFormatter dateFromString:jsonValue] forKey:propertyName];
+                if ([propertyName rangeOfString:@"date"].location != NSNotFound) {  
+                    //NSLog(@"%@, %@", jsonValue, [self.dateFormatter dateFromString:jsonValue]);
+                    [self setValue:[[self dateFormatter] dateFromString:jsonValue] forKey:propertyName];
                 }
                 else {
                     NSString* propertyAtr = [NSString stringWithCString:property_getAttributes(property) encoding:NSUTF8StringEncoding];
@@ -48,8 +52,7 @@
                 }
             }
         }
-        
-        
+                
         NSNumber* jsonValue = [json valueForKeyPath:@"id"];
         if (jsonValue != nil) {
             [self setValue:jsonValue forKey:@"id"];
@@ -61,7 +64,9 @@
 
 - (id)initFromJSON:(id)json withEntity:(NSEntityDescription*)entityDescription inManagedObjectContext:(NSManagedObjectContext*)context {
     self = [super initWithEntity:entityDescription insertIntoManagedObjectContext:context];
-    [self updateFromJSON:json];
+    if (self) {
+        [self updateFromJSON:json];
+    }
     return self;    
 }
 

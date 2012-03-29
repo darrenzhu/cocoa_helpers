@@ -147,7 +147,7 @@ static NSString* scheme = @"DataModel";
 + (BOOL)save:(NSManagedObjectContext*)managedObjectContext {
 
     if (managedObjectContext.hasChanges) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedObjectContextDidSave:) name:NSManagedObjectContextDidSaveNotification object:managedObjectContext];
+        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedObjectContextDidSave:) name:NSManagedObjectContextDidSaveNotification object:managedObjectContext];
         
         NSError *error = nil;
         if (![managedObjectContext save:&error]) {

@@ -9,11 +9,15 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+@class CommonClient;
 @interface CommonEntity : NSManagedObject
 
-- (void)postprocessJSON:(id)json InContext:(NSManagedObjectContext*)context;
-- (void)updateFromJSON:(id)json;
 - (id)initFromJSON:(id)json withEntity:(NSEntityDescription*)entityDescription inManagedObjectContext:(NSManagedObjectContext*)context;
+
+- (NSDateFormatter *)dateFormatter;
+- (void)postprocessJSON:(id)json withClient:(CommonClient*)client;
+
+- (void)updateFromJSON:(id)json;
 - (NSString*)toJSON;
 
 @end
