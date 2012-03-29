@@ -11,7 +11,6 @@
 #import "JSONKit.h"
 
 @implementation CommonEntity
-@dynamic id;
 
 - (void)postprocessJSON:(id)json InContext:(NSManagedObjectContext*)context {}
 
@@ -89,7 +88,7 @@
     }
     free(properties);
     
-    [jsonObject setValue:self.id forKey:@"id"];
+    [jsonObject setValue:[self valueForKey:@"id"] forKey:@"id"];
     
     return [jsonObject JSONString];
 }

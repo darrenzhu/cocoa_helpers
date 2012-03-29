@@ -11,12 +11,9 @@
 
 @interface CommonEntity : NSManagedObject
 
-@property(nonatomic, retain) NSNumber* id;
-
 - (void)postprocessJSON:(id)json InContext:(NSManagedObjectContext*)context;
 - (void)updateFromJSON:(id)json;
 - (id)initFromJSON:(id)json withEntity:(NSEntityDescription*)entityDescription inManagedObjectContext:(NSManagedObjectContext*)context;
 - (NSString*)toJSON;
-- (void)formatCell:(UIView*)cell;
 
 @end
