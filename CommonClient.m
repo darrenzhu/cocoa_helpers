@@ -89,6 +89,7 @@
              byOne:(BOOL)byOne
            success:(void (^)(NSArray* entities))success {    
 
+    [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:YES];
     NSManagedObjectContext* context = [CoreDataHelper createManagedObjectContext];
     NSMutableArray* result = [NSMutableArray array];        
     
@@ -105,6 +106,7 @@
             success(nil);
         }); 
     }
+    [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];
 }
 
 - (void)getPath:(NSString *)path parameters:(NSDictionary *)parameters success:(void (^)(AFHTTPRequestOperation *, id))success failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure {
