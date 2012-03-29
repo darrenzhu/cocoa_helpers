@@ -85,10 +85,10 @@
         }                       
     }     
     
-    [CoreDataHelper save:context];
-    
     if (!byOne)
         success(result);    
+    
+    [CoreDataHelper save:context];
 }
 
 @end

@@ -13,7 +13,7 @@
 
 + (NSManagedObjectModel *)managedObjectModel;
 + (NSPersistentStoreCoordinator *)persistentStoreCoordinator;
-+ (NSManagedObjectContext *)managedObjectContext;
++ (NSManagedObjectContext *)createManagedObjectContext;
 
 + (NSArray*)requestResult:(NSFetchRequest*)request managedObjectContext:(NSManagedObjectContext*)managedObjectContext;
 + (id)requestFirstResult:(NSFetchRequest*)request managedObjectContext:(NSManagedObjectContext*)managedObjectContext;

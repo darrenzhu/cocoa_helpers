@@ -99,23 +99,16 @@ static NSString* scheme = @"DataModel";
 }
 #endif
 
-+ (NSManagedObjectContext *)managedObjectContext {
-    //static NSManagedObjectContext *managedObjectContext;
-    
-    //@synchronized(self)
-    //{
-        //if (!managedObjectContext) {
-            NSManagedObjectContext *managedObjectContext;
-            NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-            if (coordinator != nil)
-            {
-                managedObjectContext = [[NSManagedObjectContext alloc] init];
-                [managedObjectContext setPersistentStoreCoordinator:coordinator];                
-            }
-        //}
-        
-        return managedObjectContext;
-    //}
++ (NSManagedObjectContext *)createManagedObjectContext {
+
+    NSManagedObjectContext *managedObjectContext;
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if (coordinator != nil)
+    {
+        managedObjectContext = [[NSManagedObjectContext alloc] init];
+        [managedObjectContext setPersistentStoreCoordinator:coordinator];                
+    }
+    return managedObjectContext;
 }
 
 + (NSArray*)requestResult:(NSFetchRequest*)request managedObjectContext:(NSManagedObjectContext*)managedObjectContext {
@@ -144,8 +137,10 @@ static NSString* scheme = @"DataModel";
 }
 
 + (void)managedObjectContextDidSave:(NSNotification*)notification {
-    if ([CoreDataHelper managedObjectContext]) {
-        [[CoreDataHelper managedObjectContext] performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) withObject:notification waitUntilDone:NO];
+    NSManagedObjectContext* context = [CoreDataHelper createManagedObjectContext];
+    if (context) {
+        [context performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) 
+                                  withObject:notification waitUntilDone:NO];
     }
 }
 
