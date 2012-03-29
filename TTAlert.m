@@ -13,7 +13,7 @@
 + (void)composeAlertViewWithTitle:(NSString*)title 
                        andMessage:(NSString*)message
 {
-    UIAlertView* alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil];
+    UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil] autorelease];
     [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
 }
 

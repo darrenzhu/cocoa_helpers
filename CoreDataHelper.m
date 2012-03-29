@@ -105,7 +105,7 @@ static NSString* scheme = @"DataModel";
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil)
     {
-        managedObjectContext = [[NSManagedObjectContext alloc] init];
+        managedObjectContext = [[[NSManagedObjectContext alloc] init] autorelease];
         [managedObjectContext setPersistentStoreCoordinator:coordinator];                
     }
     return managedObjectContext;

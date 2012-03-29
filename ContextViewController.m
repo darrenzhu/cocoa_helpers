@@ -15,7 +15,7 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        _context = [[CoreDataHelper managedObjectContext] retain];
+        _context = [[CoreDataHelper createManagedObjectContext] retain];
     }
     return self;
 }
