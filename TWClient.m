@@ -59,7 +59,7 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
         
         if ([key isEqualToString:@"oauth_token"]) {
             _accessToken = value;
-            [_oAuthValues setValue:[value copy] forKey:@"oauth_token"];
+            [_oAuthValues setValue:value forKey:@"oauth_token"];
         } else if ([key isEqualToString:@"oauth_token_secret"]) {
             _accessTokenSecret = [value copy];
         } else if ([key isEqualToString:@"oauth_verifier"]) {
