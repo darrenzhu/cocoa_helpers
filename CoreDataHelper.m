@@ -34,14 +34,24 @@ static NSString* scheme = @"DataModel";
     {
         if (!persistentStoreCoordinator) {
             NSString* appPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-            appPath = [appPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite", scheme]];
-            NSURL *storeURL = [NSURL fileURLWithPath:appPath isDirectory:NO];            
+            appPath = [appPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite", scheme]];            
             NSError *error = nil;
             persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+                        
+#ifdef OCUNIT
+            NSURL *storeURL = [NSURL fileURLWithPath:appPath isDirectory:NO];            
             if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error])
+#else
+            if (![persistentStoreCoordinator addPersistentStoreWithType: NSInMemoryStoreType
+                                                          configuration: nil
+                                                                    URL: nil
+                                                                options: nil 
+                                                                  error: NULL])
+#endif                            
             {
                 NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
             }            
+
         }        
         return persistentStoreCoordinator;
     }

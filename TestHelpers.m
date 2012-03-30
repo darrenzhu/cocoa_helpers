@@ -14,7 +14,7 @@
 - (void)setUp {
     [super setUp];
     
-    _context = [[CoreDataHelper managedObjectContext] retain];    
+    _context = [[CoreDataHelper createManagedObjectContext] retain];    
     STAssertNotNil(_context, @"Unable to create management context");    
 }
 
