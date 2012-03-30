@@ -8,12 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CCNews.h"
+#import "NetworkIndicatorManager.h"
 
 @protocol SNClientDelegate;
-@interface SNClient : NSObject {
+@interface SNClient : NSObject <UIWebViewDelegate> {
     NSString* _accessToken;
-    NSString* _accessTokenSecret;
     NSDate* _expirationDate;
     
     id<SNClientDelegate> _delegate;
@@ -22,21 +21,21 @@
 @property(strong, readonly) NSString* accessToken;
 @property(strong) id<SNClientDelegate> delegate;
 
-- (NSString*)accessTokenKey;
-- (NSString*)accessTokenKeySecretKey;
-- (NSString*)expirationDateKey;
 - (BOOL)isSessionValid;
 - (void)login;
-- (void)parseUrl:(NSString*)url;
-- (void)share:(CCNews*)_news andMessage:(NSString*)message;
-- (void)saveToken;
+- (void)shareLink:(NSString*)link withTitle:(NSString*)title andMessage:(NSString*)message;
+@end
 
+@interface SNClient (Private)
+- (void)doLoginWorkflow;
+- (void)regainToken:(NSDictionary*)savedKeysAndValues;
+- (void)saveToken:(NSDictionary*)tokensToSave;
+- (BOOL)processWebViewResult:(NSURL*)processUrl;
 @end
 
 @protocol SNClientDelegate <NSObject>
 
 - (void)client:(SNClient*)client showAuthPage:(NSString*)url;
-
 - (void)clientDidLogin:(SNClient*)client ;
 
 @end

@@ -13,58 +13,55 @@
 @implementation FBClient
 @synthesize facebook = _facebook;
 
-- (void)setFacebook:(Facebook*)facebook {
-    _facebook = facebook;
+static Facebook* currentFacebook;
++ (Facebook*)currentFacebook {
+    return currentFacebook;
 }
 
-+ (FBClient*)sharedClient {
-    static FBClient* _sharedClient = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _sharedClient = [[self alloc] init];
-        Facebook* facebook = [[Facebook alloc] initWithAppId:@"271988946184429" andDelegate:_sharedClient];
-        
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        if ([defaults objectForKey:@"FBAccessTokenKey"] 
-            && [defaults objectForKey:@"FBExpirationDateKey"]) {
-            facebook.accessToken = [defaults objectForKey:@"FBAccessTokenKey"];
-            facebook.expirationDate = [defaults objectForKey:@"FBExpirationDateKey"];
-        }
-        
-        if (![facebook isSessionValid]) {
-            NSArray *permissions = [[NSArray alloc] initWithObjects: @"share_item", nil];
-            [facebook authorize:permissions];
-        }                        
-        
-        [_sharedClient setFacebook:facebook];
-    });
-    
-    return _sharedClient;
+- (id)initWithId:(NSString*)id {
+    self = [super init];
+    if (self) {
+        _facebook = [[Facebook alloc] initWithAppId:id andDelegate:self];     
+        currentFacebook = _facebook;
+    }
+    return self;
+}
+
+- (void)regainToken:(NSDictionary *)savedKeysAndValues {
+
+    if ([savedKeysAndValues objectForKey:@"FBAccessTokenKey"] 
+        && [savedKeysAndValues objectForKey:@"FBExpirationDateKey"]) {
+        _facebook.accessToken = [savedKeysAndValues objectForKey:@"FBAccessTokenKey"];
+        _facebook.expirationDate = [savedKeysAndValues objectForKey:@"FBExpirationDateKey"];
+    }
+}
+
+- (void)doLoginWorkflow {
+    NSArray *permissions = [NSArray arrayWithObjects: @"share_item", nil];
+    [_facebook authorize:permissions];
 }
 
 - (BOOL)isSessionValid {
     return [_facebook isSessionValid];
 }
 
-- (void)share:(CCNews*) _news andMessage:(NSString *)message {
+- (void)shareLink:(NSString *)link withTitle:(NSString *)title andMessage:(NSString *)message {
     NSMutableDictionary* params = [NSMutableDictionary dictionary];
-    [params setObject:[NSString stringWithFormat:@"http://www.cskabasket.com/news/?id=%i", _news.id.intValue] forKey:@"link"];
-    [params setObject:_news.title forKey:@"name"];
+    [params setObject:link forKey:@"link"];
+    [params setObject:title forKey:@"name"];
     [params setObject:message forKey:@"message"];
-    [params setObject:[NSString stringWithFormat:@"http://www.cskabasket.com/images/iphotos/main-%@", _news.photo] forKey:@"picture"];    
     
-    [_facebook requestWithGraphPath:@"me/links" andParams:params andHttpMethod:@"POST"  andDelegate:self];        
-    
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [_facebook requestWithGraphPath:@"me/links" andParams:params andHttpMethod:@"POST"  andDelegate:self]; 
+    [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:YES];
 }
 
 #pragma mark - FBSessionDelegate
 
 - (void)fbDidLogin {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:[_facebook accessToken] forKey:@"FBAccessTokenKey"];
-    [defaults setObject:[_facebook expirationDate] forKey:@"FBExpirationDateKey"];
-    [defaults synchronize];  
+    NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
+    [tokens setValue:[_facebook accessToken] forKey:@"FBAccessTokenKey"];
+    [tokens setValue:[_facebook expirationDate] forKey:@"FBExpirationDateKey"];
+    [self saveToken:tokens];
     
     [_delegate clientDidLogin:self];
 }
@@ -89,13 +86,13 @@
 
 - (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response {
     [TTAlert composeAlertViewWithTitle:@"" andMessage:@"Ссылка успешно добавлена"];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
     [TTAlert composeAlertViewWithTitle:@"" andMessage:@"К сожалению произошла ошибка"];
     NSLog(@"Error %@", error);
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];
 }
 
 @end

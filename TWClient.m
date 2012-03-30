@@ -18,31 +18,32 @@
 @implementation TWClient
 
 static NSString* serverUrl = @"https://api.twitter.com/oauth/authorize?oauth_token=";
-static NSString* redirectUrl = @"rstwitterengine://auth_token";
-
-static NSString* consumerKey = @"fVprggQkOYWNGZNmnu6bjA";
-static NSString* consumerSecret = @"r4unocIWkFtHzFM9tKFVmY2nKoC4ssabTD1bfpNk";
 
 static NSString* oauthVersion = @"1.0";
 static NSString* oauthSignatureMethodName = @"HMAC-SHA1";
 
-+ (TWClient*)sharedClient {
-    static TWClient* _sharedClient = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _sharedClient = [[self alloc] init];                                               
-    });
-    
-    return _sharedClient;
+static NSString* accessTokenKey = @"TWAccessTokenKey";
+static NSString* accessTokenSecretKey = @"TWAccessTokenKeySecret";
+static NSString* expirationDateKey = @"TWExpirationDateKey";
+
+- (id)initWithKey:(NSString*)consumerKey 
+           secret:(NSString*)consumerSecret 
+      andRedirect:(NSString*)redirectString {
+    self = [super init];
+    if (self) {
+        _consumerKey = consumerKey;
+        _consumerSecret = consumerSecret;
+        _redirectString = redirectString;
+        
+        _accessTokenSecret = nil;
+    }
+    return self;
 }
 
-+ (NSString*)redirecUrl {
-    return redirectUrl;
-}
-
-- (void)requestWebView:(NSString*)urlString {
-    if (self.delegate)
-        [self.delegate client:self showAuthPage:urlString];
+- (void)dealloc
+{
+    [_oAuthValues release];
+    [super dealloc];
 }
 
 #pragma mark - Common Twitter methods
@@ -58,11 +59,11 @@ static NSString* oauthSignatureMethodName = @"HMAC-SHA1";
         
         if ([key isEqualToString:@"oauth_token"]) {
             _accessToken = value;
-            [_oAuthValues setValue:value forKey:@"oauth_token"];
+            [_oAuthValues setValue:[value copy] forKey:@"oauth_token"];
         } else if ([key isEqualToString:@"oauth_token_secret"]) {
-            _accessTokenSecret = value;
+            _accessTokenSecret = [value copy];
         } else if ([key isEqualToString:@"oauth_verifier"]) {
-            _verifier = value;
+            _verifier = [value copy];
         }
     }    
 }
@@ -130,7 +131,7 @@ static NSString* oauthSignatureMethodName = @"HMAC-SHA1";
 
 - (NSString *)generatePlaintextSignatureFor:(NSString *)baseString {
     return [NSString stringWithFormat:@"%@&%@", 
-            consumerSecret != nil ? [consumerSecret urlEncodedString] : @"", 
+            _consumerSecret != nil ? [_consumerSecret urlEncodedString] : @"", 
             _accessTokenSecret != nil ? [_accessTokenSecret urlEncodedString] : @""];
 }
 
@@ -198,30 +199,34 @@ static NSString* oauthSignatureMethodName = @"HMAC-SHA1";
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
         
-    [self setOAuthValue:redirectUrl forKey:@"oauth_callback"];
+    [self setOAuthValue:_redirectString forKey:@"oauth_callback"];
     [self signRequest:request withBody:nil];
         
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    AFHTTPRequestOperation *_operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    __unsafe_unretained AFHTTPRequestOperation *operation = _operation;
-    operation.completionBlock = ^ {
+    [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:YES];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    operation.completionBlock = ^{
         if ([operation hasAcceptableStatusCode]) {
             
             [self fillTokenWithResponseBody:[operation responseString]];
             //open webview
             NSString* urlString = [NSString stringWithFormat:@"%@%@", serverUrl, [_oAuthValues objectForKey:@"oauth_token"]];
              
-            [self performSelectorOnMainThread:@selector(requestWebView:) withObject:urlString waitUntilDone:NO];
+            if (self.delegate) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.delegate client:self showAuthPage:urlString];
+                });                
+            }
                         
         } else {
             NSLog(@"Error: %@, %@", operation.error, operation.responseString);
-        }
+        }        
         
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];
     };
     
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
     [queue addOperation:operation]; 
+    [queue release];
 }
 
 - (void)getAccessToken {
@@ -236,49 +241,44 @@ static NSString* oauthSignatureMethodName = @"HMAC-SHA1";
     [self setOAuthValue:nil forKey:@"oauth_callback"];
     [self signRequest:request withBody:body];
     
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    AFHTTPRequestOperation *_operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    __unsafe_unretained AFHTTPRequestOperation *operation = _operation;
+    [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:YES];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.completionBlock = ^ {
         if ([operation hasAcceptableStatusCode]) {
             
             [self fillTokenWithResponseBody:[operation responseString]];            
-            [self saveToken];
+            NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
+            [tokens setValue:_accessToken forKey:accessTokenKey];
+            [tokens setValue:_accessTokenSecret forKey:accessTokenSecretKey];    
+            [self saveToken:tokens];
             
             if (_delegate)
                 [_delegate clientDidLogin:self];
             
         } else {
             NSLog(@"Error: %@, %@", operation.error, operation.responseString);
-        }
+        }        
         
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];
     };
     
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
     [queue addOperation:operation];
+    [queue release];
 }
 
-#pragma mark - Public methods
-
-- (NSString *)accessTokenKey {
-    return @"TWAccessTokenKey";
+- (void)regainToken:(NSDictionary *)savedKeysAndValues {
+    _accessToken = [savedKeysAndValues valueForKey:accessTokenKey];
+    _accessTokenSecret = [savedKeysAndValues valueForKey:accessTokenSecretKey];    
 }
 
-- (NSString *)expirationDateKey {
-    return @"TWExpirationDateKey";
-}
-
-- (void)login {
-    [super login];
+- (void)doLoginWorkflow {
     
-    
-    if (![self isSessionValid]) {
-        
-        _oAuthValues = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+    if (!_oAuthValues)
+        _oAuthValues = [[NSMutableDictionary dictionaryWithObjectsAndKeys:
                         oauthVersion, @"oauth_version",
                         oauthSignatureMethodName, @"oauth_signature_method",
-                        consumerKey, @"oauth_consumer_key",
+                        _consumerKey, @"oauth_consumer_key",
                         @"", @"oauth_token",
                         @"", @"oauth_verifier",
                         @"", @"oauth_callback",
@@ -286,65 +286,83 @@ static NSString* oauthSignatureMethodName = @"HMAC-SHA1";
                         @"", @"oauth_timestamp",
                         @"", @"oauth_nonce",
                         @"", @"realm",
-                        nil];
+                        nil] retain];
+    
+    [self getRequestToken];
+}
+
+- (BOOL)processWebViewResult:(NSURL *)processUrl {
+    NSString* url = processUrl.absoluteString;
+    
+    if ([url rangeOfString:[NSString stringWithFormat:@"%@?", _redirectString]].location != NSNotFound) {
+        [self fillTokenWithResponseBody:url];
+        [self getAccessToken];
         
-        //get request token
-        [self getRequestToken];        
-    } 
-    else {
-        
-        _oAuthValues = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                        oauthVersion, @"oauth_version",
-                        oauthSignatureMethodName, @"oauth_signature_method",
-                        consumerKey, @"oauth_consumer_key",
-                        _accessToken, @"oauth_token",
-                        @"", @"oauth_verifier",
-                        @"", @"oauth_callback",
-                        @"", @"oauth_signature",
-                        @"", @"oauth_timestamp",
-                        @"", @"oauth_nonce",
-                        @"", @"realm",
-                        nil];
-        
+        return YES;
+    }
+    
+    return NO;
+}
+
+#pragma mark - Public methods
+
+- (BOOL)isSessionValid {
+    return [super isSessionValid] && _accessTokenSecret != nil;
+}
+
+- (void)login {
+    [super login];    
+    
+    if (![self isSessionValid]) {
+
+        if (_oAuthValues)
+            _oAuthValues = [[NSMutableDictionary dictionaryWithObjectsAndKeys:
+                            oauthVersion, @"oauth_version",
+                            oauthSignatureMethodName, @"oauth_signature_method",
+                            _consumerKey, @"oauth_consumer_key",
+                            _accessToken, @"oauth_token",
+                            @"", @"oauth_verifier",
+                            @"", @"oauth_callback",
+                            @"", @"oauth_signature",
+                            @"", @"oauth_timestamp",
+                            @"", @"oauth_nonce",
+                            @"", @"realm",
+                            nil] retain];
     }
 }
 
-- (void)parseUrl:(NSString *)url {
-    [self fillTokenWithResponseBody:url];
-    [self getAccessToken];
-}
-
-- (void)share:(CCNews *)_news andMessage:(NSString *)message {
+- (void)shareLink:(NSString *)link withTitle:(NSString *)title andMessage:(NSString *)message {
     NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1/statuses/update.json"];    
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     
     NSMutableDictionary* body = [NSMutableDictionary dictionary];
-    NSString* status = [NSString stringWithFormat:@"%@ %@", message, 
-                        [NSString stringWithFormat:@"http://www.cskabasket.com/news/?id=%i", _news.id.intValue]];
+    NSString* status = [NSString stringWithFormat:@"%@ %@", message, link];
     [body setValue:status forKey:@"status"];             
     
     [self signRequest:request withBody:body];
     
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    AFHTTPRequestOperation *_operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    __unsafe_unretained AFHTTPRequestOperation *operation = _operation;
+    [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:YES];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.completionBlock = ^ {
         if ([operation hasAcceptableStatusCode]) {
             
             [TTAlert composeAlertViewWithTitle:@"" andMessage:@"Ссылка успешно добавлена"];       
             
         } else {
+            
             [TTAlert composeAlertViewWithTitle:@"" andMessage:@"К сожалению произошла ошибка"];
             NSLog(@"Error: %@, %@", operation.error, operation.responseString);
         }
         
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+        [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];
     };
     
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
     [queue addOperation:operation];
+    [queue release];
 }
 
 @end

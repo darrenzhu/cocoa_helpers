@@ -106,9 +106,10 @@ static NSString* scheme = @"DataModel";
     if (coordinator != nil)
     {
         managedObjectContext = [[[NSManagedObjectContext alloc] init] autorelease];
-        [managedObjectContext setPersistentStoreCoordinator:coordinator];                
+        [managedObjectContext setPersistentStoreCoordinator:coordinator];  
+        return managedObjectContext;
     }
-    return managedObjectContext;
+    return nil;
 }
 
 + (NSArray*)requestResult:(NSFetchRequest*)request managedObjectContext:(NSManagedObjectContext*)managedObjectContext {

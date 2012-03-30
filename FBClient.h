@@ -11,12 +11,13 @@
 #import "FBConnect.h"
 
 @interface FBClient : SNClient <FBSessionDelegate, FBRequestDelegate> {
-    Facebook* _facebook;
-    
+    Facebook* _facebook;    
 }
 
 @property(strong, readonly) Facebook* facebook;
 
-+ (FBClient*)sharedClient;
++ (Facebook*)currentFacebook;
+
+- (id)initWithId:(NSString*)id;
 
 @end

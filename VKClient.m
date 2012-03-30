@@ -13,92 +13,95 @@
 #import "NSString+Additions.h"
 
 static NSString* serverUrl = @"http://api.vk.com/oauth/authorize?";
-static NSString* clientId = @"2783129";
 static NSString* scope = @"wall";
-static NSString* redirectUrl = @"http://api.vkontakte.ru/blank.html";
+
+static NSString* accessTokenKey = @"VKAccessTokenKey";
+static NSString* expirationDateKey = @"VKExpirationDateKey";
+
+static NSString* shareLinkMethodUrl = @"https://api.vk.com/method/wall.post?attachments=%@i&access_token=%@&message=%@";
 
 @implementation VKClient
 
-+ (VKClient*)sharedClient {
-    static VKClient* _sharedClient = nil;
-    static dispatch_once_t oncePredicate;
-    dispatch_once(&oncePredicate, ^{
-        _sharedClient = [[self alloc] init];                                               
-    });
-    
-    return _sharedClient;
+- (id)initWithId:(NSString*)consumerKey            
+     andRedirect:(NSString*)redirectString {
+    self = [super init];
+    if (self) {
+        _clientId = consumerKey;
+        _redirectString = redirectString;
+    }
+    return self;
 }
 
-+ (NSString*)redirecUrl {
-    return redirectUrl;
+- (void)regainToken:(NSDictionary *)savedKeysAndValues {
+    _accessToken = [savedKeysAndValues valueForKey:accessTokenKey];
+    _expirationDate = [savedKeysAndValues valueForKey:expirationDateKey];
 }
 
-- (NSString *)accessTokenKey {
-    return @"VKAccessTokenKey";
+- (void)doLoginWorkflow {
+    NSString* urlString = [NSString stringWithFormat:@"%@client_id=%@&scope=%@&redirect_uri=%@&display=touch&response_type=token", serverUrl, _clientId, scope, _redirectString];
+    
+    if (self.delegate)
+        [self.delegate client:self showAuthPage:urlString];
 }
 
-- (NSString *)expirationDateKey {
-    return @"VKExpirationDateKey";
-}
+- (void)shareLink:(NSString *)link withTitle:(NSString *)title andMessage:(NSString *)message {
 
-- (void)login {
-    [super login];
+    NSString* urlString = 
+        [NSString stringWithFormat:shareLinkMethodUrl, link, self.accessToken, [message urlEncodedString]];
     
-    if (![self isSessionValid]) {
-        NSString* urlString = [NSString stringWithFormat:@"%@client_id=%@&scope=%@&redirect_uri=%@&display=touch&response_type=token", serverUrl, clientId, scope, redirectUrl];
-        
-        if (self.delegate)
-            [self.delegate client:self showAuthPage:urlString];
-    } 
-}
-
-- (void)parseUrl:(NSString*)url {
-    NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"access_token=[^&?]+" options:0 error:nil];
-    NSString* token = [url substringWithRange:[regex firstMatchInString:url options:0 range:NSMakeRange(0, url.length)].range];
-    _accessToken = [token stringByReplacingOccurrencesOfString:@"access_token=" withString:@""];
-    
-    regex = [NSRegularExpression regularExpressionWithPattern:@"expires_in=[^&?]+" options:0 error:nil];
-    NSString* expires = [url substringWithRange:[regex firstMatchInString:url options:0 range:NSMakeRange(0, url.length)].range];
-    expires = [expires stringByReplacingOccurrencesOfString:@"expires_in=" withString:@""];
-    NSNumberFormatter* f = [[NSNumberFormatter alloc] init];    
-    _expirationDate = [[NSDate date] dateByAddingTimeInterval:[f numberFromString:expires].integerValue];
-    
-    [self saveToken];
-    
-    if (_delegate)
-        [_delegate clientDidLogin:self];
-}
-
-- (void)share:(CCNews*)_news andMessage:(NSString *)message {
-    
-    NSString* urlString = [NSString stringWithFormat:@"https://api.vk.com/method/wall.post?attachments=http://www.cskabasket.com/news/?id=%i&access_token=%@&message=%@", _news.id.intValue, self.accessToken, [message urlEncodedString]];
-    NSLog(@"%@", urlString);
     NSURL* url = [NSURL URLWithString:urlString];    
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
     
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:YES];
     AFJSONRequestOperation* operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         
         if ([JSON valueForKeyPath:@"response"]) {
             [TTAlert composeAlertViewWithTitle:@"" andMessage:@"Ссылка успешно добавлена"];
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         }
         else {
             [TTAlert composeAlertViewWithTitle:@"" andMessage:@"К сожалению произошла ошибка"];
             NSLog(@"response %@", JSON);
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
         }
         
+        [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         
         [TTAlert composeAlertViewWithTitle:@"" andMessage:@"К сожалению произошла ошибка"];
         NSLog(@"Error %@", error);
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-        
+        [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];        
     }];
     
     [operation start];
 }
+
+- (BOOL)processWebViewResult:(NSURL *)processUrl {
+    NSString* url = processUrl.absoluteString;
+    
+    if ([url rangeOfString:[NSString stringWithFormat:@"%@#", _redirectString]].location != NSNotFound) {
+        NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"access_token=[^&?]+" options:0 error:nil];
+        NSString* token = [url substringWithRange:[regex firstMatchInString:url options:0 range:NSMakeRange(0, url.length)].range];
+        _accessToken = [token stringByReplacingOccurrencesOfString:@"access_token=" withString:@""];
+        
+        regex = [NSRegularExpression regularExpressionWithPattern:@"expires_in=[^&?]+" options:0 error:nil];
+        NSString* expires = [url substringWithRange:[regex firstMatchInString:url options:0 range:NSMakeRange(0, url.length)].range];
+        expires = [expires stringByReplacingOccurrencesOfString:@"expires_in=" withString:@""];
+        NSNumberFormatter* f = [[[NSNumberFormatter alloc] init] autorelease];    
+        _expirationDate = [[NSDate date] dateByAddingTimeInterval:[f numberFromString:expires].integerValue];
+        
+        NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
+        [tokens setValue:_accessToken forKey:accessTokenKey];
+        [tokens setValue:_expirationDate forKey:expirationDateKey];
+        [self saveToken:tokens];    
+        
+        if (_delegate)
+            [_delegate clientDidLogin:self];
+        
+        return YES;
+    }
+    
+    return NO;
+}
+
 
 @end

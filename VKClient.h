@@ -9,10 +9,11 @@
 #import "SNClient.h"
 
 @interface VKClient : SNClient {
-    
+    NSString* _clientId;
+    NSString* _redirectString;
 }
 
-+ (VKClient*)sharedClient;
-+ (NSString*)redirecUrl;
+- (id)initWithId:(NSString*)consumerKey            
+     andRedirect:(NSString*)redirectString;
 
 @end
