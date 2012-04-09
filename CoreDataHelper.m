@@ -12,49 +12,60 @@
 
 static NSString* scheme = @"DataModel";
 
-+ (NSManagedObjectModel *)managedObjectModel {
-    static NSManagedObjectModel *managedObjectModel;
++ (NSManagedObjectContext *)mainThreadContext {
     
-    @synchronized(self)
-    {
-        if (!managedObjectModel) {
-            NSURL *modelURL = [[NSBundle mainBundle] URLForResource:scheme withExtension:@"momd"];
-            managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];    
+    static NSManagedObjectContext *_managedObjectContext = nil;                
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if ([CoreDataHelper persistentStoreCoordinator] != nil)
+        {
+            _managedObjectContext = [[NSManagedObjectContext alloc] init];
+            [_managedObjectContext setPersistentStoreCoordinator:[CoreDataHelper persistentStoreCoordinator]];  
         }
-        
-        return managedObjectModel;
-    }
+    });        
+    
+    return _managedObjectContext;
+}
+
++ (NSManagedObjectModel *)managedObjectModel {
+    static NSManagedObjectModel *_managedObjectModel;    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSURL *modelURL = [[NSBundle mainBundle] URLForResource:scheme withExtension:@"momd"];
+        _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];  
+    });
+    return _managedObjectModel;
 }
 
 #if TARGET_OS_IPHONE
 + (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
-    static NSPersistentStoreCoordinator *persistentStoreCoordinator;
-    
-    @synchronized(self)
-    {
-        if (!persistentStoreCoordinator) {
-            NSString* appPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-            appPath = [appPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite", scheme]];            
-            NSError *error = nil;
-            persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-                        
-#ifdef OCUNIT
-            NSURL *storeURL = [NSURL fileURLWithPath:appPath isDirectory:NO];            
-            if (![persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error])
+    static NSPersistentStoreCoordinator *_persistentStoreCoordinator;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSString* appPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        appPath = [appPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite", scheme]];            
+        NSError *error = nil;
+        _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+        
+#if OCUNIT
+        if (![_persistentStoreCoordinator addPersistentStoreWithType: NSInMemoryStoreType
+                                                      configuration: nil
+                                                                URL: nil
+                                                            options: nil 
+                                                              error: &error])
 #else
-            if (![persistentStoreCoordinator addPersistentStoreWithType: NSInMemoryStoreType
-                                                          configuration: nil
-                                                                    URL: nil
-                                                                options: nil 
-                                                                  error: NULL])
+            NSURL *storeURL = [NSURL fileURLWithPath:appPath isDirectory:NO];            
+        if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType 
+                                                      configuration:nil 
+                                                                URL:storeURL 
+                                                            options:nil 
+                                                              error:&error])
 #endif                            
-            {
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            }            
-
-        }        
-        return persistentStoreCoordinator;
-    }
+        {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        }
+    });
+    return _persistentStoreCoordinator;
 }
 #else
 + (NSPersistentStoreCoordinator *)persistentStoreCoordinator {

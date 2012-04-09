@@ -11,20 +11,6 @@
 
 @implementation CommonClient
 
-- (id)initWithBaseURL:(NSURL*)baseUrl {
-    self = [super initWithBaseURL:baseUrl];
-    if (self) {
-        _context = [[CoreDataHelper createManagedObjectContext] retain];
-    }
-    return self;
-}
-
-- (void)dealloc
-{
-    [_context release];
-    [super dealloc];
-}
-
 - (NSDateFormatter *)dateFormatter {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
@@ -145,31 +131,111 @@
     }];
 }
 
-- (NSArray*)all {
-    NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:_context] 
+- (NSArray*)all:(NSManagedObjectContext*)context {
+    NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
                                                                   withPredicate:nil 
                                                           andSortingDescriptors:nil
-                                                         inManagedObjectContext:_context];
+                                                         inManagedObjectContext:context];
     
-    return [CoreDataHelper requestResult:fetchRequest managedObjectContext:_context];
+    return [CoreDataHelper requestResult:fetchRequest managedObjectContext:context];
 }
 
-- (id)find:(id)itemId {
-    NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:_context] 
+- (NSArray*)all:(NSManagedObjectContext*)context orderBy:(NSString*)firstSortingParam, ... {
+    
+    va_list argumentList;    
+    va_start(argumentList, firstSortingParam);
+    
+    NSMutableArray* descriptorsArray = [NSMutableArray array];  
+    for (NSString *arg = firstSortingParam; arg != nil; arg = va_arg(argumentList, NSString*))
+    {
+        [descriptorsArray addObject:[NSSortDescriptor sortDescriptorWithKey:firstSortingParam ascending:YES]];
+    }
+    va_end(argumentList);
+    
+    NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
+                                                                  withPredicate:nil 
+                                                          andSortingDescriptors:descriptorsArray
+                                                         inManagedObjectContext:context];
+    
+    return [CoreDataHelper requestResult:fetchRequest managedObjectContext:context];
+}
+
+- (NSArray*)all:(NSManagedObjectContext*)context orderByDescriptors:(NSSortDescriptor*)firstDescriptor, ... {
+    
+    va_list argumentList;    
+    va_start(argumentList, firstDescriptor);
+    
+    NSMutableArray* descriptorsArray = [NSMutableArray array];  
+    for (NSSortDescriptor *arg = firstDescriptor; arg != nil; arg = va_arg(argumentList, NSSortDescriptor*))
+    {
+        [descriptorsArray addObject:arg];
+    }
+    va_end(argumentList);
+    
+    NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
+                                                                  withPredicate:nil 
+                                                          andSortingDescriptors:descriptorsArray
+                                                         inManagedObjectContext:context];
+    
+    return [CoreDataHelper requestResult:fetchRequest managedObjectContext:context];
+}
+
+- (id)find:(NSManagedObjectContext*)context itemId:(id)itemId {
+    NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
                                                                   withPredicate:[NSPredicate predicateWithFormat:@"id = %@", itemId] 
                                                           andSortingDescriptors:nil
-                                                         inManagedObjectContext:_context];
+                                                         inManagedObjectContext:context];
     
-    return [CoreDataHelper requestFirstResult:fetchRequest managedObjectContext:_context];
+    return [CoreDataHelper requestFirstResult:fetchRequest managedObjectContext:context];
 }
 
-- (NSArray*)where:(NSPredicate*)wherePredicate {
-    NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:_context] 
+- (NSArray*)where:(NSManagedObjectContext*)context wherePredicate:(NSPredicate*)wherePredicate {
+    NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
                                                                   withPredicate:wherePredicate 
                                                           andSortingDescriptors:nil
-                                                         inManagedObjectContext:_context];
+                                                         inManagedObjectContext:context];
     
-    return [CoreDataHelper requestResult:fetchRequest managedObjectContext:_context];
+    return [CoreDataHelper requestResult:fetchRequest managedObjectContext:context];
+}
+
+- (NSArray*)where:(NSManagedObjectContext*)context wherePredicate:(NSPredicate*)wherePredicate orderBy:(NSString*)firstSortingParam, ... {
+    
+    va_list argumentList;    
+    va_start(argumentList, firstSortingParam);
+    
+    NSMutableArray* descriptorsArray = [NSMutableArray array];  
+    for (NSString *arg = firstSortingParam; arg != nil; arg = va_arg(argumentList, NSString*))
+    {
+        [descriptorsArray addObject:[NSSortDescriptor sortDescriptorWithKey:firstSortingParam ascending:YES]];
+    }
+    va_end(argumentList);
+    
+    NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
+                                                                  withPredicate:wherePredicate 
+                                                          andSortingDescriptors:descriptorsArray
+                                                         inManagedObjectContext:context];
+    
+    return [CoreDataHelper requestResult:fetchRequest managedObjectContext:context];
+}
+
+- (NSArray*)where:(NSManagedObjectContext*)context wherePredicate:(NSPredicate*)wherePredicate orderByDescriptors:(NSSortDescriptor*)firstDescriptor, ... {
+    
+    va_list argumentList;    
+    va_start(argumentList, firstDescriptor);
+    
+    NSMutableArray* descriptorsArray = [NSMutableArray array];  
+    for (NSSortDescriptor *arg = firstDescriptor; arg != nil; arg = va_arg(argumentList, NSSortDescriptor*))
+    {
+        [descriptorsArray addObject:arg];
+    }
+    va_end(argumentList);
+    
+    NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
+                                                                  withPredicate:wherePredicate 
+                                                          andSortingDescriptors:descriptorsArray
+                                                         inManagedObjectContext:context];
+    
+    return [CoreDataHelper requestResult:fetchRequest managedObjectContext:context];
 }
 
 @end

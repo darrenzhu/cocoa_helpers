@@ -9,8 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
+#define mainThreadContext() [CoreDataHelper mainThreadContext]
+
 @interface CoreDataHelper : NSObject
 
++ (NSManagedObjectContext *)mainThreadContext;
 + (NSManagedObjectModel *)managedObjectModel;
 + (NSPersistentStoreCoordinator *)persistentStoreCoordinator;
 + (NSManagedObjectContext *)createManagedObjectContext;

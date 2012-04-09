@@ -11,12 +11,9 @@
 #import "CoreDataHelper.h"
 #import "JSONKit.h"
 
-#import "NSArray+orderBy.h"
 #import "NetworkIndicatorManager.h"
 
-@interface CommonClient : AFHTTPClient {
-    NSManagedObjectContext* _context;
-}
+@interface CommonClient : AFHTTPClient
 
 - (NSDateFormatter *)dateFormatter;
 - (NSEntityDescription *)enityDescriptionInContext:(NSManagedObjectContext *)context;
@@ -36,8 +33,14 @@
                  success:(void (^)(NSArray* entities))success 
                  failure:(void (^)(NSError *error))failure;
 
-- (NSArray*)all;
-- (id)find:(id)itemId;
-- (NSArray*)where:(NSPredicate*)wherePredicate;
+- (NSArray*)all:(NSManagedObjectContext*)context;
+- (NSArray*)all:(NSManagedObjectContext*)context orderBy:(NSString*)firstSortingParam, ... NS_REQUIRES_NIL_TERMINATION;
+- (NSArray*)all:(NSManagedObjectContext*)context orderByDescriptors:(NSSortDescriptor*)firstDescriptor, ... NS_REQUIRES_NIL_TERMINATION;
+
+- (id)find:(NSManagedObjectContext*)context itemId:(id)itemId;
+
+- (NSArray*)where:(NSManagedObjectContext*)context wherePredicate:(NSPredicate*)wherePredicate;
+- (NSArray*)where:(NSManagedObjectContext*)context wherePredicate:(NSPredicate*)wherePredicate orderBy:(NSString*)firstSortingParam, ... NS_REQUIRES_NIL_TERMINATION;
+- (NSArray*)where:(NSManagedObjectContext*)context wherePredicate:(NSPredicate*)wherePredicate orderByDescriptors:(NSSortDescriptor*)firstDescriptor, ... NS_REQUIRES_NIL_TERMINATION;
 
 @end

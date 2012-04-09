@@ -12,6 +12,17 @@
 #import "CommonClient.h"
 
 @implementation CommonEntity
+@dynamic syncDate;
+
+- (NSDate*)localeTime {
+    NSDate* sourceDate = [NSDate date];
+    NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
+    NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
+    NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:sourceDate];
+    NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:sourceDate];
+    NSTimeInterval interval = destinationGMTOffset - sourceGMTOffset;
+    return [[[NSDate alloc] initWithTimeInterval:interval sinceDate:sourceDate] autorelease];
+}
 
 - (NSDateFormatter *)dateFormatter {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
@@ -37,11 +48,16 @@
             
             id jsonValue = [json valueForKeyPath:propertyName];
             
+            NSArray * attributes = [propertyAtr componentsSeparatedByString:@","];
+            NSString * typeAttribute = [attributes objectAtIndex:0];
+            NSString * propertyType = [typeAttribute substringFromIndex:2];
+            propertyType = [propertyType stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+            
             if (jsonValue != [NSNull null] && jsonValue != nil) {
                 if ([propertyAtr rangeOfString:@"NSDate"].location != NSNotFound) {                      
-                    [self setValue:[[self dateFormatter] dateFromString:jsonValue] forKey:propertyName];
+                    [self setValue:[[self dateFormatter] dateFromString:jsonValue] forKey:propertyName];                                       
                 }
-                else if ([propertyAtr rangeOfString:NSStringFromClass([jsonValue class])].location != NSNotFound) {
+                else if ([jsonValue isKindOfClass:NSClassFromString(propertyType)]) {
                     [self setValue:jsonValue forKey:propertyName];   
                 }
             }
@@ -51,6 +67,8 @@
         if (jsonValue != nil) {
             [self setValue:jsonValue forKey:@"id"];
         }
+        
+        self.syncDate = [self localeTime];
         
         free(properties);
     }

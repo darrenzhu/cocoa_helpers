@@ -12,6 +12,8 @@
 @class CommonClient;
 @interface CommonEntity : NSManagedObject
 
+@property(nonatomic, strong) NSDate* syncDate;
+
 - (id)initFromJSON:(id)json withEntity:(NSEntityDescription*)entityDescription inManagedObjectContext:(NSManagedObjectContext*)context;
 
 - (NSDateFormatter *)dateFormatter;
