@@ -32,23 +32,17 @@
             objc_property_t property = properties[i];
             
             NSString* propertyName = [NSString stringWithCString:property_getName(property) encoding:NSUTF8StringEncoding];
+       
+            NSString* propertyAtr = [NSString stringWithCString:property_getAttributes(property) encoding:NSUTF8StringEncoding];
+            
             id jsonValue = [json valueForKeyPath:propertyName];
             
             if (jsonValue != [NSNull null] && jsonValue != nil) {
-                if ([propertyName rangeOfString:@"date"].location != NSNotFound) {  
-                    //NSLog(@"%@, %@", jsonValue, [self.dateFormatter dateFromString:jsonValue]);
+                if ([propertyAtr rangeOfString:@"NSDate"].location != NSNotFound) {                      
                     [self setValue:[[self dateFormatter] dateFromString:jsonValue] forKey:propertyName];
                 }
-                else {
-                    NSString* propertyAtr = [NSString stringWithCString:property_getAttributes(property) encoding:NSUTF8StringEncoding];
-                    if ([propertyAtr rangeOfString:@"NSString"].location != NSNotFound ||
-                        [propertyAtr rangeOfString:@"NSNumber"].location != NSNotFound ||
-                        [propertyAtr rangeOfString:@"NSArray"].location != NSNotFound ||
-                        [propertyAtr rangeOfString:@"NSDictionary"].location != NSNotFound) {
-                     
-                        //if ([propertyAtr rangeOfString:NSStringFromClass([jsonValue class])].location != NSNotFound)
-                            [self setValue:jsonValue forKey:propertyName];   
-                    }
+                else if ([propertyAtr rangeOfString:NSStringFromClass([jsonValue class])].location != NSNotFound) {
+                    [self setValue:jsonValue forKey:propertyName];   
                 }
             }
         }
