@@ -28,6 +28,19 @@ static NSString* scheme = @"DataModel";
     return _managedObjectContext;
 }
 
++ (void)addMergeNotificationForMainContext:(NSManagedObjectContext*)context {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(mergeChangesFromNotification:)
+												 name:NSManagedObjectContextDidSaveNotification
+											   object:context];
+}
+
++ (void)mergeChangesFromNotification:(NSNotification*)notification {
+	[mainThreadContext() performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) 
+                                          withObject:notification 
+                                       waitUntilDone:YES];
+}
+
 + (NSManagedObjectModel *)managedObjectModel {
     static NSManagedObjectModel *_managedObjectModel;    
     static dispatch_once_t onceToken;

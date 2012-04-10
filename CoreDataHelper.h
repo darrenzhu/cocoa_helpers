@@ -14,6 +14,8 @@
 @interface CoreDataHelper : NSObject
 
 + (NSManagedObjectContext *)mainThreadContext;
++ (void)addMergeNotificationForMainContext:(NSManagedObjectContext*)context;
+
 + (NSManagedObjectModel *)managedObjectModel;
 + (NSPersistentStoreCoordinator *)persistentStoreCoordinator;
 + (NSManagedObjectContext *)createManagedObjectContext;

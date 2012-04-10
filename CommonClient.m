@@ -74,7 +74,8 @@
            success:(void (^)(NSArray* entities))success {    
 
     [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:YES];
-    NSManagedObjectContext* context = [CoreDataHelper createManagedObjectContext];
+    NSManagedObjectContext* context = [[CoreDataHelper createManagedObjectContext] retain];
+    [CoreDataHelper addMergeNotificationForMainContext:context];
     NSMutableArray* result = [NSMutableArray array];        
     
     for (id jsonString in items) {                                
@@ -87,7 +88,8 @@
     
     if (!byOne) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            success(nil);
+            success(result);
+            [context release];
         }); 
     }
     [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];
