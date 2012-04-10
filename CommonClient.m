@@ -41,8 +41,6 @@
     return params;
 }
 
-- (void)postprocessJSON:(id)json withEntity:(CommonEntity*)entity {}
-
 - (CommonEntity*)createOrUpdate:(id)jsonString inManagedObjectContext:(NSManagedObjectContext*)context {
     
     NSNumber* curId = [jsonString valueForKeyPath:@"id"];

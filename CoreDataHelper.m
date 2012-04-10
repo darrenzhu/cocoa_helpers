@@ -21,6 +21,7 @@ static NSString* scheme = @"DataModel";
         {
             _managedObjectContext = [[NSManagedObjectContext alloc] init];
             [_managedObjectContext setPersistentStoreCoordinator:[CoreDataHelper persistentStoreCoordinator]];  
+            [_managedObjectContext setMergePolicy:NSMergeByPropertyStoreTrumpMergePolicy];
         }
     });        
     
@@ -158,26 +159,15 @@ static NSString* scheme = @"DataModel";
     return [result objectAtIndex:0];
 }
 
-+ (void)managedObjectContextDidSave:(NSNotification*)notification {
-    NSManagedObjectContext* context = [CoreDataHelper createManagedObjectContext];
-    if (context) {
-        [context performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) 
-                                  withObject:notification waitUntilDone:NO];
-    }
-}
-
 + (BOOL)save:(NSManagedObjectContext*)managedObjectContext {
 
-    if (managedObjectContext.hasChanges) {
-        //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(managedObjectContextDidSave:) name:NSManagedObjectContextDidSaveNotification object:managedObjectContext];
-        
+    if (managedObjectContext.hasChanges) {        
         NSError *error = nil;
         if (![managedObjectContext save:&error]) {
             NSLog(@"Unresolved error %@", error.localizedDescription);
             return NO;
         }        
         
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSManagedObjectContextDidSaveNotification object:managedObjectContext];
         return YES;
     }
         
