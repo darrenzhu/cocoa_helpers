@@ -15,13 +15,11 @@
 @dynamic syncDate;
 
 - (NSDate*)localeTime {
-    NSDate* sourceDate = [NSDate date];
-    NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-    NSTimeZone* destinationTimeZone = [NSTimeZone systemTimeZone];
-    NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:sourceDate];
-    NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:sourceDate];
-    NSTimeInterval interval = destinationGMTOffset - sourceGMTOffset;
-    return [[[NSDate alloc] initWithTimeInterval:interval sinceDate:sourceDate] autorelease];
+    NSDate* dateNow = [NSDate date];
+    NSTimeZone *tz = [NSTimeZone defaultTimeZone];
+    NSInteger seconds = [tz secondsFromGMTForDate:dateNow];
+    dateNow = [NSDate dateWithTimeInterval:seconds sinceDate:dateNow];
+    return dateNow;
 }
 
 - (NSDateFormatter *)dateFormatter {
