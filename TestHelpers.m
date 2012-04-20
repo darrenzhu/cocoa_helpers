@@ -37,21 +37,22 @@
           andParams:(NSDictionary*)params 
   withHandshakeFile:(NSString*)handshakeFile {
         
-    __block void (^success)(AFHTTPRequestOperation *operation, id responseObject);
-    BOOL (^checkBlock)(id value) = [^BOOL(id value) {    
-        success = [value copy]; 
-        return YES;
-    } copy];
-        
-    void (^theBlock)(NSInvocation *) = ^(NSInvocation *invocation) {        
-        [checkBlock release];
-        success(nil, [TestHelpers JSONhandshakeFromTXTFileName:handshakeFile]);
-    };                
+    [TestHelpers stubGetPath:path 
+               forClientMock:_clientMock 
+                   andParams:params 
+           withHandshakeFile:handshakeFile];
+}
+
+- (void)runAsyncTestUntil:(NSTimeInterval)interval 
+                     test:(void (^)())test {
     
-    [[[_clientMock stub] andDo:theBlock] getPath:path 
-                                      parameters:params
-                                         success:[OCMArg checkWithBlock:checkBlock] 
-                                         failure:[OCMArg any]];
+    test();    
+    
+    NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:interval];
+    while ([loopUntil timeIntervalSinceNow] > 0) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:loopUntil];
+    }  
 }
 
 - (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test
@@ -99,6 +100,27 @@
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
                                  beforeDate:loopUntil];
     }  
+}
+
++ (void)stubGetPath:(NSString*)path 
+      forClientMock:(id)clientMock
+          andParams:(NSDictionary*)params 
+  withHandshakeFile:(NSString*)handshakeFile {
+    
+    __block void (^success)(AFHTTPRequestOperation *operation, id responseObject);
+    BOOL (^checkBlock)(id value) = [^BOOL(id value) {    
+        success = [value copy]; 
+        return YES;
+    } copy];
+    
+    void (^theBlock)(NSInvocation *) = ^(NSInvocation *invocation) {        
+        success(nil, [TestHelpers JSONhandshakeFromTXTFileName:handshakeFile]);
+    };                
+    
+    [[[clientMock stub] andDo:theBlock] getPath:path 
+                                     parameters:params
+                                        success:[OCMArg checkWithBlock:checkBlock] 
+                                        failure:[OCMArg any]];
 }
 
 @end

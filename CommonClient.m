@@ -92,6 +92,9 @@
             [context release];
         }); 
     }
+    else {
+        [context release];
+    }
     [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];
 }
 

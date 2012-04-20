@@ -29,6 +29,8 @@
           andParams:(NSDictionary*)params
   withHandshakeFile:(NSString*)handshakeFile;
 
+- (void)runAsyncTestUntil:(NSTimeInterval)interval 
+                     test:(void (^)())test;
 - (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test 
         withInterval:(NSTimeInterval)interval;
 - (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test;
@@ -40,5 +42,9 @@
 + (NSString*)handshakeFromTXTFileName:(NSString*)fileName;
 + (id)JSONhandshakeFromTXTFileName:(NSString*)fileName;
 + (void)makeAsyncLoopWithInterval:(NSTimeInterval)interval;
++ (void)stubGetPath:(NSString*)path 
+      forClientMock:(id)clientMock
+          andParams:(NSDictionary*)params 
+  withHandshakeFile:(NSString*)handshakeFile;
 
 @end
