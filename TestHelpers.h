@@ -9,14 +9,29 @@
 #import <SenTestingKit/SenTestingKit.h>
 #import <Foundation/Foundation.h>
 
+#import "AFHTTPRequestOperation.h"
 #import "JSONKit.h"
 #import <OCMock.h>
+
+@interface AsyncTestConditon : NSObject
+
+@property(nonatomic) BOOL trigger;
+
+@end
 
 @interface DataTestCase : SenTestCase {
     NSManagedObjectContext* _context;
     
     id _clientMock;
 }
+
+- (void)stubGetPath:(NSString*)path 
+          andParams:(NSDictionary*)params
+  withHandshakeFile:(NSString*)handshakeFile;
+
+- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test 
+        withInterval:(NSTimeInterval)interval;
+- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test;
 
 @end
 

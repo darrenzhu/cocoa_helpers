@@ -9,6 +9,21 @@
 #import "TestHelpers.h"
 #import "CoreDataHelper.h"
 
+#import "CCNewsClient.h"
+
+@implementation AsyncTestConditon
+@synthesize trigger;
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        trigger = NO;
+    }
+    return self;
+}
+
+@end
+
 @implementation DataTestCase
 
 - (void)setUp {
@@ -16,6 +31,46 @@
     
     _context = [[CoreDataHelper createManagedObjectContext] retain];    
     STAssertNotNil(_context, @"Unable to create management context");    
+}
+
+- (void)stubGetPath:(NSString*)path 
+          andParams:(NSDictionary*)params 
+  withHandshakeFile:(NSString*)handshakeFile {
+        
+    __block void (^success)(AFHTTPRequestOperation *operation, id responseObject);
+    BOOL (^checkBlock)(id value) = [^BOOL(id value) {    
+        success = [value copy]; 
+        return YES;
+    } copy];
+        
+    void (^theBlock)(NSInvocation *) = ^(NSInvocation *invocation) {        
+        [checkBlock release];
+        success(nil, [TestHelpers JSONhandshakeFromTXTFileName:handshakeFile]);
+    };                
+    
+    [[[_clientMock stub] andDo:theBlock] getPath:path 
+                                      parameters:params
+                                         success:[OCMArg checkWithBlock:checkBlock] 
+                                         failure:[OCMArg any]];
+}
+
+- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test
+        withInterval:(NSTimeInterval)interval {
+    
+    AsyncTestConditon* condition = [[AsyncTestConditon alloc] init];
+    test(condition);    
+    
+    NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:interval];
+    while ([loopUntil timeIntervalSinceNow] > 0 && !condition.trigger) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:loopUntil];
+    }  
+    
+    STAssertTrue(condition.trigger, @"async test failed. trigger value is not YES.");
+}
+
+- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test {
+    [self runAsyncTest:test withInterval:3.0];
 }
 
 - (void)tearDown {
