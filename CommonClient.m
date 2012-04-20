@@ -11,6 +11,16 @@
 
 @implementation CommonClient
 
++ (dispatch_queue_t)jsonQueue {
+    static dispatch_queue_t _jsonQueue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _jsonQueue = dispatch_queue_create("org.json.proccess", 0);
+    });
+    
+    return _jsonQueue;
+}
+
 - (NSDateFormatter *)dateFormatter {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
@@ -45,28 +55,35 @@
     
     NSNumber* curId = [jsonString valueForKeyPath:@"id"];
     
-    NSPredicate* idPredicate = [NSPredicate predicateWithFormat:@"id = %@", curId];    
-    NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
-                                                                  withPredicate:idPredicate 
-                                                          andSortingDescriptors:nil 
-                                                         inManagedObjectContext:context];
+    if (curId != nil) {
+        NSPredicate* idPredicate = [NSPredicate predicateWithFormat:@"id = %@", curId];    
+        NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
+                                                                      withPredicate:idPredicate 
+                                                              andSortingDescriptors:nil 
+                                                             inManagedObjectContext:context];
     
-    CommonEntity* entity = [CoreDataHelper requestFirstResult:fetchRequest managedObjectContext:context];
-    if (entity) {
-        [entity updateFromJSON:jsonString];  
-    }
-    else {
-        Class class = NSClassFromString([self enityDescriptionInContext:context].managedObjectClassName);
+        CommonEntity* entity = [CoreDataHelper requestFirstResult:fetchRequest managedObjectContext:context];
         
-        if (class)
-            entity = [[[class alloc] initFromJSON: jsonString 
-                                       withEntity:[self enityDescriptionInContext:context] 
-                           inManagedObjectContext:context] autorelease]; 
+        if (entity ) {
+            [entity updateFromJSON:jsonString];  
+            [entity postprocessJSON:jsonString withClient:self]; 
+            return entity;
+        }
     }
     
-    [entity postprocessJSON:jsonString withClient:self]; 
+    Class class = NSClassFromString([self enityDescriptionInContext:context].managedObjectClassName);
     
-    return entity;
+    if (class) {
+        CommonEntity* entity = [[[class alloc] initFromJSON: jsonString 
+                                                 withEntity:[self enityDescriptionInContext:context] 
+                                     inManagedObjectContext:context] autorelease]; 
+    
+        [entity postprocessJSON:jsonString withClient:self]; 
+    
+        return entity;
+    }
+    
+    return nil;
 }
 
 - (void)formatJson:(NSArray*)items 
@@ -123,7 +140,7 @@
             
             if ([items isKindOfClass:NSArray.class] && items.count > 0) {  
                 
-                dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                dispatch_async([CommonClient jsonQueue], ^{
                     [self formatJson:items byOne:byOne success:success];
                 });                
             }
