@@ -45,7 +45,7 @@ static NSString* scheme = @"DataModel";
     static NSManagedObjectModel *_managedObjectModel;    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSURL *modelURL = [[NSBundle mainBundle] URLForResource:scheme withExtension:@"momd"];
+        NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:scheme withExtension:@"momd"];
         _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];  
     });
     return _managedObjectModel;
