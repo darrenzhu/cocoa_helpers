@@ -28,8 +28,6 @@
                                  userInfo:nil];
 }
 
-- (void)postprocessJSON:(id)json withClient:(CommonClient*)client {}
-
 - (void)updateFromJSON:(id)json {
     
     if (self) {

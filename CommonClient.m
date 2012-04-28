@@ -66,7 +66,6 @@
         
         if (entity ) {
             [entity updateFromJSON:jsonString];  
-            [entity postprocessJSON:jsonString withClient:self]; 
             return entity;
         }
     }
@@ -77,8 +76,6 @@
         CommonEntity* entity = [[[class alloc] initFromJSON: jsonString 
                                                  withEntity:[self enityDescriptionInContext:context] 
                                      inManagedObjectContext:context] autorelease]; 
-    
-        [entity postprocessJSON:jsonString withClient:self]; 
     
         return entity;
     }

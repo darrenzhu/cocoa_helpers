@@ -17,7 +17,6 @@
 - (id)initFromJSON:(id)json withEntity:(NSEntityDescription*)entityDescription inManagedObjectContext:(NSManagedObjectContext*)context;
 
 - (NSDateFormatter *)dateFormatter;
-- (void)postprocessJSON:(id)json withClient:(CommonClient*)client;
 
 - (void)updateFromJSON:(id)json;
 - (NSString*)toJSON;
