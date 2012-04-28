@@ -51,6 +51,15 @@
     return params;
 }
 
+- (id)getPathSync:(NSString*)path {
+    NSString* dataUrl = [NSString stringWithFormat:@"%@%@", self.baseURL, path];
+    NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:dataUrl]];
+    NSData* responseData = [NSURLConnection sendSynchronousRequest:request 
+                                                 returningResponse:nil 
+                                                             error:nil];
+    return [NSString stringWithUTF8String:responseData.bytes];
+}
+
 - (CommonEntity*)createOrUpdate:(id)jsonString inManagedObjectContext:(NSManagedObjectContext*)context {
     
     NSNumber* curId = [jsonString valueForKeyPath:@"id"];

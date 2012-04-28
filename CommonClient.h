@@ -15,6 +15,8 @@
 
 @interface CommonClient : AFHTTPClient
 
++ (dispatch_queue_t)jsonQueue;
+
 - (NSDateFormatter *)dateFormatter;
 - (NSEntityDescription *)enityDescriptionInContext:(NSManagedObjectContext *)context;
 
@@ -22,6 +24,7 @@
                            count:(int)limit 
                         dateFrom:(NSDate*)date;
 
+- (id)getPathSync:(NSString*)path;
 - (CommonEntity*)createOrUpdate:(id)jsonString inManagedObjectContext:(NSManagedObjectContext*)context;
 - (void)formatJson:(NSArray*)items 
              byOne:(BOOL)byOne
