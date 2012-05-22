@@ -5,10 +5,10 @@ My everyday cocoa stuff.
 Wrapper for the AFHTTPClient. Returns decoded from json coredata objects. Contains methods fro easier entities requests:
 
 	- (NSArray*)all:(NSManagedObjectContext*)context;
-	- (NSArray*)all:(NSManagedObjectContext*)context o
-			 rderBy:(NSString*)firstSortingParam, ... NS_REQUIRES_NIL_TERMINATION;
+	- (NSArray*)all:(NSManagedObjectContext*)context
+			orderBy:(NSString*)firstSortingParam, ... NS_REQUIRES_NIL_TERMINATION;
 	- (NSArray*)all:(NSManagedObjectContext*)context 
- orderByDescriptors:(NSSortDescriptor*)firstDescriptor, ... NS_REQUIRES_NIL_TERMINATION;
+ 	orderByDescriptors:(NSSortDescriptor*)firstDescriptor, ... NS_REQUIRES_NIL_TERMINATION;
 
 	- (id)find:(NSManagedObjectContext*)context itemId:(id)itemId;
 
@@ -19,7 +19,7 @@ Wrapper for the AFHTTPClient. Returns decoded from json coredata objects. Contai
 	   		  orderBy:(NSString*)firstSortingParam, ... NS_REQUIRES_NIL_TERMINATION;
 	- (NSArray*)where:(NSManagedObjectContext*)context 
 	   wherePredicate:(NSPredicate*)wherePredicate 
-   orderByDescriptors:(NSSortDescriptor*)firstDescriptor, ... NS_REQUIRES_NIL_TERMINATION;
+   	orderByDescriptors:(NSSortDescriptor*)firstDescriptor, ... NS_REQUIRES_NIL_TERMINATION;
 
 Concrete client class should implement:
 	
