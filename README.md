@@ -2,7 +2,7 @@ My everyday cocoa stuff.
 
 ## REST api clients ##
 
-Wrapper for the AFHTTPClient. Returns decoded from json coredata objects. Contains methods fro easier entities requests:
+Wrapper for the `AFHTTPClient`. Returns decoded from json `CoreData` objects. Contains methods fro easier entities requests:
 
 	- (NSArray*)all:(NSManagedObjectContext*)context;
 	- (NSArray*)all:(NSManagedObjectContext*)context
@@ -26,9 +26,9 @@ Concrete client class should implement:
 	- (NSDateFormatter *)dateFormatter;
 	- (NSEntityDescription *)enityDescriptionInContext:(NSManagedObjectContext *)context;
 
-NSDateFormatter for correct decodin/encoding of the HTTPRequests date params and NSEntityDescription to point the entitity which it posses
+`NSDateFormatter` for correct decodin/encoding of the HTTP requests date params and `NSEntityDescription` to point the entitity which it posses
 
-Client entities base class should implement NSDateFormatter for correct decoding of the dates
+Client entities base class should implement `NSDateFormatter` for correct decoding of the dates
 
 	- (NSDateFormatter*)dateFormatter;
 
@@ -60,7 +60,7 @@ Optianal delegate inteface:
 
 ## Unit testing (OCUnit+OCMock) ##
 
-Class methods for stubing REST api requests (via AFHTTPNetworking) with results from txt file (saved handshakes):
+Class methods for stubing REST api requests (via `AFHTTPNetworking`) with results from txt file (saved handshakes):
 
 	+ (void)stubGetPath:(NSString*)path 
 	      forClientMock:(id)clientMock
@@ -79,7 +79,11 @@ implement your async test in block and return endCondition.trigger after getting
 
 ## Other ##
 
-Also contains useful categories and wrapper for the common CoreData activities.
+Also contains useful categories and wrapper for the common `CoreData` activities.
+
+## Usage ##
+
+Drop files to your project. Some features are barelly tested and contains only basic implementation.
 
 ## License ##
 
