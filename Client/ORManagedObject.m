@@ -10,7 +10,6 @@
 #import <objc/runtime.h>
 
 #import "JSONKit.h"
-#import "CoreDataHelper.h"
 
 @implementation ORManagedObject
 @dynamic syncDate;
@@ -107,7 +106,7 @@
         
         self.syncDate = [self localeTime];
         
-        free(properties);
+        free(properties);    
     }
 }
 
@@ -121,22 +120,17 @@
     return self;    
 }
 
-#pragma mark - Private
-
-+ (NSEntityDescription*)enityDescriptionInContext:(NSManagedObjectContext*)context {
-    return [NSEntityDescription entityForName:NSStringFromClass(self.class) inManagedObjectContext:context];
-}
-
-+ (ORManagedObject*)createOrUpdate:(id)jsonString inManagedObjectContext:(NSManagedObjectContext*)context {
++ (ORManagedObject*)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext*)context {
     
-    NSNumber* curId = [jsonString valueForKeyPath:@"id"];
+    NSNumber* curId = [json valueForKeyPath:@"id"];
     
     if (curId != nil) {
         NSFetchRequest *fetchRequest = [self find:context itemId:curId];
         ORManagedObject* entity = [CoreDataHelper requestFirstResult:fetchRequest managedObjectContext:context];
         
         if (entity ) {
-            [entity updateFromJSON:jsonString];  
+            [entity updateFromJSON:json];  
+            [entity didFinishedFetchJSON:json inManagedContext:context];
             return entity;
         }
     }
@@ -144,14 +138,20 @@
     Class class = NSClassFromString([self enityDescriptionInContext:context].managedObjectClassName);
     
     if (class) {
-        ORManagedObject* entity = [[[class alloc] initFromJSON: jsonString 
-                                                 withEntity:[self enityDescriptionInContext:context] 
-                                     inManagedObjectContext:context] autorelease]; 
-        
+        ORManagedObject* entity = [[[class alloc] initFromJSON:json 
+                                                    withEntity:[self enityDescriptionInContext:context] 
+                                        inManagedObjectContext:context] autorelease]; 
+        [entity didFinishedFetchJSON:json inManagedContext:context];        
         return entity;
     }
     
     return nil;
+}
+
+#pragma mark - Private
+
++ (NSEntityDescription*)enityDescriptionInContext:(NSManagedObjectContext*)context {
+    return [NSEntityDescription entityForName:NSStringFromClass(self.class) inManagedObjectContext:context];
 }
 
 + (void)formatJson:(NSArray*)items 

@@ -11,6 +11,7 @@
 
 #import "NSFetchRequest+orderBy.h"
 #import "ORHTTPClient.h"
+#import "CoreDataHelper.h"
 
 @interface ORManagedObject : NSManagedObject
 
@@ -23,6 +24,8 @@
 - (void)updateFromJSON:(id)json;
 - (NSString*)toJSONString;
 
++ (ORManagedObject*)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext*)context;
+
 + (void)fetchWithClient:(ORHTTPClient*)client
                    path:(NSString *)path 
              parameters:(NSDictionary *)parameters                
@@ -33,4 +36,9 @@
 + (NSFetchRequest*)find:(NSManagedObjectContext*)context itemId:(id)itemId;
 + (NSFetchRequest*)where:(NSManagedObjectContext*)context wherePredicate:(NSPredicate*)wherePredicate;
 
+@end
+
+@interface ORManagedObject (Pivate)
+- (void)didFinishedFetchJSON:(id)json 
+            inManagedContext:(NSManagedObjectContext*)context;
 @end
