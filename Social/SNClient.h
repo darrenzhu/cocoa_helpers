@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "NetworkIndicatorManager.h"
+#import "AFNetworkActivityIndicatorManager.h"
 
 @protocol SNClientDelegate;
 @interface SNClient : NSObject <UIWebViewDelegate> {

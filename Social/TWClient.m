@@ -202,7 +202,7 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     [self setOAuthValue:_redirectString forKey:@"oauth_callback"];
     [self signRequest:request withBody:nil];
         
-    [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:YES];
+    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.completionBlock = ^{
         if ([operation hasAcceptableStatusCode]) {
@@ -221,7 +221,7 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
             NSLog(@"Error: %@, %@", operation.error, operation.responseString);
         }        
         
-        [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];
+        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
     };
     
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
@@ -241,7 +241,7 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     [self setOAuthValue:nil forKey:@"oauth_callback"];
     [self signRequest:request withBody:body];
     
-    [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:YES];
+    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.completionBlock = ^ {
         if ([operation hasAcceptableStatusCode]) {
@@ -259,7 +259,7 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
             NSLog(@"Error: %@, %@", operation.error, operation.responseString);
         }        
         
-        [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];
+        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
     };
     
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
@@ -344,7 +344,7 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     [self signRequest:request withBody:body];
     
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:YES];
+    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.completionBlock = ^ {
         if ([operation hasAcceptableStatusCode]) {
@@ -357,7 +357,7 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
             NSLog(@"Error: %@, %@", operation.error, operation.responseString);
         }
         
-        [[NetworkIndicatorManager defaultManager] setNetworkIndicatorState:NO];
+        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
     };
     
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
