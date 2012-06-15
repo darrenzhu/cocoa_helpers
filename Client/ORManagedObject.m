@@ -104,7 +104,9 @@
             [self setValue:jsonValue forKey:@"id"];
         }
         
-        self.syncDate = [self localeTime];
+        if ([self respondsToSelector:@selector(setSyncDate:)]) {
+            self.syncDate = [self localeTime];
+        }
         
         free(properties);    
     }
@@ -150,6 +152,8 @@
 
 #pragma mark - Private
 
+- (void)didFinishedFetchJSON:(id)json inManagedContext:(NSManagedObjectContext *)context {}
+
 + (NSEntityDescription*)enityDescriptionInContext:(NSManagedObjectContext*)context {
     return [NSEntityDescription entityForName:NSStringFromClass(self.class) inManagedObjectContext:context];
 }
@@ -191,7 +195,7 @@
     
     [client getPath:path parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
-        if (responseObject && [responseObject isKindOfClass:NSArray.class]) {
+        if (responseObject) {
             NSArray* items = [responseObject valueForKeyPath:@"data"]; //TODO: decide how to select path
             
             if ([items isKindOfClass:NSArray.class] && items.count > 0) {  
