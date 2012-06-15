@@ -11,7 +11,7 @@
 #import <CommonCrypto/CommonHMAC.h>
 
 #import "TTAlert.h"
-#import "AFHTTPRequestOperation.h"
+#import "ORHTTPClient.h"
 #import "NSString+Additions.h"
 #import "NSData+Base64.h"
 
@@ -202,31 +202,17 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     [self setOAuthValue:_redirectString forKey:@"oauth_callback"];
     [self signRequest:request withBody:nil];
         
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    operation.completionBlock = ^{
-        if ([operation hasAcceptableStatusCode]) {
-            
-            [self fillTokenWithResponseBody:[operation responseString]];
-            //open webview
-            NSString* urlString = [NSString stringWithFormat:@"%@%@", serverUrl, [_oAuthValues objectForKey:@"oauth_token"]];
-             
-            if (self.delegate) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.delegate client:self showAuthPage:urlString];
-                });                
-            }
-                        
-        } else {
-            NSLog(@"Error: %@, %@", operation.error, operation.responseString);
-        }        
+    [ORHTTPClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
+        [self fillTokenWithResponseBody:[operation responseString]];
+        //open webview
+        NSString* urlString = [NSString stringWithFormat:@"%@%@", serverUrl, [_oAuthValues objectForKey:@"oauth_token"]];
         
-        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
-    };
-    
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-    [queue addOperation:operation]; 
-    [queue release];
+        if (self.delegate) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.delegate client:self showAuthPage:urlString];
+            });                
+        }
+    } failed:nil];
 }
 
 - (void)getAccessToken {
@@ -241,30 +227,16 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     [self setOAuthValue:nil forKey:@"oauth_callback"];
     [self signRequest:request withBody:body];
     
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    operation.completionBlock = ^ {
-        if ([operation hasAcceptableStatusCode]) {
-            
-            [self fillTokenWithResponseBody:[operation responseString]];            
-            NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
-            [tokens setValue:_accessToken forKey:accessTokenKey];
-            [tokens setValue:_accessTokenSecret forKey:accessTokenSecretKey];    
-            [self saveToken:tokens];
-            
-            if (_delegate)
-                [_delegate clientDidLogin:self];
-            
-        } else {
-            NSLog(@"Error: %@, %@", operation.error, operation.responseString);
-        }        
+    [ORHTTPClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
+        [self fillTokenWithResponseBody:[operation responseString]];            
+        NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
+        [tokens setValue:_accessToken forKey:accessTokenKey];
+        [tokens setValue:_accessTokenSecret forKey:accessTokenSecretKey];    
+        [self saveToken:tokens];
         
-        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
-    };
-    
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-    [queue addOperation:operation];
-    [queue release];
+        if (_delegate)
+            [_delegate clientDidLogin:self];
+    } failed:nil];
 }
 
 - (void)regainToken:(NSDictionary *)savedKeysAndValues {
@@ -343,26 +315,11 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     
     [self signRequest:request withBody:body];
     
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    operation.completionBlock = ^ {
-        if ([operation hasAcceptableStatusCode]) {
-            
-            [TTAlert composeAlertViewWithTitle:@"" andMessage:@"Ссылка успешно добавлена"];       
-            
-        } else {
-            
-            [TTAlert composeAlertViewWithTitle:@"" andMessage:@"К сожалению произошла ошибка"];
-            NSLog(@"Error: %@, %@", operation.error, operation.responseString);
-        }
-        
-        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
-    };
-    
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-    [queue addOperation:operation];
-    [queue release];
+    [ORHTTPClient processRequest:request success:^(AFHTTPRequestOperation *operation) {        
+        [TTAlert composeAlertViewWithTitle:@"" andMessage:@"Ссылка успешно добавлена"];       
+    } failed:^(NSError *error) {
+        [TTAlert composeAlertViewWithTitle:@"" andMessage:@"К сожалению произошла ошибка"];
+    }];
 }
 
 @end

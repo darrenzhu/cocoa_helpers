@@ -65,8 +65,7 @@ static NSString* shareLinkMethodUrl = @"https://api.vk.com/method/wall.post?atta
         
         [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
         
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {        
         [TTAlert composeAlertViewWithTitle:@"" andMessage:@"К сожалению произошла ошибка"];
         NSLog(@"Error %@", error);
         [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];

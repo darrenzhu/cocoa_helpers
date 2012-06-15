@@ -12,6 +12,30 @@
 
 @implementation ORHTTPClient
 
++ (void)processRequest:(NSURLRequest*)request 
+               success:(void (^)(AFHTTPRequestOperation* operation))success
+                failed:(void (^)(NSError* error))failed {
+    
+    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    operation.completionBlock = ^{
+        if ([operation hasAcceptableStatusCode]) {            
+            success(operation);            
+        } else {
+            if (failed) {
+                failed(operation.error);
+            }
+            NSLog(@"Error: %@, %@", operation.error, operation.responseString);
+        }
+        
+        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
+    };
+    
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    [queue addOperation:operation]; 
+    [queue release];
+}
+
 - (id)getPathSync:(NSString*)path {
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];    
     NSString* dataUrl = [NSString stringWithFormat:@"%@%@", self.baseURL, path];
