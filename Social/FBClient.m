@@ -85,12 +85,12 @@ static Facebook* currentFacebook;
 #pragma mark - FBRequestDelegate
 
 - (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response {
-    [TTAlert composeAlertViewWithTitle:@"" andMessage:@"Ссылка успешно добавлена"];
+    [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"Ссылка успешно добавлена", nil)];
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
-    [TTAlert composeAlertViewWithTitle:@"" andMessage:@"К сожалению произошла ошибка"];
+    [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"К сожалению произошла ошибка", nil)];
     NSLog(@"Error %@", error);
     [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
 }

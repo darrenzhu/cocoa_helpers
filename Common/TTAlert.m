@@ -14,7 +14,11 @@
                        andMessage:(NSString*)message
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil, nil] autorelease];
+        UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:title 
+                                                         message:message 
+                                                        delegate:nil 
+                                               cancelButtonTitle:NSLocalizedString(@"Ok", nil)
+                                               otherButtonTitles:nil] autorelease];
         [alert performSelectorOnMainThread:@selector(show) withObject:nil waitUntilDone:NO];
     });
 }

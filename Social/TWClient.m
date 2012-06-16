@@ -316,9 +316,9 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     [self signRequest:request withBody:body];
     
     [ORHTTPClient processRequest:request success:^(AFHTTPRequestOperation *operation) {        
-        [TTAlert composeAlertViewWithTitle:@"" andMessage:@"Ссылка успешно добавлена"];       
+        [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"Ссылка успешно добавлена", nil)];
     } failed:^(NSError *error) {
-        [TTAlert composeAlertViewWithTitle:@"" andMessage:@"К сожалению произошла ошибка"];
+        [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"К сожалению произошла ошибка", nil)];
     }];
 }
 
