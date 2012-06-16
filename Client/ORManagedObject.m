@@ -198,7 +198,7 @@
         if (responseObject) {
             NSArray* items = [responseObject valueForKeyPath:@"data"]; //TODO: decide how to select path
             
-            if ([items isKindOfClass:NSArray.class] && items.count > 0) {  
+            if ([items isKindOfClass:NSArray.class]) {  
                 
                 dispatch_async([self jsonQueue], ^{
                     [self formatJson:items success:success];
