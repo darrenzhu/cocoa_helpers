@@ -8,8 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#import "AFNetworkActivityIndicatorManager.h"
-
 @protocol SNClientDelegate;
 @interface SNClient : NSObject <UIWebViewDelegate> {
     NSString* _accessToken;

@@ -52,7 +52,6 @@ static NSString* shareLinkMethodUrl = @"https://api.vk.com/method/wall.post?atta
     NSURL* url = [NSURL URLWithString:urlString];    
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
     
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     AFJSONRequestOperation* operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         
         if ([JSON valueForKeyPath:@"response"]) {            
@@ -63,12 +62,9 @@ static NSString* shareLinkMethodUrl = @"https://api.vk.com/method/wall.post?atta
             NSLog(@"response %@", JSON);
         }
         
-        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
-        
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {        
         [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"К сожалению произошла ошибка", nil)];
         NSLog(@"Error %@", error);
-        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
     }];
     
     [operation start];

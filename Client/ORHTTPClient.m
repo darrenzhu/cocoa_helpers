@@ -8,15 +8,12 @@
 
 #import "ORHTTPClient.h"
 
-#import "AFNetworkActivityIndicatorManager.h"
-
 @implementation ORHTTPClient
 
 + (void)processRequest:(NSURLRequest*)request 
                success:(void (^)(AFHTTPRequestOperation* operation))success
                 failed:(void (^)(NSError* error))failed {
     
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.completionBlock = ^{
         if ([operation hasAcceptableStatusCode]) {            
@@ -27,8 +24,6 @@
             }
             NSLog(@"Error: %@, %@", operation.error, operation.responseString);
         }
-        
-        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
     };
     
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
@@ -37,13 +32,17 @@
 }
 
 - (id)getPathSync:(NSString*)path {
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    });
     NSString* dataUrl = [NSString stringWithFormat:@"%@%@", self.baseURL, path];
     NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:dataUrl]];
     NSData* responseData = [NSURLConnection sendSynchronousRequest:request 
                                                  returningResponse:nil 
                                                              error:nil];
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    });
     return [NSString stringWithUTF8String:responseData.bytes];
 }
 
@@ -51,12 +50,9 @@
       parameters:(NSDictionary *)parameters 
          success:(void (^)(AFHTTPRequestOperation *, id))success 
          failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure {
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     [super postPath:path parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
         success(operation, responseObject);        
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
         failure(operation, error);        
     }];
 }
@@ -65,13 +61,9 @@
      parameters:(NSDictionary *)parameters 
         success:(void (^)(AFHTTPRequestOperation *, id))success 
         failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure {
-    
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
     [super getPath:path parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
         success(operation, responseObject);
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
         failure(operation, error);
     }];
 }

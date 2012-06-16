@@ -52,7 +52,7 @@ static Facebook* currentFacebook;
     [params setObject:message forKey:@"message"];
     
     [_facebook requestWithGraphPath:@"me/links" andParams:params andHttpMethod:@"POST"  andDelegate:self]; 
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 }
 
 #pragma mark - FBSessionDelegate
@@ -86,13 +86,13 @@ static Facebook* currentFacebook;
 
 - (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response {
     [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"Ссылка успешно добавлена", nil)];
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
     [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"К сожалению произошла ошибка", nil)];
     NSLog(@"Error %@", error);
-    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
+    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
 @end
