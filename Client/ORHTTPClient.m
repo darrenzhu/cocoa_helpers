@@ -47,6 +47,20 @@
     return [NSString stringWithUTF8String:responseData.bytes];
 }
 
+- (void)postPath:(NSString *)path 
+      parameters:(NSDictionary *)parameters 
+         success:(void (^)(AFHTTPRequestOperation *, id))success 
+         failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure {
+    [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:YES];
+    [super postPath:path parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
+        success(operation, responseObject);        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        [[AFNetworkActivityIndicatorManager sharedManager] setEnabled:NO];
+        failure(operation, error);        
+    }];
+}
+
 - (void)getPath:(NSString *)path 
      parameters:(NSDictionary *)parameters 
         success:(void (^)(AFHTTPRequestOperation *, id))success 
