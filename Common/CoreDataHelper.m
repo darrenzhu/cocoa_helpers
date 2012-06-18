@@ -56,6 +56,10 @@ static NSString* scheme = @"DataModel";
     static NSPersistentStoreCoordinator *_persistentStoreCoordinator;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:                                 
+                                 [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,                                 
+                                 [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+        
         NSString* appPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
         appPath = [appPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite", scheme]];            
         NSError *error = nil;
@@ -72,7 +76,7 @@ static NSString* scheme = @"DataModel";
         if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType 
                                                       configuration:nil 
                                                                 URL:storeURL 
-                                                            options:nil 
+                                                            options:options 
                                                               error:&error])
 #endif                            
         {
