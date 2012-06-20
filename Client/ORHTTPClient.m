@@ -46,26 +46,4 @@
     return [NSString stringWithUTF8String:responseData.bytes];
 }
 
-- (void)postPath:(NSString *)path 
-      parameters:(NSDictionary *)parameters 
-         success:(void (^)(AFHTTPRequestOperation *, id))success 
-         failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure {
-    [super postPath:path parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        success(operation, responseObject);        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        failure(operation, error);        
-    }];
-}
-
-- (void)getPath:(NSString *)path 
-     parameters:(NSDictionary *)parameters 
-        success:(void (^)(AFHTTPRequestOperation *, id))success 
-        failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure {
-    [super getPath:path parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        success(operation, responseObject);
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        failure(operation, error);
-    }];
-}
-
 @end

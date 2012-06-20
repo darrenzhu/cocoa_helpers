@@ -9,8 +9,6 @@
 #import "TestHelpers.h"
 #import "CoreDataHelper.h"
 
-#import "CCNewsClient.h"
-
 @implementation AsyncTestConditon
 @synthesize trigger;
 
@@ -116,7 +114,7 @@
     void (^theBlock)(NSInvocation *) = ^(NSInvocation *invocation) {        
         success(nil, [TestHelpers JSONhandshakeFromTXTFileName:handshakeFile]);
     };                
-    
+        
     [[[clientMock stub] andDo:theBlock] getPath:path 
                                      parameters:params
                                         success:[OCMArg checkWithBlock:checkBlock] 

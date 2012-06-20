@@ -216,8 +216,7 @@
 + (NSFetchRequest*)all:(NSManagedObjectContext*)context {
     NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
                                                                   withPredicate:nil 
-                                                          andSortingDescriptors:nil
-                                                         inManagedObjectContext:context];
+                                                          andSortingDescriptors:nil];
     
     return fetchRequest;
 }
@@ -225,8 +224,7 @@
 + (NSFetchRequest*)find:(NSManagedObjectContext*)context itemId:(id)itemId {
     NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
                                                                   withPredicate:[NSPredicate predicateWithFormat:@"id = %@", itemId] 
-                                                          andSortingDescriptors:nil
-                                                         inManagedObjectContext:context];
+                                                          andSortingDescriptors:nil];
     
     return fetchRequest;
 }
@@ -234,8 +232,7 @@
 + (NSFetchRequest*)where:(NSManagedObjectContext*)context wherePredicate:(NSPredicate*)wherePredicate {
     NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
                                                                   withPredicate:wherePredicate 
-                                                          andSortingDescriptors:nil
-                                                         inManagedObjectContext:context];
+                                                          andSortingDescriptors:nil];
     
     return fetchRequest;
 }

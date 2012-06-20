@@ -31,7 +31,6 @@
 
 + (NSFetchRequest*)requestEntityWithDesctiption:(NSEntityDescription*)entityDescription 
                                   withPredicate:(NSPredicate*)predicate
-                          andSortingDescriptors:(NSArray*)sortingDescriptors
-                         inManagedObjectContext:(NSManagedObjectContext*)context;
+                          andSortingDescriptors:(NSArray*)sortingDescriptors;
 
 @end

@@ -69,7 +69,7 @@ static NSString* scheme = @"DataModel";
         if (![_persistentStoreCoordinator addPersistentStoreWithType: NSInMemoryStoreType
                                                       configuration: nil
                                                                 URL: nil
-                                                            options: nil 
+                                                            options: options 
                                                               error: &error])
 #else
             NSURL *storeURL = [NSURL fileURLWithPath:appPath isDirectory:NO];            
@@ -212,8 +212,7 @@ static NSString* scheme = @"DataModel";
 
 + (NSFetchRequest*)requestEntityWithDesctiption:(NSEntityDescription*)entityDescription 
                            withPredicate:(NSPredicate*)predicate
-                   andSortingDescriptors:(NSArray*)sortingDescriptors
-                  inManagedObjectContext:(NSManagedObjectContext*)context {
+                   andSortingDescriptors:(NSArray*)sortingDescriptors {
     
     NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];        
     [fetchRequest setEntity:entityDescription]; 
