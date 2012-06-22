@@ -76,26 +76,24 @@
         objc_property_t *properties = class_copyPropertyList([self class], &outCount);        
         
         for(int i = 0; i < outCount; i++) {
-            objc_property_t property = properties[i];
-            
-            NSString* propertyName = [NSString stringWithCString:property_getName(property) encoding:NSUTF8StringEncoding];
-            
-            NSString* propertyAtr = [NSString stringWithCString:property_getAttributes(property) encoding:NSUTF8StringEncoding];
-            
+            objc_property_t property = properties[i];            
+            NSString* propertyName = [NSString stringWithCString:property_getName(property) encoding:NSUTF8StringEncoding];            
             id jsonValue = [json valueForKeyPath:propertyName];
+            if (jsonValue == [NSNull null] || jsonValue == nil) {
+                continue;
+            }            
             
+            NSString* propertyAtr = [NSString stringWithCString:property_getAttributes(property) encoding:NSUTF8StringEncoding];                                    
             NSArray * attributes = [propertyAtr componentsSeparatedByString:@","];
             NSString * typeAttribute = [attributes objectAtIndex:0];
             NSString * propertyType = [typeAttribute substringFromIndex:2];
             propertyType = [propertyType stringByReplacingOccurrencesOfString:@"\"" withString:@""];
             
-            if (jsonValue != [NSNull null] && jsonValue != nil) {
-                if ([propertyAtr rangeOfString:@"NSDate"].location != NSNotFound) {                      
-                    [self setValue:[[self dateFormatter] dateFromString:jsonValue] forKey:propertyName];                                       
-                }
-                else if ([jsonValue isKindOfClass:NSClassFromString(propertyType)]) {
-                    [self setValue:jsonValue forKey:propertyName];   
-                }
+            if ([propertyAtr rangeOfString:@"NSDate"].location != NSNotFound) {                      
+                [self setValue:[[self dateFormatter] dateFromString:jsonValue] forKey:propertyName];                                       
+            }
+            else if ([jsonValue isKindOfClass:NSClassFromString(propertyType)]) {
+                [self setValue:jsonValue forKey:propertyName];   
             }
         }
         
@@ -122,32 +120,35 @@
     return self;    
 }
 
-+ (ORManagedObject*)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext*)context {
-    
-    NSNumber* curId = [json valueForKeyPath:@"id"];
-    
-    if (curId != nil) {
-        NSFetchRequest *fetchRequest = [self find:context itemId:curId];
-        ORManagedObject* entity = [CoreDataHelper requestFirstResult:fetchRequest managedObjectContext:context];
-        
-        if (entity ) {
-            [entity updateFromJSON:json];  
-            [entity didFinishedFetchJSON:json inManagedContext:context];
-            return entity;
-        }
-    }
-    
++ (ORManagedObject*)create:(id)json inManagedObjectContext:(NSManagedObjectContext*)context {    
     Class class = NSClassFromString([self enityDescriptionInContext:context].managedObjectClassName);
     
     if (class) {
         ORManagedObject* entity = [[[class alloc] initFromJSON:json 
                                                     withEntity:[self enityDescriptionInContext:context] 
                                         inManagedObjectContext:context] autorelease]; 
-        [entity didFinishedFetchJSON:json inManagedContext:context];        
+        [entity didFinishedFetchJSON:json inManagedContext:context]; 
         return entity;
     }
     
     return nil;
+}
+
++ (ORManagedObject*)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext*)context {
+    NSNumber* curId = [json valueForKeyPath:@"id"];    
+    
+    if (curId != nil) {
+        NSFetchRequest *fetchRequest = [self find:context itemId:curId];
+        ORManagedObject* entity = [CoreDataHelper requestFirstResult:fetchRequest managedObjectContext:context];
+        
+        if (entity) {
+            [entity updateFromJSON:json];  
+            [entity didFinishedFetchJSON:json inManagedContext:context];
+            return entity;
+        }
+    }
+    
+    return [self create:json inManagedObjectContext:context];    
 }
 
 #pragma mark - Private
@@ -160,19 +161,23 @@
 
 + (void)formatJson:(NSArray*)items 
            success:(void (^)(NSArray* entities))success {    
-    
+
     NSManagedObjectContext* context = [[CoreDataHelper createManagedObjectContext] retain];
     [CoreDataHelper addMergeNotificationForMainContext:context];
     NSMutableArray* result = [NSMutableArray array];        
     
+    NSArray* currentData = [CoreDataHelper requestResult:[self all:context] 
+                                    managedObjectContext:context];
     for (id jsonString in items) {                                
         
-        ORManagedObject* entity = [self createOrUpdate:jsonString inManagedObjectContext:context];                            
+        ORManagedObject* entity = (currentData && currentData.count == 0) ? 
+            [self create:jsonString inManagedObjectContext:context] : 
+            [self createOrUpdate:jsonString inManagedObjectContext:context];
         [result addObject:entity];                     
     }     
-    
+
     [CoreDataHelper save:context];            
-    
+
     dispatch_async(dispatch_get_main_queue(), ^{ 
         NSMutableArray* resultInMainThread = [NSMutableArray array];
         for (ORManagedObject* entity in result) {
