@@ -127,7 +127,6 @@
         ORManagedObject* entity = [[[class alloc] initFromJSON:json 
                                                     withEntity:[self enityDescriptionInContext:context] 
                                         inManagedObjectContext:context] autorelease]; 
-        [entity didFinishedFetchJSON:json inManagedContext:context]; 
         return entity;
     }
     
@@ -143,7 +142,6 @@
         
         if (entity) {
             [entity updateFromJSON:json];  
-            [entity didFinishedFetchJSON:json inManagedContext:context];
             return entity;
         }
     }
@@ -156,8 +154,6 @@
 }
 
 #pragma mark - Private
-
-- (void)didFinishedFetchJSON:(id)json inManagedContext:(NSManagedObjectContext *)context {}
 
 + (void)formatJson:(NSArray*)items 
            success:(void (^)(NSArray* entities))success {    

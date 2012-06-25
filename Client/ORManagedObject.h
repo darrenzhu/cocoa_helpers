@@ -40,6 +40,4 @@
 @end
 
 @interface ORManagedObject (Pivate)
-- (void)didFinishedFetchJSON:(id)json 
-            inManagedContext:(NSManagedObjectContext*)context;
 @end
