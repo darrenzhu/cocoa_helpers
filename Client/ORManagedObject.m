@@ -151,13 +151,13 @@
     return [self create:json inManagedObjectContext:context];    
 }
 
-#pragma mark - Private
-
-- (void)didFinishedFetchJSON:(id)json inManagedContext:(NSManagedObjectContext *)context {}
-
 + (NSEntityDescription*)enityDescriptionInContext:(NSManagedObjectContext*)context {
     return [NSEntityDescription entityForName:NSStringFromClass(self.class) inManagedObjectContext:context];
 }
+
+#pragma mark - Private
+
+- (void)didFinishedFetchJSON:(id)json inManagedContext:(NSManagedObjectContext *)context {}
 
 + (void)formatJson:(NSArray*)items 
            success:(void (^)(NSArray* entities))success {    

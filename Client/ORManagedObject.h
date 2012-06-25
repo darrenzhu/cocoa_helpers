@@ -25,6 +25,7 @@
 - (NSString*)toJSONString;
 
 + (ORManagedObject*)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext*)context;
++ (NSEntityDescription*)enityDescriptionInContext:(NSManagedObjectContext*)context;
 
 + (void)fetchWithClient:(ORHTTPClient*)client
                    path:(NSString *)path 
