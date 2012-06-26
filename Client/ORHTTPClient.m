@@ -7,6 +7,7 @@
 //
 
 #import "ORHTTPClient.h"
+#import "AFNetworkActivityIndicatorManager.h"
 
 @implementation ORHTTPClient
 
@@ -32,17 +33,13 @@
 }
 
 - (id)getPathSync:(NSString*)path {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-    });
+    [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
     NSString* dataUrl = [NSString stringWithFormat:@"%@%@", self.baseURL, path];
     NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:dataUrl]];
     NSData* responseData = [NSURLConnection sendSynchronousRequest:request 
                                                  returningResponse:nil 
                                                              error:nil];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-    });
+    [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
     return [NSString stringWithUTF8String:responseData.bytes];
 }
 
