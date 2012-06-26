@@ -32,6 +32,12 @@
              parameters:(NSDictionary *)parameters                
                 success:(void (^)(NSArray* entities))success 
                 failure:(void (^)(NSError *error))failure;
++ (void)fetchWithClient:(ORHTTPClient*)client
+                   path:(NSString *)path 
+             parameters:(NSDictionary *)parameters  
+           jsonResponse:(void (^)(id json))jsonResponse
+                success:(void (^)(NSArray* entities))success 
+                failure:(void (^)(NSError *error))failure;
 
 + (NSFetchRequest*)all:(NSManagedObjectContext*)context;
 + (NSFetchRequest*)find:(NSManagedObjectContext*)context itemId:(id)itemId;

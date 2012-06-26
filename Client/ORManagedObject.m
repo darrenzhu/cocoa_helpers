@@ -190,20 +190,40 @@
 
 + (void)fetchWithClient:(ORHTTPClient*)client
                    path:(NSString *)path 
-             parameters:(NSDictionary *)parameters                
+             parameters:(NSDictionary *)parameters  
+                success:(void (^)(NSArray* entities))success 
+                failure:(void (^)(NSError *error))failure {
+    [self fetchWithClient:client 
+                     path:path 
+               parameters:parameters 
+             jsonResponse:nil 
+                  success:success 
+                  failure:failure];
+}
+
++ (void)fetchWithClient:(ORHTTPClient*)client
+                   path:(NSString *)path 
+             parameters:(NSDictionary *)parameters  
+           jsonResponse:(void (^)(id json))jsonResponse
                 success:(void (^)(NSArray* entities))success 
                 failure:(void (^)(NSError *error))failure {
     
     [client getPath:path parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
-        if (responseObject) {
-            NSArray* items = [responseObject valueForKeyPath:@"data"]; //TODO: decide how to select path
+        if (responseObject) { 
+            if (jsonResponse) {
+                jsonResponse(responseObject);
+            }
             
-            if ([items isKindOfClass:NSArray.class]) {  
+            if (success) {
+                NSArray* items = [responseObject valueForKeyPath:@"data"]; //TODO: decide how to select path
                 
-                dispatch_async([self jsonQueue], ^{
-                    [self formatJson:items success:success];
-                });                
+                if ([items isKindOfClass:NSArray.class]) {  
+                    
+                    dispatch_async([self jsonQueue], ^{
+                        [self formatJson:items success:success];
+                    });                
+                }
             }
         }
         
