@@ -40,7 +40,9 @@
 @interface TestHelpers : NSObject
 
 + (NSString*)handshakeFromTXTFileName:(NSString*)fileName;
++ (NSString*)handshakeFromJSONFileName:(NSString*)fileName;
 + (id)JSONhandshakeFromTXTFileName:(NSString*)fileName;
++ (id)JSONhandshakeFromJSONFileName:(NSString*)fileName;
 + (void)makeAsyncLoopWithInterval:(NSTimeInterval)interval;
 + (void)stubGetPath:(NSString*)path 
       forClientMock:(id)clientMock

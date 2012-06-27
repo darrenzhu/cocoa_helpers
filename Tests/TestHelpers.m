@@ -87,8 +87,18 @@
     return [NSString stringWithContentsOfFile:modelPath encoding:NSUTF8StringEncoding error:nil];
 }
 
++ (NSString*)handshakeFromJSONFileName:(NSString*)fileName {
+    NSString *modelPath = [[NSBundle bundleForClass:[self class]] pathForResource:fileName ofType:@"json"];
+    return [NSString stringWithContentsOfFile:modelPath encoding:NSUTF8StringEncoding error:nil];
+}
+
 + (id)JSONhandshakeFromTXTFileName:(NSString*)fileName {
     NSString *modelPath = [[NSBundle bundleForClass:[self class]] pathForResource:fileName ofType:@"txt"];
+    return [[NSString stringWithContentsOfFile:modelPath encoding:NSUTF8StringEncoding error:nil] objectFromJSONString];
+}
+
++ (id)JSONhandshakeFromJSONFileName:(NSString*)fileName {
+    NSString *modelPath = [[NSBundle bundleForClass:[self class]] pathForResource:fileName ofType:@"json"];
     return [[NSString stringWithContentsOfFile:modelPath encoding:NSUTF8StringEncoding error:nil] objectFromJSONString];
 }
 
@@ -111,8 +121,22 @@
         return YES;
     } copy];
     
-    void (^theBlock)(NSInvocation *) = ^(NSInvocation *invocation) {        
-        success(nil, [TestHelpers JSONhandshakeFromTXTFileName:handshakeFile]);
+    void (^theBlock)(NSInvocation *) = ^(NSInvocation *invocation) {     
+        NSRange dotRange = [handshakeFile rangeOfString:@"."];
+        if (dotRange.location != NSNotFound) {
+            NSString* extension = [handshakeFile substringWithRange:NSMakeRange(dotRange.location + 1, 
+                                                                                handshakeFile.length - dotRange.location - 1)];
+            NSString* name = [handshakeFile substringWithRange:NSMakeRange(0, dotRange.location)];
+            if (extension == @"json") {
+                success(nil, [TestHelpers JSONhandshakeFromJSONFileName:name]);
+            }
+            else {
+                success(nil, [TestHelpers JSONhandshakeFromJSONFileName:name]);
+            }
+        }
+        else {
+            success(nil, [TestHelpers JSONhandshakeFromTXTFileName:handshakeFile]);
+        }        
     };                
         
     [[[clientMock stub] andDo:theBlock] getPath:path 
