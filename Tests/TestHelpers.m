@@ -9,6 +9,9 @@
 #import "TestHelpers.h"
 #import "CoreDataHelper.h"
 
+#import "AFJSONRequestOperation.h"
+#import <objc/runtime.h>
+
 @implementation AsyncTestConditon
 @synthesize trigger;
 
@@ -108,6 +111,48 @@
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
                                  beforeDate:loopUntil];
     }  
+}
+
++ (void)stubEnqueueBatchOfHTTPRequestOperationsforClientMock:(id)clientMock
+                                           withHandshakeDict:(NSDictionary*)JSONhandshakeDict {
+    
+    __block NSArray* operations;
+    __block void (^finishBlock)(NSArray* operations);
+    BOOL (^operationsCheckBlock)(id value) = [^BOOL(id value) {
+        operations = [value copy]; 
+        return YES;
+    } copy];
+    
+    BOOL (^checkBlock)(id value) = [^BOOL(id value) {
+        
+        for (AFHTTPRequestOperation* operation in operations) {
+            NSString* jsonFileName = [JSONhandshakeDict objectForKey:operation.request.URL.absoluteString];
+            if (jsonFileName) {
+                id json = [[TestHelpers JSONhandshakeFromJSONFileName:jsonFileName] retain];
+                object_setInstanceVariable(operation, "_responseJSON", json);
+                
+                void (^completionBlock)() = [operation completionBlock];
+                completionBlock();
+            }
+        }
+
+        finishBlock = [value copy];
+        
+        double delayInSeconds = 0.1;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_current_queue(), ^(void){
+            finishBlock(operations);
+            [operations release];
+            [finishBlock release];
+            [operationsCheckBlock release];
+        });
+        
+        return YES;
+    } copy];        
+    
+    [[clientMock stub] enqueueBatchOfHTTPRequestOperations:[OCMArg checkWithBlock:operationsCheckBlock] 
+                                             progressBlock:[OCMArg any] 
+                                           completionBlock:[OCMArg checkWithBlock:checkBlock]];    
 }
 
 + (void)stubGetPath:(NSString*)path 

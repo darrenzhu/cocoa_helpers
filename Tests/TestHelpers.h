@@ -44,6 +44,8 @@
 + (id)JSONhandshakeFromTXTFileName:(NSString*)fileName;
 + (id)JSONhandshakeFromJSONFileName:(NSString*)fileName;
 + (void)makeAsyncLoopWithInterval:(NSTimeInterval)interval;
++ (void)stubEnqueueBatchOfHTTPRequestOperationsforClientMock:(id)clientMock
+                                           withHandshakeDict:(NSDictionary*)JSONhandshakeDict;
 + (void)stubGetPath:(NSString*)path 
       forClientMock:(id)clientMock
           andParams:(NSDictionary*)params 
