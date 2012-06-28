@@ -17,6 +17,7 @@
 
 @property(nonatomic, strong) NSDate* syncDate;
 
+- (id)initFromJSON:(id)json inManagedObjectContext:(NSManagedObjectContext*)context;
 - (id)initFromJSON:(id)json withEntity:(NSEntityDescription*)entityDescription inManagedObjectContext:(NSManagedObjectContext*)context;
 
 - (NSDateFormatter *)dateFormatter;

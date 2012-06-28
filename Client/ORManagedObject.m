@@ -113,9 +113,20 @@
 #pragma mark - Constructors
 
 - (id)initFromJSON:(id)json withEntity:(NSEntityDescription*)entityDescription inManagedObjectContext:(NSManagedObjectContext*)context {
-    self = [super initWithEntity:entityDescription insertIntoManagedObjectContext:context];
+    self = [super initWithEntity:[NSEntityDescription entityForName:NSStringFromClass(self.class) inManagedObjectContext:context]
+  insertIntoManagedObjectContext:context];
+    
     if (self) {
         [self updateFromJSON:json];
+    }
+    return self;    
+}
+
+- (id)initFromJSON:(id)json inManagedObjectContext:(NSManagedObjectContext*)context {
+    self = [self initFromJSON:json withEntity:nil inManagedObjectContext:context];
+    
+    if (self) {
+        
     }
     return self;    
 }
