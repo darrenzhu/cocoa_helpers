@@ -15,6 +15,5 @@
 + (void)processRequest:(NSURLRequest*)request 
                success:(void (^)(AFHTTPRequestOperation* operation))success
                 failed:(void (^)(NSError* error))failed;
-- (id)getPathSync:(NSString*)path;
 
 @end

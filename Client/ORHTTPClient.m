@@ -32,15 +32,4 @@
     [queue release];
 }
 
-- (id)getPathSync:(NSString*)path {
-    [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
-    NSString* dataUrl = [NSString stringWithFormat:@"%@%@", self.baseURL, path];
-    NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:dataUrl]];
-    NSData* responseData = [NSURLConnection sendSynchronousRequest:request 
-                                                 returningResponse:nil 
-                                                             error:nil];
-    [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-    return [NSString stringWithUTF8String:responseData.bytes];
-}
-
 @end
