@@ -22,7 +22,7 @@ Pod::Spec.new do |s|
   s.subspec 'Tests' do |tests|
     tests.source_files = 'Tests'
     tests.framework    = 'SenTestingKit'
-    tests.xcconfig     = { 'FRAMEWORK_SEARCH_PATHS' => '"$(SDKROOT)/Developer/Library/Frameworks" "$(DEVELOPER_LIBRARY_DIR)/Frameworks"' }
+    tests.xcconfig     = { 'FRAMEWORK_SEARCH_PATHS' => '"$(SDKROOT)/Developer/Library/Frameworks" "$(DEVELOPER_LIBRARY_DIR)/Frameworks"', 'GCC_PREPROCESSOR_DEFINITIONS' => '"$(GCC_PREPROCESSOR_DEFINITIONS) OCUNIT=1"' }
     tests.dependency 'OCMock'
   end
 end
