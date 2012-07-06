@@ -28,12 +28,12 @@
 + (ORManagedObject*)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext*)context;
 + (NSEntityDescription*)enityDescriptionInContext:(NSManagedObjectContext*)context;
 
-+ (void)fetchWithClient:(ORHTTPClient*)client
++ (void)fetchWithClient:(AFHTTPClient*)client
                    path:(NSString *)path 
              parameters:(NSDictionary *)parameters                
                 success:(void (^)(NSArray* entities))success 
                 failure:(void (^)(NSError *error))failure;
-+ (void)fetchWithClient:(ORHTTPClient*)client
++ (void)fetchWithClient:(AFHTTPClient*)client
                    path:(NSString *)path 
              parameters:(NSDictionary *)parameters  
            jsonResponse:(void (^)(id json))jsonResponse
