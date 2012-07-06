@@ -70,8 +70,8 @@
 
 - (void)updateFromJSON:(id)json {
     
-    if (self) {
-        
+    if (self && json) {
+
         unsigned int outCount;
         objc_property_t *properties = class_copyPropertyList([self class], &outCount);        
         
@@ -166,6 +166,10 @@
 
 #pragma mark - Private
 
++ (NSString*)jsonRoot {
+    return @"data";
+}
+
 + (void)formatJson:(NSArray*)items 
            success:(void (^)(NSArray* entities))success {    
 
@@ -227,7 +231,10 @@
             }
             
             if (success) {
-                NSArray* items = [responseObject valueForKeyPath:@"data"]; //TODO: decide how to select path
+                NSArray* items = responseObject;
+                if ([self jsonRoot]) {
+                    items = [responseObject valueForKeyPath:[self jsonRoot]];
+                }
                 
                 if ([items isKindOfClass:NSArray.class]) {  
                     

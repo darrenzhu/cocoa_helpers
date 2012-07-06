@@ -47,4 +47,5 @@
 @end
 
 @interface ORManagedObject (Pivate)
++ (NSString*)jsonRoot;
 @end
