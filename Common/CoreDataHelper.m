@@ -164,12 +164,9 @@ static NSString* scheme = @"DataModel";
 }
 
 + (id)requestFirstResult:(NSFetchRequest*)request managedObjectContext:(NSManagedObjectContext*)managedObjectContext {
-    NSError* err = nil;
+    NSArray* result = [self requestResult:request managedObjectContext:managedObjectContext];
     
-    NSArray* result = [managedObjectContext executeFetchRequest:request error:&err];
-    
-    if (err || result.count == 0) {
-        NSLog(@"error occuried %@ or empty result", err);
+    if (result || result.count == 0) {
         return nil;
     }
     
