@@ -10,4 +10,15 @@
 
 @implementation NSDate (LocaleTime)
 
++ (NSDate*)localeTime {
+    return [[self date] toLocaleTime];
+}
+
+- (NSDate*)toLocaleTime {
+    NSTimeZone *tz = [NSTimeZone defaultTimeZone];
+    NSInteger seconds = [tz secondsFromGMTForDate:self];
+    NSDate* localeT = [NSDate dateWithTimeInterval:seconds sinceDate:self];
+    return localeT;
+}
+
 @end

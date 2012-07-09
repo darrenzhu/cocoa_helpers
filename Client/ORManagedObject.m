@@ -10,6 +10,7 @@
 #import <objc/runtime.h>
 
 #import "JSONKit.h"
+#import "NSDate+LocaleTime.h"
 
 @implementation ORManagedObject
 @dynamic syncDate;
@@ -25,13 +26,6 @@
     return _jsonQueue;
 }
 
-- (NSDate*)localeTime {
-    NSDate* dateNow = [NSDate date];
-    NSTimeZone *tz = [NSTimeZone defaultTimeZone];
-    NSInteger seconds = [tz secondsFromGMTForDate:dateNow];
-    dateNow = [NSDate dateWithTimeInterval:seconds sinceDate:dateNow];
-    return dateNow;
-}
 
 - (NSDateFormatter *)dateFormatter {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
@@ -103,7 +97,7 @@
         }
         
         if ([self respondsToSelector:@selector(setSyncDate:)]) {
-            self.syncDate = [self localeTime];
+            self.syncDate = [NSDate localeTime];
         }
         
         free(properties);    

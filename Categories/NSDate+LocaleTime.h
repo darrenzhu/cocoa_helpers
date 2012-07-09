@@ -10,4 +10,7 @@
 
 @interface NSDate (LocaleTime)
 
++ (NSDate*)localeTime;
+- (NSDate*)toLocaleTime;
+
 @end
