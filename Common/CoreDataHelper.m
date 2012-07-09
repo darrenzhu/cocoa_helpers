@@ -207,8 +207,8 @@ static NSString* scheme = @"DataModel";
                                   withPredicate:(NSPredicate*)predicate
                           andSortingDescriptors:(NSArray*)sortingDescriptors {
     
-    NSFetchRequest *fetchRequest = [self requestEntityWithPredicate:predicate 
-                                              andSortingDescriptors:sortingDescriptors];
+    NSFetchRequest *fetchRequest = [self requestWithPredicate:predicate 
+                                        andSortingDescriptors:sortingDescriptors];
     [fetchRequest setEntity:entityDescription];     
     return fetchRequest;
 }
