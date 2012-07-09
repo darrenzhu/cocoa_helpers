@@ -156,7 +156,7 @@ static NSString* scheme = @"DataModel";
     NSArray* result = [managedObjectContext executeFetchRequest:request error:&err];
     
     if (err) {
-        //NSLog(@"error occuried %@", err);
+        NSLog(@"error occuried %@", err);
         return nil;
     }
     
@@ -169,7 +169,7 @@ static NSString* scheme = @"DataModel";
     NSArray* result = [managedObjectContext executeFetchRequest:request error:&err];
     
     if (err || result.count == 0) {
-        //NSLog(@"error occuried %@ or empty result", err);
+        NSLog(@"error occuried %@ or empty result", err);
         return nil;
     }
     
@@ -196,23 +196,16 @@ static NSString* scheme = @"DataModel";
                    andSortingDescriptors:(NSArray*)sortingDescriptors
                   inManagedObjectContext:(NSManagedObjectContext*)context {
     
-    NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
-    
     NSEntityDescription* entityDesc = [NSEntityDescription entityForName:entityName inManagedObjectContext:context];
-    [fetchRequest setEntity:entityDesc]; 
-    
-    if (predicate)
-        [fetchRequest setPredicate:predicate];
-    
-    if (sortingDescriptors)
-        [fetchRequest setSortDescriptors:sortingDescriptors];
-    
-    return fetchRequest;
+
+    return [self requestEntityWithDesctiption:entityDesc 
+                                withPredicate:predicate 
+                        andSortingDescriptors:sortingDescriptors];
 }
 
 + (NSFetchRequest*)requestEntityWithDesctiption:(NSEntityDescription*)entityDescription 
-                           withPredicate:(NSPredicate*)predicate
-                   andSortingDescriptors:(NSArray*)sortingDescriptors {
+                                  withPredicate:(NSPredicate*)predicate
+                          andSortingDescriptors:(NSArray*)sortingDescriptors {
     
     NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];        
     [fetchRequest setEntity:entityDescription]; 
