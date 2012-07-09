@@ -292,4 +292,14 @@
                     managedObjectContext:managedObjectContext];
 }
 
++ (id)requestFirstResult:(NSFetchRequest*)request managedObjectContext:(NSManagedObjectContext*)managedObjectContext {
+    NSArray* result = [self requestResult:request managedObjectContext:managedObjectContext];
+    
+    if (result && result.count == 0) {
+        return nil;
+    }
+    
+    return [result objectAtIndex:0];
+}
+
 @end

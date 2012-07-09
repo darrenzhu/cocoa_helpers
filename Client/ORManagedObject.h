@@ -55,6 +55,8 @@
 + (NSFetchRequest*)where:(NSPredicate*)wherePredicate;
 + (NSArray*)requestResult:(NSFetchRequest*)request 
      managedObjectContext:(NSManagedObjectContext*)managedObjectContext;
++ (id)requestFirstResult:(NSFetchRequest*)request 
+    managedObjectContext:(NSManagedObjectContext*)managedObjectContext;
 
 @end
 
