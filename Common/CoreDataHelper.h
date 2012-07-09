@@ -33,4 +33,7 @@
                                   withPredicate:(NSPredicate*)predicate
                           andSortingDescriptors:(NSArray*)sortingDescriptors;
 
++ (NSFetchRequest*)requestWithPredicate:(NSPredicate*)predicate
+                  andSortingDescriptors:(NSArray*)sortingDescriptors;
+
 @end
