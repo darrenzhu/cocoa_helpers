@@ -17,16 +17,20 @@
 
 @property(nonatomic, strong) NSDate* syncDate;
 
+#pragma mark - Initialization
+
 - (id)initFromJSON:(id)json inManagedObjectContext:(NSManagedObjectContext*)context;
 - (id)initFromJSON:(id)json withEntity:(NSEntityDescription*)entityDescription inManagedObjectContext:(NSManagedObjectContext*)context;
 
-- (NSDateFormatter *)dateFormatter;
++ (ORManagedObject*)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext*)context;
++ (NSEntityDescription*)enityDescriptionInContext:(NSManagedObjectContext*)context;
+
+#pragma mark - JSON serializaiton
 
 - (void)updateFromJSON:(id)json;
 - (NSString*)toJSONString;
 
-+ (ORManagedObject*)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext*)context;
-+ (NSEntityDescription*)enityDescriptionInContext:(NSManagedObjectContext*)context;
+#pragma mark - Remote fetch
 
 + (void)fetchWithClient:(AFHTTPClient*)client
                    path:(NSString *)path 
@@ -40,12 +44,21 @@
                 success:(void (^)(NSArray* entities))success 
                 failure:(void (^)(NSError *error))failure;
 
+#pragma mark - Local fetch (old syntax)
 + (NSFetchRequest*)all:(NSManagedObjectContext*)context;
 + (NSFetchRequest*)find:(NSManagedObjectContext*)context itemId:(id)itemId;
 + (NSFetchRequest*)where:(NSManagedObjectContext*)context wherePredicate:(NSPredicate*)wherePredicate;
 
+#pragma mark - Local fetch (new syntax)
++ (NSFetchRequest*)all;
++ (NSFetchRequest*)find:(id)itemId;
++ (NSFetchRequest*)where:(NSPredicate*)wherePredicate;
++ (NSArray*)requestResult:(NSFetchRequest*)request 
+     managedObjectContext:(NSManagedObjectContext*)managedObjectContext;
+
 @end
 
 @interface ORManagedObject (Pivate)
+- (NSDateFormatter *)dateFormatter;
 + (NSString*)jsonRoot;
 @end

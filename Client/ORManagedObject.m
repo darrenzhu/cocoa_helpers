@@ -26,7 +26,6 @@
     return _jsonQueue;
 }
 
-
 - (NSDateFormatter *)dateFormatter {
     @throw [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
@@ -244,7 +243,7 @@
     }];
 }
 
-#pragma mark - Local fetch
+#pragma mark - Local fetch (old version)
 
 + (NSFetchRequest*)all:(NSManagedObjectContext*)context {
     NSFetchRequest *fetchRequest = [CoreDataHelper requestEntityWithDesctiption:[self enityDescriptionInContext:context] 
@@ -268,6 +267,29 @@
                                                           andSortingDescriptors:nil];
     
     return fetchRequest;
+}
+
+#pragma mark - Local fetch (new syntax)
+
++ (NSFetchRequest*)all {
+    return [CoreDataHelper requestWithPredicate:nil 
+                          andSortingDescriptors:nil];;
+}
+
++ (NSFetchRequest*)find:(id)itemId {
+    return [CoreDataHelper requestWithPredicate:[NSPredicate predicateWithFormat:@"id = %@", itemId]  
+                          andSortingDescriptors:nil];
+}
+
++ (NSFetchRequest*)where:(NSPredicate*)wherePredicate {
+    return [CoreDataHelper requestWithPredicate:wherePredicate
+                          andSortingDescriptors:nil];
+}
+
++ (NSArray*)requestResult:(NSFetchRequest*)request managedObjectContext:(NSManagedObjectContext*)managedObjectContext {
+    [request setEntity:[self enityDescriptionInContext:managedObjectContext]];
+    return [CoreDataHelper requestResult:request 
+                    managedObjectContext:managedObjectContext];
 }
 
 @end
