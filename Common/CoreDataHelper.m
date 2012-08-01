@@ -167,7 +167,7 @@ static NSString* scheme = @"DataModel";
     [request setFetchLimit:1];
     NSArray* result = [self requestResult:request managedObjectContext:managedObjectContext];
     
-    if (result || result.count == 0) {
+    if (!result || result.count == 0) {
         return nil;
     }
     
