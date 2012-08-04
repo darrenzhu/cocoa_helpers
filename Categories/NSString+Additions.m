@@ -45,7 +45,7 @@
 + (NSString*) uniqueString
 {
 	CFUUIDRef	uuidObj = CFUUIDCreate(nil);
-	NSString	*uuidString = (__bridge_transfer NSString*)CFUUIDCreateString(nil, uuidObj);
+	NSString	*uuidString = (NSString*)CFUUIDCreateString(nil, uuidObj);
 	CFRelease(uuidObj);
 	return [uuidString autorelease];
 }
@@ -53,12 +53,12 @@
 - (NSString*) urlEncodedString {
     
     CFStringRef encodedCFString = CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, 
-                                                                        (__bridge CFStringRef) self, 
+                                                                        (CFStringRef) self, 
                                                                         nil,
                                                                         CFSTR("?!@#$^&%*+,:;='\"`<>()[]{}/\\| "), 
                                                                         kCFStringEncodingUTF8);
     
-    NSString *encodedString = [[NSString alloc] initWithString:(__bridge_transfer NSString*) encodedCFString];    
+    NSString *encodedString = [[NSString alloc] initWithString:(NSString*) encodedCFString];    
     CFRelease(encodedCFString);
 
     if(!encodedString)
@@ -70,12 +70,12 @@
 - (NSString*) urlDecodedString {
 
     CFStringRef decodedCFString = CFURLCreateStringByReplacingPercentEscapesUsingEncoding(kCFAllocatorDefault, 
-                                                                                          (__bridge CFStringRef) self, 
+                                                                                          (CFStringRef) self, 
                                                                                           CFSTR(""),
                                                                                           kCFStringEncodingUTF8);
     
     // We need to replace "+" with " " because the CF method above doesn't do it
-    NSString *decodedString = [[[NSString alloc] initWithString:(__bridge_transfer NSString*) decodedCFString] autorelease];    
+    NSString *decodedString = [[[NSString alloc] initWithString:(NSString*) decodedCFString] autorelease];    
     CFRelease(decodedCFString);
     return (!decodedString) ? @"" : [decodedString stringByReplacingOccurrencesOfString:@"+" withString:@" "];
 }
