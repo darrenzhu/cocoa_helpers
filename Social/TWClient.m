@@ -153,7 +153,7 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
 
 - (void)signRequest:(NSMutableURLRequest *)request withBody:(NSMutableDictionary*)body {    
     // Generate timestamp and nonce values
-    [self setOAuthValue:[NSString stringWithFormat:@"%d", time(NULL)] forKey:@"oauth_timestamp"];
+    [self setOAuthValue:[NSString stringWithFormat:@"%ld", time(NULL)] forKey:@"oauth_timestamp"];
     [self setOAuthValue:[NSString uniqueString] forKey:@"oauth_nonce"];
     
     // Construct the signature base string
