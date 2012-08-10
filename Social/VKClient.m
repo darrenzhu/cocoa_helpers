@@ -18,7 +18,7 @@ static NSString* scope = @"wall";
 static NSString* accessTokenKey = @"VKAccessTokenKey";
 static NSString* expirationDateKey = @"VKExpirationDateKey";
 
-static NSString* shareLinkMethodUrl = @"https://api.vk.com/method/wall.post?attachments=%@i&access_token=%@&message=%@";
+static NSString* shareLinkMethodUrl = @"https://api.vk.com/method/wall.post?attachments=%@&access_token=%@&message=%@";
 
 @implementation VKClient
 
