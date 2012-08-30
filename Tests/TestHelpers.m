@@ -10,6 +10,7 @@
 #import "CoreDataHelper.h"
 
 #import "AFJSONRequestOperation.h"
+#import "AFHTTPClient.h"
 #import <objc/runtime.h>
 
 @implementation AsyncTestConditon
@@ -86,23 +87,27 @@
 @implementation TestHelpers
 
 + (NSString*)handshakeFromTXTFileName:(NSString*)fileName {
-    NSString *modelPath = [[NSBundle bundleForClass:[self class]] pathForResource:fileName ofType:@"txt"];
-    return [NSString stringWithContentsOfFile:modelPath encoding:NSUTF8StringEncoding error:nil];
+    NSString *modelPath = [[NSBundle bundleForClass:[self class]] pathForResource:fileName
+                                                                           ofType:@"txt"];
+    return [NSString stringWithContentsOfFile:modelPath
+                                     encoding:NSUTF8StringEncoding
+                                        error:nil];
 }
 
 + (NSString*)handshakeFromJSONFileName:(NSString*)fileName {
-    NSString *modelPath = [[NSBundle bundleForClass:[self class]] pathForResource:fileName ofType:@"json"];
-    return [NSString stringWithContentsOfFile:modelPath encoding:NSUTF8StringEncoding error:nil];
+    NSString *modelPath = [[NSBundle bundleForClass:[self class]] pathForResource:fileName
+                                                                           ofType:@"json"];
+    return [NSString stringWithContentsOfFile:modelPath
+                                     encoding:NSUTF8StringEncoding
+                                        error:nil];
 }
 
 + (id)JSONhandshakeFromTXTFileName:(NSString*)fileName {
-    NSString *modelPath = [[NSBundle bundleForClass:[self class]] pathForResource:fileName ofType:@"txt"];
-    return [[NSString stringWithContentsOfFile:modelPath encoding:NSUTF8StringEncoding error:nil] objectFromJSONString];
+    return [[self handshakeFromTXTFileName:fileName] objectFromJSONString];
 }
 
 + (id)JSONhandshakeFromJSONFileName:(NSString*)fileName {
-    NSString *modelPath = [[NSBundle bundleForClass:[self class]] pathForResource:fileName ofType:@"json"];
-    return [[NSString stringWithContentsOfFile:modelPath encoding:NSUTF8StringEncoding error:nil] objectFromJSONString];
+    return [[self handshakeFromJSONFileName:fileName] objectFromJSONString];
 }
 
 + (void)makeAsyncLoopWithInterval:(NSTimeInterval)interval {
@@ -126,7 +131,8 @@
     BOOL (^checkBlock)(id value) = [^BOOL(id value) {
         
         for (AFHTTPRequestOperation* operation in operations) {
-            NSString* jsonFileName = [JSONhandshakeDict objectForKey:operation.request.URL.absoluteString];
+            NSString* jsonFileName =
+                [JSONhandshakeDict objectForKey:operation.request.URL.absoluteString];
             if (jsonFileName) {
                 id json = [[TestHelpers JSONhandshakeFromJSONFileName:jsonFileName] retain];
                 object_setInstanceVariable(operation, "_responseJSON", json);
@@ -136,8 +142,7 @@
             }
         }
 
-        finishBlock = [value copy];
-        
+        finishBlock = [value copy];        
         double delayInSeconds = 0.1;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
         dispatch_after(popTime, dispatch_get_current_queue(), ^(void){
@@ -169,25 +174,23 @@
     void (^theBlock)(NSInvocation *) = ^(NSInvocation *invocation) {     
         NSRange dotRange = [handshakeFile rangeOfString:@"."];
         if (dotRange.location != NSNotFound) {
-            NSString* extension = [handshakeFile substringWithRange:NSMakeRange(dotRange.location + 1, 
-                                                                                handshakeFile.length - dotRange.location - 1)];
-            NSString* name = [handshakeFile substringWithRange:NSMakeRange(0, dotRange.location)];
-            if (extension == @"json") {
-                success(nil, [TestHelpers JSONhandshakeFromJSONFileName:name]);
-            }
-            else {
-                success(nil, [TestHelpers JSONhandshakeFromJSONFileName:name]);
-            }
+            NSRange nameRange = NSMakeRange(dotRange.location + 1,
+                                            handshakeFile.length - dotRange.location - 1);
+            NSString* extension = [handshakeFile substringWithRange:nameRange];
+            NSString* name =
+                [handshakeFile substringWithRange:NSMakeRange(0, dotRange.location)];
+            success(nil, [TestHelpers JSONhandshakeFromJSONFileName:name]);
         }
         else {
             success(nil, [TestHelpers JSONhandshakeFromTXTFileName:handshakeFile]);
         }        
     };                
         
-    [[[clientMock stub] andDo:theBlock] getPath:path 
-                                     parameters:params
-                                        success:[OCMArg checkWithBlock:checkBlock] 
-                                        failure:[OCMArg any]];
+    AFHTTPClient *mock = [[clientMock stub] andDo:theBlock];
+    [mock getPath:path
+       parameters:params
+          success:[OCMArg checkWithBlock:checkBlock]
+          failure:[OCMArg any]];
 }
 
 @end
