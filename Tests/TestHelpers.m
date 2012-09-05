@@ -15,7 +15,6 @@
 
 @implementation AsyncTestConditon
 @synthesize trigger;
-
 - (id)init {
     self = [super init];
     if (self) {
@@ -23,11 +22,15 @@
     }
     return self;
 }
+@end
 
+@interface DataTestCase () {
+    NSManagedObjectContext *_context;
+    id _clientMock;
+}
 @end
 
 @implementation DataTestCase
-
 - (void)setUp {
     [super setUp];
     
@@ -35,9 +38,9 @@
     STAssertNotNil(_context, @"Unable to create management context");    
 }
 
-- (void)stubGetPath:(NSString*)path 
-          andParams:(NSDictionary*)params 
-  withHandshakeFile:(NSString*)handshakeFile {
+- (void)stubGetPath:(NSString *)path 
+          andParams:(NSDictionary *)params 
+  withHandshakeFile:(NSString *)handshakeFile {
         
     [TestHelpers stubGetPath:path 
                forClientMock:_clientMock 
@@ -45,11 +48,10 @@
            withHandshakeFile:handshakeFile];
 }
 
-- (void)runAsyncTestUntil:(NSTimeInterval)interval 
+- (void)runAsyncTestUntil:(NSTimeInterval)interval
                      test:(void (^)())test {
     
-    test();    
-    
+    test();        
     NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:interval];
     while ([loopUntil timeIntervalSinceNow] > 0) {
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
@@ -57,22 +59,34 @@
     }  
 }
 
-- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test
+- (void)runAsyncTest:(void (^)(AsyncTestConditon *endCondition))test
         withInterval:(NSTimeInterval)interval {
     
-    AsyncTestConditon* condition = [[AsyncTestConditon alloc] init];
-    test(condition);    
-    
+    AsyncTestConditon *condition = [[AsyncTestConditon alloc] init];
+    test(condition);
     NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:interval];
     while ([loopUntil timeIntervalSinceNow] > 0 && !condition.trigger) {
         [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-                                 beforeDate:loopUntil];
-    }  
-    
+                                 beforeDate:[NSDate date]];
+    }      
     STAssertTrue(condition.trigger, @"async test failed. trigger value is not YES.");
 }
 
-- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test {
+- (void)runAsyncTestWithBlock:(void (^)(BOOL *endCondition))test
+                 withInterval:(NSTimeInterval)interval {
+    
+    BOOL condition;
+    test(&condition);    
+    NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:interval];
+    while ([loopUntil timeIntervalSinceNow] > 0 && !condition) {
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate date]];
+    }    
+    STAssertTrue(condition, @"async test failed. trigger value is not YES.");
+}
+
+
+- (void)runAsyncTest:(void (^)(AsyncTestConditon *endCondition))test {
     [self runAsyncTest:test withInterval:3.0];
 }
 
@@ -86,7 +100,7 @@
 
 @implementation TestHelpers
 
-+ (NSString*)handshakeFromTXTFileName:(NSString*)fileName {
++ (NSString *)handshakeFromTXTFileName:(NSString *)fileName {
     NSString *modelPath = [[NSBundle bundleForClass:[self class]] pathForResource:fileName
                                                                            ofType:@"txt"];
     return [NSString stringWithContentsOfFile:modelPath
@@ -94,7 +108,7 @@
                                         error:nil];
 }
 
-+ (NSString*)handshakeFromJSONFileName:(NSString*)fileName {
++ (NSString *)handshakeFromJSONFileName:(NSString *)fileName {
     NSString *modelPath = [[NSBundle bundleForClass:[self class]] pathForResource:fileName
                                                                            ofType:@"json"];
     return [NSString stringWithContentsOfFile:modelPath
@@ -102,7 +116,7 @@
                                         error:nil];
 }
 
-+ (id)JSONhandshakeFromTXTFileName:(NSString*)fileName {
++ (id)JSONhandshakeFromTXTFileName:(NSString *)fileName {
     return [[self handshakeFromTXTFileName:fileName] objectFromJSONString];
 }
 
@@ -119,10 +133,10 @@
 }
 
 + (void)stubEnqueueBatchOfHTTPRequestOperationsforClientMock:(id)clientMock
-                                           withHandshakeDict:(NSDictionary*)JSONhandshakeDict {
+                                           withHandshakeDict:(NSDictionary *)JSONhandshakeDict{
     
-    __block NSArray* operations;
-    __block void (^finishBlock)(NSArray* operations);
+    __block NSArray *operations;
+    __block void (^finishBlock)(NSArray *operations);
     BOOL (^operationsCheckBlock)(id value) = [^BOOL(id value) {
         operations = [value copy]; 
         return YES;
@@ -130,8 +144,8 @@
     
     BOOL (^checkBlock)(id value) = [^BOOL(id value) {
         
-        for (AFHTTPRequestOperation* operation in operations) {
-            NSString* jsonFileName =
+        for (AFHTTPRequestOperation *operation in operations) {
+            NSString *jsonFileName =
                 [JSONhandshakeDict objectForKey:operation.request.URL.absoluteString];
             if (jsonFileName) {
                 id json = [[TestHelpers JSONhandshakeFromJSONFileName:jsonFileName] retain];
@@ -142,28 +156,27 @@
             }
         }
 
-        finishBlock = [value copy];        
-        double delayInSeconds = 0.1;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
-        dispatch_after(popTime, dispatch_get_current_queue(), ^(void){
-            finishBlock(operations);
-            [operations release];
-            [finishBlock release];
-            [operationsCheckBlock release];
-        });
+        finishBlock = [value copy];
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
+                                 beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+        finishBlock(operations);
+        [operations release];
+        [finishBlock release];
+        [operationsCheckBlock release];
         
         return YES;
     } copy];        
     
-    [[clientMock stub] enqueueBatchOfHTTPRequestOperations:[OCMArg checkWithBlock:operationsCheckBlock] 
+    id check = [OCMArg checkWithBlock:operationsCheckBlock];
+    [[clientMock stub] enqueueBatchOfHTTPRequestOperations:check
                                              progressBlock:[OCMArg any] 
                                            completionBlock:[OCMArg checkWithBlock:checkBlock]];    
 }
 
-+ (void)stubGetPath:(NSString*)path 
++ (void)stubGetPath:(NSString *)path
       forClientMock:(id)clientMock
-          andParams:(NSDictionary*)params 
-  withHandshakeFile:(NSString*)handshakeFile {
+          andParams:(NSDictionary *)params 
+  withHandshakeFile:(NSString *)handshakeFile {
     
     __block void (^success)(AFHTTPRequestOperation *operation, id responseObject);
     BOOL (^checkBlock)(id value) = [^BOOL(id value) {    
@@ -176,8 +189,8 @@
         if (dotRange.location != NSNotFound) {
             NSRange nameRange = NSMakeRange(dotRange.location + 1,
                                             handshakeFile.length - dotRange.location - 1);
-            NSString* extension = [handshakeFile substringWithRange:nameRange];
-            NSString* name =
+            NSString *extension = [handshakeFile substringWithRange:nameRange];
+            NSString *name =
                 [handshakeFile substringWithRange:NSMakeRange(0, dotRange.location)];
             success(nil, [TestHelpers JSONhandshakeFromJSONFileName:name]);
         }

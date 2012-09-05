@@ -14,41 +14,33 @@
 #import <OCMock.h>
 
 @interface AsyncTestConditon : NSObject
-
 @property(nonatomic) BOOL trigger;
-
 @end
 
-@interface DataTestCase : SenTestCase {
-    NSManagedObjectContext* _context;
-    
-    id _clientMock;
-}
+@interface DataTestCase : SenTestCase
+- (void)stubGetPath:(NSString *)path
+          andParams:(NSDictionary *)params
+  withHandshakeFile:(NSString *)handshakeFile;
 
-- (void)stubGetPath:(NSString*)path 
-          andParams:(NSDictionary*)params
-  withHandshakeFile:(NSString*)handshakeFile;
-
-- (void)runAsyncTestUntil:(NSTimeInterval)interval 
+- (void)runAsyncTestWithBlock:(void (^)(BOOL *endCondition))test
+                 withInterval:(NSTimeInterval)interval;
+- (void)runAsyncTestUntil:(NSTimeInterval)interval
                      test:(void (^)())test;
-- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test 
+- (void)runAsyncTest:(void (^)(AsyncTestConditon *endCondition))test
         withInterval:(NSTimeInterval)interval;
-- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test;
-
+- (void)runAsyncTest:(void (^)(AsyncTestConditon *endCondition))test;
 @end
 
 @interface TestHelpers : NSObject
-
-+ (NSString*)handshakeFromTXTFileName:(NSString*)fileName;
-+ (NSString*)handshakeFromJSONFileName:(NSString*)fileName;
-+ (id)JSONhandshakeFromTXTFileName:(NSString*)fileName;
-+ (id)JSONhandshakeFromJSONFileName:(NSString*)fileName;
++ (NSString *)handshakeFromTXTFileName:(NSString *)fileName;
++ (NSString *)handshakeFromJSONFileName:(NSString *)fileName;
++ (id)JSONhandshakeFromTXTFileName:(NSString *)fileName;
++ (id)JSONhandshakeFromJSONFileName:(NSString *)fileName;
 + (void)makeAsyncLoopWithInterval:(NSTimeInterval)interval;
 + (void)stubEnqueueBatchOfHTTPRequestOperationsforClientMock:(id)clientMock
-                                           withHandshakeDict:(NSDictionary*)JSONhandshakeDict;
-+ (void)stubGetPath:(NSString*)path 
+                                           withHandshakeDict:(NSDictionary *)JSONhandshakeDict;
++ (void)stubGetPath:(NSString *)path 
       forClientMock:(id)clientMock
-          andParams:(NSDictionary*)params 
-  withHandshakeFile:(NSString*)handshakeFile;
-
+          andParams:(NSDictionary *)params 
+  withHandshakeFile:(NSString *)handshakeFile;
 @end
