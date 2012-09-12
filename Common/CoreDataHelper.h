@@ -12,28 +12,28 @@
 #define mainThreadContext() [CoreDataHelper mainThreadContext]
 
 @interface CoreDataHelper : NSObject
-
 + (NSManagedObjectContext *)mainThreadContext;
-+ (void)addMergeNotificationForMainContext:(NSManagedObjectContext*)context;
++ (void)addMergeNotificationForMainContext:(NSManagedObjectContext *)context;
 
 + (NSManagedObjectModel *)managedObjectModel;
 + (NSPersistentStoreCoordinator *)persistentStoreCoordinator;
 + (NSManagedObjectContext *)createManagedObjectContext;
 
-+ (NSArray*)requestResult:(NSFetchRequest*)request managedObjectContext:(NSManagedObjectContext*)managedObjectContext;
-+ (id)requestFirstResult:(NSFetchRequest*)request managedObjectContext:(NSManagedObjectContext*)managedObjectContext;
++ (NSArray *)requestResult:(NSFetchRequest *)request
+      managedObjectContext:(NSManagedObjectContext *)managedObjectContext;
++ (id)requestFirstResult:(NSFetchRequest *)request
+    managedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 + (BOOL)save:(NSManagedObjectContext*)managedObjectContext;
 
-+ (NSFetchRequest*)requestEntityWithName:(NSString*)entityName 
-                           withPredicate:(NSPredicate*)predicate
-                   andSortingDescriptors:(NSArray*)sortingDescriptors
-                  inManagedObjectContext:(NSManagedObjectContext*)context;
++ (NSFetchRequest *)requestEntityWithName:(NSString *)entityName
+                            withPredicate:(NSPredicate *)predicate
+                    andSortingDescriptors:(NSArray *)sortingDescriptors
+                   inManagedObjectContext:(NSManagedObjectContext *)context;
 
-+ (NSFetchRequest*)requestEntityWithDesctiption:(NSEntityDescription*)entityDescription 
-                                  withPredicate:(NSPredicate*)predicate
-                          andSortingDescriptors:(NSArray*)sortingDescriptors;
++ (NSFetchRequest *)requestEntityWithDesctiption:(NSEntityDescription *)entityDescription
+                                   withPredicate:(NSPredicate *)predicate
+                           andSortingDescriptors:(NSArray *)sortingDescriptors;
 
-+ (NSFetchRequest*)requestWithPredicate:(NSPredicate*)predicate
-                  andSortingDescriptors:(NSArray*)sortingDescriptors;
-
++ (NSFetchRequest *)requestWithPredicate:(NSPredicate *)predicate
+                   andSortingDescriptors:(NSArray *)sortingDescriptors;
 @end

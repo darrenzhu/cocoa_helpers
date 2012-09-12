@@ -9,18 +9,17 @@
 #import "CoreDataHelper.h"
 
 @implementation CoreDataHelper
-
 static NSString* scheme = @"DataModel";
 
 + (NSManagedObjectContext *)mainThreadContext {
-    
     static NSManagedObjectContext *_managedObjectContext = nil;                
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        if ([CoreDataHelper persistentStoreCoordinator] != nil)
-        {
+        NSPersistentStoreCoordinator *coorditantor =
+            [CoreDataHelper persistentStoreCoordinator];
+        if (coorditantor) {
             _managedObjectContext = [[NSManagedObjectContext alloc] init];
-            [_managedObjectContext setPersistentStoreCoordinator:[CoreDataHelper persistentStoreCoordinator]];  
+            [_managedObjectContext setPersistentStoreCoordinator:coorditantor];
             [_managedObjectContext setMergePolicy:NSMergeByPropertyStoreTrumpMergePolicy];
         }
     });        
@@ -28,15 +27,16 @@ static NSString* scheme = @"DataModel";
     return _managedObjectContext;
 }
 
-+ (void)addMergeNotificationForMainContext:(NSManagedObjectContext*)context {
++ (void)addMergeNotificationForMainContext:(NSManagedObjectContext *)context {
     [[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(mergeChangesFromNotification:)
 												 name:NSManagedObjectContextDidSaveNotification
 											   object:context];
 }
 
-+ (void)mergeChangesFromNotification:(NSNotification*)notification {
-	[mainThreadContext() performSelectorOnMainThread:@selector(mergeChangesFromContextDidSaveNotification:) 
++ (void)mergeChangesFromNotification:(NSNotification *)notification {
+    SEL action = @selector(mergeChangesFromContextDidSaveNotification:);
+	[mainThreadContext() performSelectorOnMainThread:action
                                           withObject:notification 
                                        waitUntilDone:YES];
 }
@@ -45,35 +45,40 @@ static NSString* scheme = @"DataModel";
     static NSManagedObjectModel *_managedObjectModel;    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:scheme withExtension:@"momd"];
+        NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:scheme
+                                                                 withExtension:@"momd"];
         _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];  
     });
     return _managedObjectModel;
 }
 
-#if TARGET_OS_IPHONE
 + (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
     static NSPersistentStoreCoordinator *_persistentStoreCoordinator;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:                                 
-                                 [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,                                 
-                                 [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+        NSDictionary *options =
+            [NSDictionary dictionaryWithObjectsAndKeys:
+             [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
+             [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
         
-        NSString* appPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-        appPath = [appPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite", scheme]];            
         NSError *error = nil;
-        _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-        
+        NSManagedObjectModel *model = [self managedObjectModel];
+        _persistentStoreCoordinator =
+            [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
 #if OCUNIT
-        if (![_persistentStoreCoordinator addPersistentStoreWithType: NSInMemoryStoreType
-                                                      configuration: nil
-                                                                URL: nil
-                                                            options: options 
-                                                              error: &error])
+        if (![_persistentStoreCoordinator addPersistentStoreWithType:NSInMemoryStoreType
+                                                      configuration:nil
+                                                                URL:nil
+                                                            options:options
+                                                              error:&error])
 #else
-            NSURL *storeURL = [NSURL fileURLWithPath:appPath isDirectory:NO];            
-        if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType 
+        NSString *fileName = [NSString stringWithFormat:@"%@.sqlite", scheme];
+        NSArray *pathes =
+            NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *appPath = [pathes lastObject];
+        appPath = [appPath stringByAppendingPathComponent:fileName];
+        NSURL *storeURL = [NSURL fileURLWithPath:appPath isDirectory:NO];
+        if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
                                                       configuration:nil 
                                                                 URL:storeURL 
                                                             options:options 
@@ -85,65 +90,11 @@ static NSString* scheme = @"DataModel";
     });
     return _persistentStoreCoordinator;
 }
-#else
-+ (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
-    static NSPersistentStoreCoordinator *persistentStoreCoordinator;
-    
-    @synchronized(self)
-    {
-        if (!persistentStoreCoordinator) {                        
-            NSFileManager *fileManager = [NSFileManager defaultManager];
-            NSURL *libraryURL = [[fileManager URLsForDirectory:NSLibraryDirectory inDomains:NSUserDomainMask] lastObject];
-            NSURL *applicationFilesDirectory = [libraryURL URLByAppendingPathComponent:scheme];
-            NSError *error = nil;
-            
-            NSDictionary *properties = [applicationFilesDirectory resourceValuesForKeys:[NSArray arrayWithObject:NSURLIsDirectoryKey] error:&error];
-            
-            if (!properties) {
-                BOOL ok = NO;
-                if ([error code] == NSFileReadNoSuchFileError) {
-                    ok = [fileManager createDirectoryAtPath:[applicationFilesDirectory path] withIntermediateDirectories:YES attributes:nil error:&error];
-                }
-                if (!ok) {
-                    [[NSApplication sharedApplication] presentError:error];
-                    return nil;
-                }
-            }
-            else {
-                if ([[properties objectForKey:NSURLIsDirectoryKey] boolValue] != YES) {
-                    // Customize and localize this error.
-                    NSString *failureDescription = [NSString stringWithFormat:@"Expected a folder to store application data, found a file (%@).", [applicationFilesDirectory path]]; 
-                    
-                    NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-                    [dict setValue:failureDescription forKey:NSLocalizedDescriptionKey];
-                    error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:101 userInfo:dict];
-                    
-                    [[NSApplication sharedApplication] presentError:error];
-                    return nil;
-                }
-            }
-            
-            NSURL *url = [applicationFilesDirectory URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.storedata", scheme]];
-            NSLog(@"store url %@", url.absoluteString);
-            persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-            if (![persistentStoreCoordinator addPersistentStoreWithType:NSXMLStoreType configuration:nil URL:url options:nil error:&error]) {
-                [[NSApplication sharedApplication] presentError:error];
-                [persistentStoreCoordinator release], persistentStoreCoordinator = nil;
-                NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-                return nil;
-            }
-        }        
-        return persistentStoreCoordinator;
-    }
-}
-#endif
 
 + (NSManagedObjectContext *)createManagedObjectContext {
-
     NSManagedObjectContext *managedObjectContext;
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-    if (coordinator != nil)
-    {
+    if (coordinator != nil) {
         managedObjectContext = [[[NSManagedObjectContext alloc] init] autorelease];
         [managedObjectContext setPersistentStoreCoordinator:coordinator];  
         return managedObjectContext;
@@ -151,9 +102,10 @@ static NSString* scheme = @"DataModel";
     return nil;
 }
 
-+ (NSArray*)requestResult:(NSFetchRequest*)request managedObjectContext:(NSManagedObjectContext*)managedObjectContext {
-    NSError* err = nil;
-    NSArray* result = [managedObjectContext executeFetchRequest:request error:&err];
++ (NSArray *)requestResult:(NSFetchRequest *)request
+      managedObjectContext:(NSManagedObjectContext *)managedObjectContext {
+    NSError *err = nil;
+    NSArray *result = [managedObjectContext executeFetchRequest:request error:&err];
     
     if (err) {
         NSLog(@"error occuried %@", err);
@@ -163,9 +115,10 @@ static NSString* scheme = @"DataModel";
     return result;
 }
 
-+ (id)requestFirstResult:(NSFetchRequest*)request managedObjectContext:(NSManagedObjectContext*)managedObjectContext {
++ (id)requestFirstResult:(NSFetchRequest *)request
+    managedObjectContext:(NSManagedObjectContext *)managedObjectContext {
     [request setFetchLimit:1];
-    NSArray* result = [self requestResult:request managedObjectContext:managedObjectContext];
+    NSArray *result = [self requestResult:request managedObjectContext:managedObjectContext];
     
     if (!result || result.count == 0) {
         return nil;
@@ -174,8 +127,7 @@ static NSString* scheme = @"DataModel";
     return [result objectAtIndex:0];
 }
 
-+ (BOOL)save:(NSManagedObjectContext*)managedObjectContext {
-
++ (BOOL)save:(NSManagedObjectContext *)managedObjectContext {
     if (managedObjectContext.hasChanges) {        
         NSError *error = nil;
         if (![managedObjectContext save:&error]) {
@@ -189,21 +141,21 @@ static NSString* scheme = @"DataModel";
     return NO;
 }
 
-+ (NSFetchRequest*)requestEntityWithName:(NSString*)entityName 
-                           withPredicate:(NSPredicate*)predicate
-                   andSortingDescriptors:(NSArray*)sortingDescriptors
-                  inManagedObjectContext:(NSManagedObjectContext*)context {
++ (NSFetchRequest *)requestEntityWithName:(NSString *)entityName
+                            withPredicate:(NSPredicate *)predicate
+                    andSortingDescriptors:(NSArray *)sortingDescriptors
+                   inManagedObjectContext:(NSManagedObjectContext *)context {
     
-    NSEntityDescription* entityDesc = [NSEntityDescription entityForName:entityName inManagedObjectContext:context];
-
+    NSEntityDescription *entityDesc = [NSEntityDescription entityForName:entityName
+                                                  inManagedObjectContext:context];
     return [self requestEntityWithDesctiption:entityDesc 
                                 withPredicate:predicate 
                         andSortingDescriptors:sortingDescriptors];
 }
 
-+ (NSFetchRequest*)requestEntityWithDesctiption:(NSEntityDescription*)entityDescription 
-                                  withPredicate:(NSPredicate*)predicate
-                          andSortingDescriptors:(NSArray*)sortingDescriptors {
++ (NSFetchRequest *)requestEntityWithDesctiption:(NSEntityDescription *)entityDescription 
+                                   withPredicate:(NSPredicate *)predicate
+                           andSortingDescriptors:(NSArray *)sortingDescriptors {
     
     NSFetchRequest *fetchRequest = [self requestWithPredicate:predicate 
                                         andSortingDescriptors:sortingDescriptors];
@@ -211,8 +163,8 @@ static NSString* scheme = @"DataModel";
     return fetchRequest;
 }
 
-+ (NSFetchRequest*)requestWithPredicate:(NSPredicate*)predicate
-                  andSortingDescriptors:(NSArray*)sortingDescriptors {
++ (NSFetchRequest *)requestWithPredicate:(NSPredicate *)predicate
+                   andSortingDescriptors:(NSArray *)sortingDescriptors {
     
     NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];        
     
