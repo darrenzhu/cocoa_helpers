@@ -7,33 +7,32 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "AFHTTPRequestOperation.h"
 
 @protocol SNClientDelegate;
-@interface SNClient : NSObject <UIWebViewDelegate> {
-    NSString* _accessToken;
-    NSDate* _expirationDate;
-    
-    id<SNClientDelegate> _delegate;
-}
-
-@property(strong, readonly) NSString* accessToken;
-@property(strong) id<SNClientDelegate> delegate;
+@interface SNClient : NSObject <UIWebViewDelegate>
+@property(retain, nonatomic, readonly) NSString *accessToken;
+@property(retain, nonatomic, readonly) NSDate *expirationDate;
+@property(unsafe_unretained, nonatomic) id<SNClientDelegate> delegate;
 
 - (BOOL)isSessionValid;
 - (void)login;
-- (void)shareLink:(NSString*)link withTitle:(NSString*)title andMessage:(NSString*)message;
+- (void)shareLink:(NSString *)link withTitle:(NSString *)title andMessage:(NSString *)message;
 @end
 
 @interface SNClient (Private)
++ (void)processRequest:(NSURLRequest *)request
+               success:(void (^)(AFHTTPRequestOperation *operation))success
+                failed:(void (^)(NSError *error))failed;
 - (void)doLoginWorkflow;
-- (void)regainToken:(NSDictionary*)savedKeysAndValues;
-- (void)saveToken:(NSDictionary*)tokensToSave;
-- (BOOL)processWebViewResult:(NSURL*)processUrl;
+- (void)regainToken:(NSDictionary *)savedKeysAndValues;
+- (void)saveToken:(NSDictionary *)tokensToSave;
+- (BOOL)processWebViewResult:(NSURL *)processUrl;
+- (void)setExpirationDate:(NSDate *)expirationDate;
+- (void)setAccessToken:(NSString *)accessToken;
 @end
 
 @protocol SNClientDelegate <NSObject>
-
-- (void)client:(SNClient*)client showAuthPage:(NSString*)url;
-- (void)clientDidLogin:(SNClient*)client ;
-
+- (void)client:(SNClient *)client showAuthPage:(NSString *)url;
+- (void)clientDidLogin:(SNClient *)client ;
 @end

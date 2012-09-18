@@ -11,12 +11,21 @@
 #import <CommonCrypto/CommonHMAC.h>
 
 #import "TTAlert.h"
-#import "ORHTTPClient.h"
 #import "NSString+Additions.h"
 #import "NSData+Base64.h"
 
-@implementation TWClient
+@interface TWClient () {    
+    NSMutableDictionary *_oAuthValues;
+    NSString *_accessTokenSecret;
+    NSString *_verifier;
+    
+    NSString *_consumerKey;
+    NSString *_consumerSecret;
+    NSString *_redirectString;
+}
+@end
 
+@implementation TWClient
 static NSString* serverUrl = @"https://api.twitter.com/oauth/authorize?oauth_token=";
 
 static NSString* oauthVersion = @"1.0";
@@ -26,9 +35,9 @@ static NSString* accessTokenKey = @"TWAccessTokenKey";
 static NSString* accessTokenSecretKey = @"TWAccessTokenKeySecret";
 static NSString* expirationDateKey = @"TWExpirationDateKey";
 
-- (id)initWithKey:(NSString*)consumerKey 
-           secret:(NSString*)consumerSecret 
-      andRedirect:(NSString*)redirectString {
+- (id)initWithKey:(NSString *)consumerKey
+           secret:(NSString *)consumerSecret
+      andRedirect:(NSString *)redirectString {
     self = [super init];
     if (self) {
         _consumerKey = consumerKey;
@@ -40,8 +49,7 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     return self;
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [_oAuthValues release];
     [super dealloc];
 }
@@ -51,14 +59,13 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
 - (void)fillTokenWithResponseBody:(NSString *)body {
     NSArray *pairs = [body componentsSeparatedByString:@"&"];
     
-    for (NSString *pair in pairs)
-    {
+    for (NSString *pair in pairs) {
         NSArray *elements = [pair componentsSeparatedByString:@"="];
         NSString *key = [elements objectAtIndex:0];
         NSString *value = [[elements objectAtIndex:1] urlDecodedString];
         
         if ([key isEqualToString:@"oauth_token"]) {
-            _accessToken = value;
+            self.accessToken = value;
             [_oAuthValues setValue:value forKey:@"oauth_token"];
         } else if ([key isEqualToString:@"oauth_token_secret"]) {
             _accessTokenSecret = [value copy];
@@ -76,12 +83,14 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     }
 }
 
-- (NSString *)signatureBaseStringForRequest:(NSMutableURLRequest *)request withBody:(NSMutableDictionary*)body {
+- (NSString *)signatureBaseStringForRequest:(NSMutableURLRequest *)request
+                                   withBody:(NSMutableDictionary *)body {
     NSMutableArray *parameters = [NSMutableArray array];
     NSURL *url = request.URL;
     
     // Get the base URL String (with no parameters)
-    NSArray *urlParts = [url.absoluteString componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"?#"]];
+    NSCharacterSet *characterSet = [NSCharacterSet characterSetWithCharactersInString:@"?#"];
+    NSArray *urlParts = [url.absoluteString componentsSeparatedByCharactersInSet:characterSet];
     NSString *baseURL = [urlParts objectAtIndex:0];
     
     // Add parameters from the query string
@@ -89,43 +98,61 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     [pairs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         NSArray *elements = [obj componentsSeparatedByString:@"="];
         NSString *key = [[elements objectAtIndex:0] urlEncodedString];
-        NSString *value = (elements.count > 1) ? [[elements objectAtIndex:1] urlEncodedString] : @"";
+        NSString *value = (elements.count > 1 ?
+                           [[elements objectAtIndex:1] urlEncodedString] : @"");
         
-        [parameters addObject:[NSDictionary dictionaryWithObjectsAndKeys:key, @"key", value, @"value", nil]];
+        [parameters addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                               key, @"key",
+                               value, @"value",
+                               nil]];
     }];        
     
     // Add parameters from the request body
     [body enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        [parameters addObject:[NSDictionary dictionaryWithObjectsAndKeys:[key urlEncodedString], @"key", [obj urlEncodedString], @"value", nil]];
+        [parameters addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                               [key urlEncodedString], @"key",
+                               [obj urlEncodedString], @"value",
+                               nil]];
     }];
     
     // Add parameters from the OAuth header
     [_oAuthValues enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        if ([key hasPrefix:@"oauth_"]  && ![key isEqualToString:@"oauth_signature"] && obj && ![obj isEqualToString:@""]) {
-            [parameters addObject:[NSDictionary dictionaryWithObjectsAndKeys:[key urlEncodedString], @"key", [obj urlEncodedString], @"value", nil]];
+        if ([key hasPrefix:@"oauth_"]  &&
+            ![key isEqualToString:@"oauth_signature"] &&
+            obj && ![obj isEqualToString:@""]) {
+            [parameters addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                   [key urlEncodedString], @"key",
+                                   [obj urlEncodedString], @"value",
+                                   nil]];
         }
     }];
     
     // Sort by name and value
     [parameters sortUsingComparator:^(id obj1, id obj2) {
         NSDictionary *val1 = obj1, *val2 = obj2;
-        NSComparisonResult result = [[val1 objectForKey:@"key"] compare:[val2 objectForKey:@"key"] options:NSLiteralSearch];
+        NSComparisonResult result =
+            [[val1 objectForKey:@"key"]compare:[val2 objectForKey:@"key"]
+                                       options:NSLiteralSearch];
         if (result != NSOrderedSame) return result;
-        return [[val1 objectForKey:@"value"] compare:[val2 objectForKey:@"value"] options:NSLiteralSearch];
+        return [[val1 objectForKey:@"value"] compare:[val2 objectForKey:@"value"]
+                                             options:NSLiteralSearch];
     }];
     
     // Join sorted components
     NSMutableArray *normalizedParameters = [NSMutableArray array];
     [parameters enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [normalizedParameters addObject:[NSString stringWithFormat:@"%@=%@", [obj objectForKey:@"key"], [obj objectForKey:@"value"]]];
+        [normalizedParameters addObject:[NSString stringWithFormat:@"%@=%@",
+                                         [obj objectForKey:@"key"],
+                                         [obj objectForKey:@"value"]]];
     }];
     
     // Create the signature base string
+    NSString *normParams =
+        [[normalizedParameters componentsJoinedByString:@"&"] urlEncodedString];
     NSString *signatureBaseString = [NSString stringWithFormat:@"%@&%@&%@",
                                      [[request HTTPMethod] uppercaseString],
                                      [baseURL urlEncodedString],
-                                     [[normalizedParameters componentsJoinedByString:@"&"] urlEncodedString]];
-    
+                                     normParams];    
     return signatureBaseString;
 }
 
@@ -153,27 +180,31 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
 
 - (void)signRequest:(NSMutableURLRequest *)request withBody:(NSMutableDictionary*)body {    
     // Generate timestamp and nonce values
-    [self setOAuthValue:[NSString stringWithFormat:@"%ld", time(NULL)] forKey:@"oauth_timestamp"];
+    [self setOAuthValue:[NSString stringWithFormat:@"%ld", time(NULL)]
+                 forKey:@"oauth_timestamp"];
     [self setOAuthValue:[NSString uniqueString] forKey:@"oauth_nonce"];
     
     // Construct the signature base string
     NSString *baseString = [self signatureBaseStringForRequest:request withBody:body];
     
     // Generate the signature
-    [self setOAuthValue:[self generateHMAC_SHA1SignatureFor:baseString] forKey:@"oauth_signature"];
+    [self setOAuthValue:[self generateHMAC_SHA1SignatureFor:baseString]
+                 forKey:@"oauth_signature"];
     
-    NSMutableArray *oauthHeaders = [NSMutableArray array];
-    
+    NSMutableArray *oauthHeaders = [NSMutableArray array];    
     // Fill the authorization header array
     [_oAuthValues enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (obj && ![obj isEqualToString:@""]) {
-            [oauthHeaders addObject:[NSString stringWithFormat:@"%@=\"%@\"", [key urlEncodedString], [obj urlEncodedString]]];
+            [oauthHeaders addObject:[NSString stringWithFormat:@"%@=\"%@\"",
+                                     [key urlEncodedString], [obj urlEncodedString]]];
         }
     }];
     
     // Set the Authorization header
-    NSString *oauthData = [NSString stringWithFormat:@"OAuth %@", [oauthHeaders componentsJoinedByString:@", "]];
-    NSDictionary *oauthHeader = [NSDictionary dictionaryWithObjectsAndKeys:oauthData, @"Authorization", nil];    
+    NSString *oauthData = [NSString stringWithFormat:@"OAuth %@",
+                           [oauthHeaders componentsJoinedByString:@", "]];
+    NSDictionary *oauthHeader = [NSDictionary dictionaryWithObjectsAndKeys:
+                                 oauthData, @"Authorization", nil];
     
     // Add the Authorization header to the request
     [oauthHeader enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -183,17 +214,17 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     NSMutableArray *bodyFields = [NSMutableArray array];
     [body enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (obj && ![obj isEqualToString:@""]) {
-            [bodyFields addObject:[NSString stringWithFormat:@"%@=%@", [key urlEncodedString], [obj urlEncodedString]]];
+            [bodyFields addObject:[NSString stringWithFormat:@"%@=%@",
+                                   [key urlEncodedString], [obj urlEncodedString]]];
         }
     }];
     
-    NSString* bodyString = [bodyFields componentsJoinedByString:@"&"];
+    NSString *bodyString = [bodyFields componentsJoinedByString:@"&"];
     NSData *requestBody = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
     [request setHTTPBody:requestBody];
 }
 
 #pragma mark - Twitter oauth flow
-
 - (void)getRequestToken {
     NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/oauth/request_token"];    
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
@@ -202,10 +233,11 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     [self setOAuthValue:_redirectString forKey:@"oauth_callback"];
     [self signRequest:request withBody:nil];
         
-    [ORHTTPClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
+    [SNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
         [self fillTokenWithResponseBody:[operation responseString]];
         //open webview
-        NSString* urlString = [NSString stringWithFormat:@"%@%@", serverUrl, [_oAuthValues objectForKey:@"oauth_token"]];
+        NSString *urlString = [NSString stringWithFormat:@"%@%@", serverUrl,
+                               [_oAuthValues objectForKey:@"oauth_token"]];
         
         if (self.delegate) {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -221,31 +253,30 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     
-    NSMutableDictionary* body = [NSMutableDictionary dictionary];
+    NSMutableDictionary *body = [NSMutableDictionary dictionary];
     [body setValue:_verifier forKey:@"oauth_verifier"];     
     
     [self setOAuthValue:nil forKey:@"oauth_callback"];
     [self signRequest:request withBody:body];
     
-    [ORHTTPClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
+    [SNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
         [self fillTokenWithResponseBody:[operation responseString]];            
-        NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
-        [tokens setValue:_accessToken forKey:accessTokenKey];
+        NSMutableDictionary *tokens = [NSMutableDictionary dictionary];
+        [tokens setValue:self.accessToken forKey:accessTokenKey];
         [tokens setValue:_accessTokenSecret forKey:accessTokenSecretKey];    
         [self saveToken:tokens];
         
-        if (_delegate)
-            [_delegate clientDidLogin:self];
+        if (self.delegate)
+            [self.delegate clientDidLogin:self];
     } failed:nil];
 }
 
 - (void)regainToken:(NSDictionary *)savedKeysAndValues {
-    _accessToken = [savedKeysAndValues valueForKey:accessTokenKey];
+    self.accessToken = [savedKeysAndValues valueForKey:accessTokenKey];
     _accessTokenSecret = [savedKeysAndValues valueForKey:accessTokenSecretKey];    
 }
 
-- (void)doLoginWorkflow {
-    
+- (void)doLoginWorkflow {    
     if (!_oAuthValues)
         _oAuthValues = [[NSMutableDictionary dictionaryWithObjectsAndKeys:
                         oauthVersion, @"oauth_version",
@@ -266,7 +297,8 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
 - (BOOL)processWebViewResult:(NSURL *)processUrl {
     NSString* url = processUrl.absoluteString;
     
-    if ([url rangeOfString:[NSString stringWithFormat:@"%@?", _redirectString]].location != NSNotFound) {
+    NSRange search = [url rangeOfString:[NSString stringWithFormat:@"%@?", _redirectString]];
+    if (search.location != NSNotFound) {
         [self fillTokenWithResponseBody:url];
         [self getAccessToken];
         
@@ -277,7 +309,6 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
 }
 
 #pragma mark - Public methods
-
 - (BOOL)isSessionValid {
     return [super isSessionValid] && _accessTokenSecret != nil;
 }
@@ -292,7 +323,7 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
                             oauthVersion, @"oauth_version",
                             oauthSignatureMethodName, @"oauth_signature_method",
                             _consumerKey, @"oauth_consumer_key",
-                            _accessToken, @"oauth_token",
+                            self.accessToken, @"oauth_token",
                             @"", @"oauth_verifier",
                             @"", @"oauth_callback",
                             @"", @"oauth_signature",
@@ -309,16 +340,19 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     
-    NSMutableDictionary* body = [NSMutableDictionary dictionary];
-    NSString* status = [NSString stringWithFormat:@"%@ %@", message, link];
+    NSMutableDictionary *body = [NSMutableDictionary dictionary];
+    NSString *status = [NSString stringWithFormat:@"%@ %@", message, link];
     [body setValue:status forKey:@"status"];             
     
     [self signRequest:request withBody:body];
     
-    [ORHTTPClient processRequest:request success:^(AFHTTPRequestOperation *operation) {        
-        [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"Ссылка успешно добавлена", nil)];
+    [SNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
+        [TTAlert composeAlertViewWithTitle:@""
+                                andMessage:NSLocalizedString(@"Ссылка успешно добавлена", nil)];
     } failed:^(NSError *error) {
-        [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"К сожалению произошла ошибка", nil)];
+        NSString *message = NSLocalizedString(@"К сожалению произошла ошибка", nil);
+        [TTAlert composeAlertViewWithTitle:@""
+                                andMessage:message];
     }];
 }
 

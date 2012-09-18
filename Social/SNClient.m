@@ -8,51 +8,104 @@
 
 #import "SNClient.h"
 
+@interface SNClient () {
+    NSString *_accessToken;
+    NSDate *_expirationDate;
+    
+    id<SNClientDelegate> _delegate;
+}
+@end
+
 @implementation SNClient
-@synthesize delegate = _delegate, accessToken = _accessToken;
+@synthesize delegate = _delegate;
+@synthesize accessToken = _accessToken;
+@synthesize expirationDate = _expirationDate;
 
 - (BOOL)isSessionValid {
-    return (_accessToken != nil && 
-            (_expirationDate != nil && NSOrderedDescending == [_expirationDate compare:[NSDate date]]));
+    return ( _accessToken != nil &&
+            ( _expirationDate != nil &&
+              [_expirationDate compare:[NSDate date]] == NSOrderedDescending ));
 }
 
-- (void)regainToken:(NSDictionary*)savedKeysAndValues {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:@"You  must override %@ in a subclass", NSStringFromSelector(_cmd)]
-                                 userInfo:nil];
-}
-
-- (void)doLoginWorkflow {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:@"You  must override %@ in a subclass", NSStringFromSelector(_cmd)]
-                                 userInfo:nil];
-}
-
-- (BOOL)processWebViewResult:(NSURL*)processUrl {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:@"You  must override %@ in a subclass", NSStringFromSelector(_cmd)]
-                                 userInfo:nil];
-}
-
-- (void)login {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        
-    [self regainToken:[defaults dictionaryRepresentation]];    
+- (void)login {    
+    if (![self isSessionValid]) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [self regainToken:[defaults dictionaryRepresentation]];
+    }
+    
     if (![self isSessionValid]) {
         [self doLoginWorkflow];
-    }
-    else {
+    } else {
         if (_delegate)
             [_delegate clientDidLogin:self];
     }
 }
 
-- (void)shareLink:(NSString*)link withTitle:(NSString*)title andMessage:(NSString *)message {}
+- (void)shareLink:(NSString *)link
+        withTitle:(NSString *)title
+       andMessage:(NSString *)message {}
+
+#pragma mark - private category
++ (void)processRequest:(NSURLRequest *)request
+               success:(void (^)(AFHTTPRequestOperation *operation))success
+                failed:(void (^)(NSError *error))failed {
+    
+    AFHTTPRequestOperation *operation =
+        [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    operation.completionBlock = ^{
+        if ([operation hasAcceptableStatusCode]) {
+            success(operation);
+        } else {
+            if (failed) {
+                failed(operation.error);
+            }
+            NSLog(@"Error: %@, %@", operation.error, operation.responseString);
+        }
+    };
+    [operation start];
+}
+
+- (void)doLoginWorkflow {
+    [SNClient throwOverrideExceptionForSelector:_cmd];
+}
+
+- (void)regainToken:(NSDictionary*)savedKeysAndValues {
+    [SNClient throwOverrideExceptionForSelector:_cmd];
+}
 
 - (void)saveToken:(NSDictionary*)tokensToSave {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setValuesForKeysWithDictionary:tokensToSave];
     [defaults synchronize];
+}
+
+- (BOOL)processWebViewResult:(NSURL*)processUrl {
+    [SNClient throwOverrideExceptionForSelector:_cmd];
+}
+
+- (void)setExpirationDate:(NSDate *)expirationDate {
+    if (_expirationDate) {
+        [_expirationDate release];
+    }
+    
+    _expirationDate = [expirationDate retain];
+}
+
+- (void)setAccessToken:(NSString *)accessToken {
+    if (_accessToken) {
+        [_accessToken release];
+    }
+    
+    _accessToken = [accessToken retain];
+}
+
+#pragma mark - private
++ (void)throwOverrideExceptionForSelector:(SEL)selector {
+    NSString *message = [NSString stringWithFormat:@"You  must override %@ in a subclass",
+                         NSStringFromSelector(selector)];
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:message
+                                 userInfo:nil];
 }
 
 #pragma mark - UIWebViewDelegate

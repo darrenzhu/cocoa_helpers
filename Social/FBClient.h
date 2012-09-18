@@ -7,17 +7,11 @@
 //
 
 #import "SNClient.h"
-
 #import "FBConnect.h"
 
-@interface FBClient : SNClient <FBSessionDelegate, FBRequestDelegate> {
-    Facebook* _facebook;    
-}
+@interface FBClient : SNClient
+@property(retain, readonly) Facebook *facebook;
 
-@property(strong, readonly) Facebook* facebook;
-
-+ (Facebook*)currentFacebook;
-
-- (id)initWithId:(NSString*)id;
-
++ (Facebook *)currentFacebook;
+- (id)initWithId:(NSString *)id;
 @end

@@ -7,18 +7,22 @@
 //
 
 #import "FBClient.h"
-
 #import "TTAlert.h"
+
+@interface FBClient () <FBSessionDelegate, FBRequestDelegate> {
+    Facebook* _facebook;
+}
+@end
 
 @implementation FBClient
 @synthesize facebook = _facebook;
 
-static Facebook* currentFacebook;
-+ (Facebook*)currentFacebook {
+static Facebook *currentFacebook;
++ (Facebook *)currentFacebook {
     return currentFacebook;
 }
 
-- (id)initWithId:(NSString*)id {
+- (id)initWithId:(NSString *)id {
     self = [super init];
     if (self) {
         _facebook = [[Facebook alloc] initWithAppId:id andDelegate:self];     
@@ -28,7 +32,6 @@ static Facebook* currentFacebook;
 }
 
 - (void)regainToken:(NSDictionary *)savedKeysAndValues {
-
     if ([savedKeysAndValues objectForKey:@"FBAccessTokenKey"] 
         && [savedKeysAndValues objectForKey:@"FBExpirationDateKey"]) {
         _facebook.accessToken = [savedKeysAndValues objectForKey:@"FBAccessTokenKey"];
@@ -46,53 +49,55 @@ static Facebook* currentFacebook;
 }
 
 - (void)shareLink:(NSString *)link withTitle:(NSString *)title andMessage:(NSString *)message {
-    NSMutableDictionary* params = [NSMutableDictionary dictionary];
+    NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:link forKey:@"link"];
     [params setObject:title forKey:@"name"];
     [params setObject:message forKey:@"message"];
     
-    [_facebook requestWithGraphPath:@"me/links" andParams:params andHttpMethod:@"POST"  andDelegate:self]; 
+    [_facebook requestWithGraphPath:@"me/links"
+                          andParams:params
+                      andHttpMethod:@"POST"
+                        andDelegate:self];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 }
 
 #pragma mark - FBSessionDelegate
-
 - (void)fbDidLogin {
-    NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
+    NSMutableDictionary *tokens = [NSMutableDictionary dictionary];
     [tokens setValue:[_facebook accessToken] forKey:@"FBAccessTokenKey"];
     [tokens setValue:[_facebook expirationDate] forKey:@"FBExpirationDateKey"];
     [self saveToken:tokens];
     
-    [_delegate clientDidLogin:self];
+    [self.delegate clientDidLogin:self];
 }
 
 - (void)fbDidNotLogin:(BOOL)cancelled {
-    
+    NSLog(@"fbDidNotLogin");
 }
 
-- (void)fbDidExtendToken:(NSString *)accessToken expiresAt:(NSDate *)expiresAt {
-    
-}
+- (void)fbDidExtendToken:(NSString *)accessToken expiresAt:(NSDate *)expiresAt {}
 
 - (void)fbDidLogout {
-    
+    NSLog(@"fbDidLogout");
 }
 
 - (void)fbSessionInvalidated {
-    
+    NSLog(@"fbSessionInvalidated");
 }
 
 #pragma mark - FBRequestDelegate
-
 - (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response {
-    [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"Ссылка успешно добавлена", nil)];
+    [TTAlert composeAlertViewWithTitle:@""
+                            andMessage:NSLocalizedString(@"Ссылка успешно добавлена", nil)];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
-    [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"К сожалению произошла ошибка", nil)];
-    NSLog(@"Error %@", error);
+    NSString *message = NSLocalizedString(@"К сожалению произошла ошибка", nil);
+    [TTAlert composeAlertViewWithTitle:@""
+                            andMessage:message];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    NSLog(@"Error %@", error);
 }
 
 @end

@@ -8,12 +8,7 @@
 
 #import "SNClient.h"
 
-@interface VKClient : SNClient {
-    NSString* _clientId;
-    NSString* _redirectString;
-}
-
-- (id)initWithId:(NSString*)consumerKey            
-     andRedirect:(NSString*)redirectString;
-
+@interface VKClient : SNClient
+- (id)initWithId:(NSString *)consumerKey
+     andRedirect:(NSString *)redirectString;
 @end

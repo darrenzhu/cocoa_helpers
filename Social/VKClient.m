@@ -7,23 +7,29 @@
 //
 
 #import "VKClient.h"
-
 #import "TTAlert.h"
-#import "AFJSONRequestOperation.h"
 #import "NSString+Additions.h"
+#import "AFJSONRequestOperation.h"
 
-static NSString* serverUrl = @"http://api.vk.com/oauth/authorize?";
-static NSString* scope = @"wall";
-
-static NSString* accessTokenKey = @"VKAccessTokenKey";
-static NSString* expirationDateKey = @"VKExpirationDateKey";
-
-static NSString* shareLinkMethodUrl = @"https://api.vk.com/method/wall.post?attachments=%@&access_token=%@&message=%@";
+@interface VKClient () {
+    NSString *_clientId;
+    NSString *_redirectString;
+}
+@end
 
 @implementation VKClient
+static NSString *serverUrl = @"http://api.vk.com/oauth/authorize?";
+static NSString *scope = @"wall";
 
-- (id)initWithId:(NSString*)consumerKey            
-     andRedirect:(NSString*)redirectString {
+static NSString *accessTokenKey = @"VKAccessTokenKey";
+static NSString *expirationDateKey = @"VKExpirationDateKey";
+
+static NSString *shareLinkMethodUrl =
+    @"https://api.vk.com/method/wall.post?attachments=%@&access_token=%@&message=%@";
+
+
+- (id)initWithId:(NSString *)consumerKey
+     andRedirect:(NSString *)redirectString {
     self = [super init];
     if (self) {
         _clientId = consumerKey;
@@ -33,8 +39,8 @@ static NSString* shareLinkMethodUrl = @"https://api.vk.com/method/wall.post?atta
 }
 
 - (void)regainToken:(NSDictionary *)savedKeysAndValues {
-    _accessToken = [savedKeysAndValues valueForKey:accessTokenKey];
-    _expirationDate = [savedKeysAndValues valueForKey:expirationDateKey];
+    self.accessToken = [savedKeysAndValues valueForKey:accessTokenKey];
+    self.expirationDate = [savedKeysAndValues valueForKey:expirationDateKey];
 }
 
 - (void)doLoginWorkflow {
@@ -46,24 +52,33 @@ static NSString* shareLinkMethodUrl = @"https://api.vk.com/method/wall.post?atta
 
 - (void)shareLink:(NSString *)link withTitle:(NSString *)title andMessage:(NSString *)message {
 
-    NSString* urlString = 
-        [NSString stringWithFormat:shareLinkMethodUrl, link, self.accessToken, [message urlEncodedString]];
+    NSString *urlString =  [NSString stringWithFormat:shareLinkMethodUrl,
+                            link, self.accessToken, [message urlEncodedString]];
     
-    NSURL* url = [NSURL URLWithString:urlString];    
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:url];
-    
-    AFJSONRequestOperation* operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        
-        if ([JSON valueForKeyPath:@"response"]) {            
-            [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"Ссылка успешно добавлена", nil)];
+    NSURL *url = [NSURL URLWithString:urlString];    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+
+    AFJSONRequestOperation *operation =
+        [AFJSONRequestOperation JSONRequestOperationWithRequest:request
+                                                        success:^(NSURLRequest *request,
+                                                                  NSHTTPURLResponse *response,
+                                                                  id JSON) {
+        if ([JSON valueForKeyPath:@"response"]) {
+            NSString *message = NSLocalizedString(@"Ссылка успешно добавлена", nil);
+            [TTAlert composeAlertViewWithTitle:@""
+                                    andMessage:message];
         }
         else {
-            [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"К сожалению произошла ошибка", nil)];
+            NSString *message = NSLocalizedString(@"К сожалению произошла ошибка", nil);
+            [TTAlert composeAlertViewWithTitle:@""
+                                    andMessage:message];
             NSLog(@"response %@", JSON);
         }
         
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {        
-        [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"К сожалению произошла ошибка", nil)];
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+        NSString *message = NSLocalizedString(@"К сожалению произошла ошибка", nil);
+        [TTAlert composeAlertViewWithTitle:@""
+                                andMessage:message];
         NSLog(@"Error %@", error);
     }];
     
@@ -71,26 +86,38 @@ static NSString* shareLinkMethodUrl = @"https://api.vk.com/method/wall.post?atta
 }
 
 - (BOOL)processWebViewResult:(NSURL *)processUrl {
-    NSString* url = processUrl.absoluteString;
+    NSString *url = processUrl.absoluteString;
     
-    if ([url rangeOfString:[NSString stringWithFormat:@"%@#", _redirectString]].location != NSNotFound) {
-        NSRegularExpression* regex = [NSRegularExpression regularExpressionWithPattern:@"access_token=[^&?]+" options:0 error:nil];
-        NSString* token = [url substringWithRange:[regex firstMatchInString:url options:0 range:NSMakeRange(0, url.length)].range];
-        _accessToken = [token stringByReplacingOccurrencesOfString:@"access_token=" withString:@""];
+    NSRange search = [url rangeOfString:[NSString stringWithFormat:@"%@#", _redirectString]];
+    if (search.location != NSNotFound) {
+        NSRegularExpression *regex =
+            [NSRegularExpression regularExpressionWithPattern:@"access_token=[^&?]+"
+                                                      options:0
+                                                        error:nil];
+        NSTextCheckingResult *result = [regex firstMatchInString:url
+                                                         options:0
+                                                           range:NSMakeRange(0, url.length)];
+        NSString *token = [url substringWithRange:result.range];
+        self.accessToken = [token stringByReplacingOccurrencesOfString:@"access_token="
+                                                            withString:@""];
         
-        regex = [NSRegularExpression regularExpressionWithPattern:@"expires_in=[^&?]+" options:0 error:nil];
-        NSString* expires = [url substringWithRange:[regex firstMatchInString:url options:0 range:NSMakeRange(0, url.length)].range];
+        regex = [NSRegularExpression regularExpressionWithPattern:@"expires_in=[^&?]+"
+                                                          options:0
+                                                            error:nil];
+        result = [regex firstMatchInString:url options:0 range:NSMakeRange(0, url.length)];
+        NSString *expires = [url substringWithRange:result.range];
         expires = [expires stringByReplacingOccurrencesOfString:@"expires_in=" withString:@""];
-        NSNumberFormatter* f = [[[NSNumberFormatter alloc] init] autorelease];    
-        _expirationDate = [[NSDate date] dateByAddingTimeInterval:[f numberFromString:expires].integerValue];
+        NSNumberFormatter *f = [[[NSNumberFormatter alloc] init] autorelease];
+        NSInteger timeInterval = [f numberFromString:expires].integerValue;
+        self.expirationDate = [[NSDate date] dateByAddingTimeInterval:timeInterval];
         
-        NSMutableDictionary* tokens = [NSMutableDictionary dictionary];
-        [tokens setValue:_accessToken forKey:accessTokenKey];
-        [tokens setValue:_expirationDate forKey:expirationDateKey];
+        NSMutableDictionary *tokens = [NSMutableDictionary dictionary];
+        [tokens setValue:self.accessToken forKey:accessTokenKey];
+        [tokens setValue:self.expirationDate forKey:expirationDateKey];
         [self saveToken:tokens];    
         
-        if (_delegate)
-            [_delegate clientDidLogin:self];
+        if (self.delegate)
+            [self.delegate clientDidLogin:self];
         
         return YES;
     }
