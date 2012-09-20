@@ -38,7 +38,7 @@ static NSString* scheme = @"DataModel";
     SEL action = @selector(mergeChangesFromContextDidSaveNotification:);
 	[mainThreadContext() performSelectorOnMainThread:action
                                           withObject:notification 
-                                       waitUntilDone:YES];
+                                       waitUntilDone:NO];
 }
 
 + (NSManagedObjectModel *)managedObjectModel {

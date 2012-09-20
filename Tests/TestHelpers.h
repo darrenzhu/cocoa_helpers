@@ -17,7 +17,11 @@
 @property(nonatomic) BOOL trigger;
 @end
 
-@interface DataTestCase : SenTestCase
+@interface DataTestCase : SenTestCase {
+    NSManagedObjectContext *_context;
+    id _clientMock;
+}
+
 - (void)stubGetPath:(NSString *)path
           andParams:(NSDictionary *)params
   withHandshakeFile:(NSString *)handshakeFile;

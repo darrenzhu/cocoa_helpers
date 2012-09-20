@@ -24,12 +24,6 @@
 }
 @end
 
-@interface DataTestCase () {
-    NSManagedObjectContext *_context;
-    id _clientMock;
-}
-@end
-
 @implementation DataTestCase
 - (void)setUp {
     [super setUp];
