@@ -273,7 +273,24 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
 
 - (void)regainToken:(NSDictionary *)savedKeysAndValues {
     self.accessToken = [savedKeysAndValues valueForKey:accessTokenKey];
-    _accessTokenSecret = [savedKeysAndValues valueForKey:accessTokenSecretKey];    
+    _accessTokenSecret = [savedKeysAndValues valueForKey:accessTokenSecretKey];
+    
+    if (_oAuthValues) {
+        [_oAuthValues release];
+    }
+    
+    _oAuthValues = [[NSMutableDictionary dictionaryWithObjectsAndKeys:
+                     oauthVersion, @"oauth_version",
+                     oauthSignatureMethodName, @"oauth_signature_method",
+                     _consumerKey, @"oauth_consumer_key",
+                     self.accessToken, @"oauth_token",
+                     @"", @"oauth_verifier",
+                     @"", @"oauth_callback",
+                     @"", @"oauth_signature",
+                     @"", @"oauth_timestamp",
+                     @"", @"oauth_nonce",
+                     @"", @"realm",
+                     nil] retain];
 }
 
 - (void)doLoginWorkflow {    
@@ -310,28 +327,7 @@ static NSString* expirationDateKey = @"TWExpirationDateKey";
 
 #pragma mark - Public methods
 - (BOOL)isSessionValid {
-    return [super isSessionValid] && _accessTokenSecret != nil;
-}
-
-- (void)login {
-    [super login];    
-    
-    if (![self isSessionValid]) {
-
-        if (_oAuthValues)
-            _oAuthValues = [[NSMutableDictionary dictionaryWithObjectsAndKeys:
-                            oauthVersion, @"oauth_version",
-                            oauthSignatureMethodName, @"oauth_signature_method",
-                            _consumerKey, @"oauth_consumer_key",
-                            self.accessToken, @"oauth_token",
-                            @"", @"oauth_verifier",
-                            @"", @"oauth_callback",
-                            @"", @"oauth_signature",
-                            @"", @"oauth_timestamp",
-                            @"", @"oauth_nonce",
-                            @"", @"realm",
-                            nil] retain];
-    }
+    return self.accessToken != nil && _accessTokenSecret != nil;
 }
 
 - (void)shareLink:(NSString *)link withTitle:(NSString *)title andMessage:(NSString *)message {
