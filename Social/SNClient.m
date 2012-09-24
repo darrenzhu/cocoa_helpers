@@ -66,11 +66,11 @@
 }
 
 - (void)doLoginWorkflow {
-    [SNClient throwOverrideExceptionForSelector:_cmd];
+    @throw [SNClient overrideExceptionForSelector:_cmd];
 }
 
 - (void)regainToken:(NSDictionary*)savedKeysAndValues {
-    [SNClient throwOverrideExceptionForSelector:_cmd];
+    @throw [SNClient overrideExceptionForSelector:_cmd];
 }
 
 - (void)saveToken:(NSDictionary*)tokensToSave {
@@ -80,7 +80,7 @@
 }
 
 - (BOOL)processWebViewResult:(NSURL*)processUrl {
-    [SNClient throwOverrideExceptionForSelector:_cmd];
+    @throw [SNClient overrideExceptionForSelector:_cmd];
 }
 
 - (void)setExpirationDate:(NSDate *)expirationDate {
@@ -100,10 +100,10 @@
 }
 
 #pragma mark - private
-+ (void)throwOverrideExceptionForSelector:(SEL)selector {
++ (NSException *)overrideExceptionForSelector:(SEL)selector {
     NSString *message = [NSString stringWithFormat:@"You  must override %@ in a subclass",
                          NSStringFromSelector(selector)];
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+    return [NSException exceptionWithName:NSInternalInconsistencyException
                                    reason:message
                                  userInfo:nil];
 }
