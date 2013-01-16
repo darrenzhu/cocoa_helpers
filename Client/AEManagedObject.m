@@ -155,6 +155,10 @@
     return @"data";
 }
 
++ (BOOL)requiresPersistence {
+    return YES;
+}
+
 + (void)formatJson:(NSArray *)items 
            success:(void (^)(NSArray *entities))success {    
 
@@ -167,7 +171,10 @@
                                 inManagedObjectContext:context];
         [result addObject:entity];                     
     }
-    [AECoreDataHelper save:context];            
+    
+    if ([self requiresPersistence]) {
+        [AECoreDataHelper save:context];
+    }
 
     dispatch_async(dispatch_get_main_queue(), ^{
         NSMutableArray *resultInMainThread = [NSMutableArray array];
