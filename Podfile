@@ -1,5 +1,7 @@
 platform :ios, '5.0'
 
-pod 'AFNetworking'
-pod 'JSONKit'
-pod 'OHHTTPStubs'
+target 'AEHelpersTests' do
+  pod 'AFNetworking'
+  pod 'JSONKit'
+  pod 'OHHTTPStubs'
+end
