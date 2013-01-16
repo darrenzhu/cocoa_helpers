@@ -25,11 +25,17 @@
 }
 
 - (NSDateFormatter *)dateFormatter {
-    NSString *message = NSLocalizedString(@"You must override %@ in a subclass", nil);
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:message,
-                                           NSStringFromSelector(_cmd)]
-                                 userInfo:nil];
+    NSDateFormatter *   rfc3339DateFormatter;
+    NSLocale *          enUSPOSIXLocale;
+    
+    rfc3339DateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+    enUSPOSIXLocale = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease];
+    
+    [rfc3339DateFormatter setLocale:enUSPOSIXLocale];
+    [rfc3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+    [rfc3339DateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    
+    return rfc3339DateFormatter;
 }
 
 #pragma mark - Serialization

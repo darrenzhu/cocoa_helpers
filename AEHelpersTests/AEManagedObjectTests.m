@@ -134,4 +134,11 @@
     STAssertTrue(finished, nil);
 }
 
+- (void)testParsePosixDate {
+    TestEntity *entity = (TestEntity *)[TestEntity createOrUpdateFromJsonObject:_jsonObject
+                                                         inManagedObjectContext:mainThreadContext()];
+    NSDate *date = [[entity dateFormatter] dateFromString:@"2013-01-04T01:22:40Z"];
+    STAssertEqualObjects(@"2013-01-04T01:22:40Z", [[entity dateFormatter] stringFromDate:date], nil);
+}
+
 @end
