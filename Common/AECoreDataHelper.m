@@ -6,9 +6,9 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "CoreDataHelper.h"
+#import "AECoreDataHelper.h"
 
-@implementation CoreDataHelper
+@implementation AECoreDataHelper
 static NSString* scheme = @"DataModel";
 
 + (NSManagedObjectContext *)mainThreadContext {
@@ -16,7 +16,7 @@ static NSString* scheme = @"DataModel";
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSPersistentStoreCoordinator *coorditantor =
-            [CoreDataHelper persistentStoreCoordinator];
+            [AECoreDataHelper persistentStoreCoordinator];
         if (coorditantor) {
             _managedObjectContext = [[NSManagedObjectContext alloc] init];
             [_managedObjectContext setPersistentStoreCoordinator:coorditantor];

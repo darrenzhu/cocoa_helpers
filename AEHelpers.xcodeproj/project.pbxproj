@@ -9,18 +9,16 @@
 /* Begin PBXBuildFile section */
 		956DFCCA16A614B6004858C6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCC916A614B6004858C6 /* Foundation.framework */; };
 		956DFCCF16A614B6004858C6 /* AEHelpers.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 956DFCCE16A614B6004858C6 /* AEHelpers.h */; };
-		956DFCD116A614B6004858C6 /* AEHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFCD016A614B6004858C6 /* AEHelpers.m */; };
 		956DFCD916A614B7004858C6 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCD816A614B7004858C6 /* SenTestingKit.framework */; };
 		956DFCDB16A614B7004858C6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCDA16A614B7004858C6 /* UIKit.framework */; };
 		956DFCDC16A614B7004858C6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCC916A614B6004858C6 /* Foundation.framework */; };
 		956DFCDF16A614B7004858C6 /* libAEHelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCC616A614B6004858C6 /* libAEHelpers.a */; };
-		956DFCE516A614B7004858C6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 956DFCE316A614B7004858C6 /* InfoPlist.strings */; };
 		956DFCE816A614B7004858C6 /* AEHelpersTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFCE716A614B7004858C6 /* AEHelpersTests.m */; };
 		956DFD3616A62DA4004858C6 /* NSFetchRequest+orderBy.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2216A62DA4004858C6 /* NSFetchRequest+orderBy.m */; };
 		956DFD3716A62DA4004858C6 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2416A62DA4004858C6 /* NSString+Additions.m */; };
-		956DFD3816A62DA4004858C6 /* ORManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2716A62DA4004858C6 /* ORManagedObject.m */; };
-		956DFD3916A62DA4004858C6 /* CoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2A16A62DA4004858C6 /* CoreDataHelper.m */; };
-		956DFD3A16A62DA4004858C6 /* TTAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2C16A62DA4004858C6 /* TTAlert.m */; };
+		956DFD3816A62DA4004858C6 /* AEManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2716A62DA4004858C6 /* AEManagedObject.m */; };
+		956DFD3916A62DA4004858C6 /* AECoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2A16A62DA4004858C6 /* AECoreDataHelper.m */; };
+		956DFD3A16A62DA4004858C6 /* AEAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2C16A62DA4004858C6 /* AEAlert.m */; };
 		956DFD4016A62DF4004858C6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFD3F16A62DF4004858C6 /* UIKit.framework */; };
 		99DF6CC0930F45B08911ADBC /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C814268E01BC4FD4B43955E5 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -53,24 +51,22 @@
 		956DFCC916A614B6004858C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		956DFCCD16A614B6004858C6 /* AEHelpers-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AEHelpers-Prefix.pch"; sourceTree = "<group>"; };
 		956DFCCE16A614B6004858C6 /* AEHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AEHelpers.h; sourceTree = "<group>"; };
-		956DFCD016A614B6004858C6 /* AEHelpers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AEHelpers.m; sourceTree = "<group>"; };
 		956DFCD716A614B7004858C6 /* AEHelpersTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AEHelpersTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		956DFCD816A614B7004858C6 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		956DFCDA16A614B7004858C6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		956DFCE216A614B7004858C6 /* AEHelpersTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AEHelpersTests-Info.plist"; sourceTree = "<group>"; };
-		956DFCE416A614B7004858C6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		956DFCE616A614B7004858C6 /* AEHelpersTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AEHelpersTests.h; sourceTree = "<group>"; };
 		956DFCE716A614B7004858C6 /* AEHelpersTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AEHelpersTests.m; sourceTree = "<group>"; };
 		956DFD2116A62DA4004858C6 /* NSFetchRequest+orderBy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFetchRequest+orderBy.h"; sourceTree = "<group>"; };
 		956DFD2216A62DA4004858C6 /* NSFetchRequest+orderBy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFetchRequest+orderBy.m"; sourceTree = "<group>"; };
 		956DFD2316A62DA4004858C6 /* NSString+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Additions.h"; sourceTree = "<group>"; };
 		956DFD2416A62DA4004858C6 /* NSString+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Additions.m"; sourceTree = "<group>"; };
-		956DFD2616A62DA4004858C6 /* ORManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ORManagedObject.h; sourceTree = "<group>"; };
-		956DFD2716A62DA4004858C6 /* ORManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ORManagedObject.m; sourceTree = "<group>"; };
-		956DFD2916A62DA4004858C6 /* CoreDataHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreDataHelper.h; sourceTree = "<group>"; };
-		956DFD2A16A62DA4004858C6 /* CoreDataHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreDataHelper.m; sourceTree = "<group>"; };
-		956DFD2B16A62DA4004858C6 /* TTAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTAlert.h; sourceTree = "<group>"; };
-		956DFD2C16A62DA4004858C6 /* TTAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTAlert.m; sourceTree = "<group>"; };
+		956DFD2616A62DA4004858C6 /* AEManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEManagedObject.h; sourceTree = "<group>"; };
+		956DFD2716A62DA4004858C6 /* AEManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEManagedObject.m; sourceTree = "<group>"; };
+		956DFD2916A62DA4004858C6 /* AECoreDataHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AECoreDataHelper.h; sourceTree = "<group>"; };
+		956DFD2A16A62DA4004858C6 /* AECoreDataHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AECoreDataHelper.m; sourceTree = "<group>"; };
+		956DFD2B16A62DA4004858C6 /* AEAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEAlert.h; sourceTree = "<group>"; };
+		956DFD2C16A62DA4004858C6 /* AEAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEAlert.m; sourceTree = "<group>"; };
 		956DFD3F16A62DF4004858C6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B9DE3F2F63B64E55820CCF0D /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		C814268E01BC4FD4B43955E5 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -140,7 +136,6 @@
 				956DFD2516A62DA4004858C6 /* Client */,
 				956DFD2816A62DA4004858C6 /* Common */,
 				956DFCCE16A614B6004858C6 /* AEHelpers.h */,
-				956DFCD016A614B6004858C6 /* AEHelpers.m */,
 				956DFCCC16A614B6004858C6 /* Supporting Files */,
 			);
 			path = AEHelpers;
@@ -168,7 +163,6 @@
 			isa = PBXGroup;
 			children = (
 				956DFCE216A614B7004858C6 /* AEHelpersTests-Info.plist */,
-				956DFCE316A614B7004858C6 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -187,8 +181,8 @@
 		956DFD2516A62DA4004858C6 /* Client */ = {
 			isa = PBXGroup;
 			children = (
-				956DFD2616A62DA4004858C6 /* ORManagedObject.h */,
-				956DFD2716A62DA4004858C6 /* ORManagedObject.m */,
+				956DFD2616A62DA4004858C6 /* AEManagedObject.h */,
+				956DFD2716A62DA4004858C6 /* AEManagedObject.m */,
 			);
 			path = Client;
 			sourceTree = SOURCE_ROOT;
@@ -196,10 +190,10 @@
 		956DFD2816A62DA4004858C6 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				956DFD2916A62DA4004858C6 /* CoreDataHelper.h */,
-				956DFD2A16A62DA4004858C6 /* CoreDataHelper.m */,
-				956DFD2B16A62DA4004858C6 /* TTAlert.h */,
-				956DFD2C16A62DA4004858C6 /* TTAlert.m */,
+				956DFD2916A62DA4004858C6 /* AECoreDataHelper.h */,
+				956DFD2A16A62DA4004858C6 /* AECoreDataHelper.m */,
+				956DFD2B16A62DA4004858C6 /* AEAlert.h */,
+				956DFD2C16A62DA4004858C6 /* AEAlert.m */,
 			);
 			path = Common;
 			sourceTree = SOURCE_ROOT;
@@ -275,7 +269,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				956DFCE516A614B7004858C6 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,12 +309,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				956DFCD116A614B6004858C6 /* AEHelpers.m in Sources */,
 				956DFD3616A62DA4004858C6 /* NSFetchRequest+orderBy.m in Sources */,
 				956DFD3716A62DA4004858C6 /* NSString+Additions.m in Sources */,
-				956DFD3816A62DA4004858C6 /* ORManagedObject.m in Sources */,
-				956DFD3916A62DA4004858C6 /* CoreDataHelper.m in Sources */,
-				956DFD3A16A62DA4004858C6 /* TTAlert.m in Sources */,
+				956DFD3816A62DA4004858C6 /* AEManagedObject.m in Sources */,
+				956DFD3916A62DA4004858C6 /* AECoreDataHelper.m in Sources */,
+				956DFD3A16A62DA4004858C6 /* AEAlert.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,17 +334,6 @@
 			targetProxy = 956DFCDD16A614B7004858C6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		956DFCE316A614B7004858C6 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				956DFCE416A614B7004858C6 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		956DFCE916A614B7004858C6 /* Debug */ = {

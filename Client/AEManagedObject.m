@@ -6,12 +6,12 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "ORManagedObject.h"
+#import "AEManagedObject.h"
 #import <objc/runtime.h>
 
 #import "JSONKit.h"
 
-@implementation ORManagedObject
+@implementation AEManagedObject
 @dynamic syncDate;
 
 #pragma mark - Predefinitions
@@ -113,11 +113,11 @@
     return self;    
 }
 
-+ (ORManagedObject *)create:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {    
++ (AEManagedObject *)create:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {    
     Class class = self.class;
     
     if (class) {
-        ORManagedObject *entity = [[[class alloc] initFromJSON:json                                                     
+        AEManagedObject *entity = [[[class alloc] initFromJSON:json                                                     
                                         inManagedObjectContext:context] autorelease]; 
         return entity;
     }
@@ -125,13 +125,13 @@
     return nil;
 }
 
-+ (ORManagedObject *)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
++ (AEManagedObject *)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
     NSNumber *curId = [json valueForKeyPath:@"id"];        
     if (curId != nil) {
         return nil;
     }
 
-    ORManagedObject *entity = [self requestFirstResult:[self find:curId] managedObjectContext:context];
+    AEManagedObject *entity = [self requestFirstResult:[self find:curId] managedObjectContext:context];
     if (entity) {
         [entity updateFromJSON:json];
         return entity;
@@ -153,22 +153,21 @@
 + (void)formatJson:(NSArray *)items 
            success:(void (^)(NSArray *entities))success {    
 
-    NSManagedObjectContext *context = [[CoreDataHelper createManagedObjectContext] retain];
-    [CoreDataHelper addMergeNotificationForMainContext:context];
+    NSManagedObjectContext *context = [[AECoreDataHelper createManagedObjectContext] retain];
+    [AECoreDataHelper addMergeNotificationForMainContext:context];
     NSMutableArray *result = [NSMutableArray array];
     
     for (id jsonString in items) {                                        
-        ORManagedObject *entity = [self createOrUpdate:jsonString
+        AEManagedObject *entity = [self createOrUpdate:jsonString
                                 inManagedObjectContext:context];
         [result addObject:entity];                     
     }
-    [CoreDataHelper save:context];            
+    [AECoreDataHelper save:context];            
 
     dispatch_async(dispatch_get_main_queue(), ^{
         NSMutableArray *resultInMainThread = [NSMutableArray array];
-        for (ORManagedObject *entity in result) {
-            ORManagedObject *entityInMainThread =
-                (ORManagedObject *)[mainThreadContext() objectWithID:entity.objectID];
+        for (AEManagedObject *entity in result) {
+            AEManagedObject *entityInMainThread = (AEManagedObject *)[mainThreadContext() objectWithID:entity.objectID];
             [resultInMainThread addObject:entityInMainThread];
         }
         success(resultInMainThread);
@@ -228,22 +227,22 @@
 
 #pragma mark - Local fetch (new syntax)
 + (NSFetchRequest *)all {
-    return [CoreDataHelper requestWithPredicate:nil andSortingDescriptors:nil];;
+    return [AECoreDataHelper requestWithPredicate:nil andSortingDescriptors:nil];;
 }
 
 + (NSFetchRequest *)find:(id)itemId {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"id = %@", itemId];
-    return [CoreDataHelper requestWithPredicate:predicate andSortingDescriptors:nil];
+    return [AECoreDataHelper requestWithPredicate:predicate andSortingDescriptors:nil];
 }
 
 + (NSFetchRequest *)where:(NSPredicate *)wherePredicate {
-    return [CoreDataHelper requestWithPredicate:wherePredicate andSortingDescriptors:nil];
+    return [AECoreDataHelper requestWithPredicate:wherePredicate andSortingDescriptors:nil];
 }
 
 + (NSArray *)requestResult:(NSFetchRequest *)request
       managedObjectContext:(NSManagedObjectContext *)managedObjectContext {
     [request setEntity:[self enityDescriptionInContext:managedObjectContext]];
-    return [CoreDataHelper requestResult:request managedObjectContext:managedObjectContext];
+    return [AECoreDataHelper requestResult:request managedObjectContext:managedObjectContext];
 }
 
 + (id)requestFirstResult:(NSFetchRequest *)request managedObjectContext:(NSManagedObjectContext *)managedObjectContext {

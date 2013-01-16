@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface TTAlert : NSObject
+@interface AEAlert : NSObject
 
 + (void)composeAlertViewWithTitle:(NSString *)title 
                        andMessage:(NSString *)message;

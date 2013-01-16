@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-#define mainThreadContext() [CoreDataHelper mainThreadContext]
+#define mainThreadContext() [AECoreDataHelper mainThreadContext]
 
-@interface CoreDataHelper : NSObject
+@interface AECoreDataHelper : NSObject
 + (NSManagedObjectContext *)mainThreadContext;
 + (void)addMergeNotificationForMainContext:(NSManagedObjectContext *)context;
 

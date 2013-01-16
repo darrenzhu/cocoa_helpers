@@ -11,14 +11,14 @@
 
 #import "NSFetchRequest+orderBy.h"
 #import "AFHTTPClient.h"
-#import "CoreDataHelper.h"
+#import "AECoreDataHelper.h"
 
-@interface ORManagedObject : NSManagedObject
+@interface AEManagedObject : NSManagedObject
 @property(retain, nonatomic) NSDate *syncDate;
 
 #pragma mark - Initialization
 - (id)initFromJSON:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
-+ (ORManagedObject *)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
++ (AEManagedObject *)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
 + (NSEntityDescription *)enityDescriptionInContext:(NSManagedObjectContext *)context;
 
 #pragma mark - JSON serializaiton
@@ -48,7 +48,7 @@
     managedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 @end
 
-@interface ORManagedObject (Pivate)
+@interface AEManagedObject (Pivate)
 - (NSDateFormatter *)dateFormatter;
 + (NSString *)jsonRoot;
 @end

@@ -6,9 +6,9 @@
 //  Copyright (c) 2011 __MyCompanyName__. All rights reserved.
 //
 
-#import "TTAlert.h"
+#import "AEAlert.h"
 
-@implementation TTAlert
+@implementation AEAlert
 
 + (void)composeAlertViewWithTitle:(NSString *)title 
                        andMessage:(NSString *)message
