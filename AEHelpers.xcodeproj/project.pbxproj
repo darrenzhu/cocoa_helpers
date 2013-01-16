@@ -8,17 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		4EE60F545573431C906F8B45 /* libPods-AEHelpersTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B2D4354336A44AFDACA09D98 /* libPods-AEHelpersTests.a */; };
-		956DFCCA16A614B6004858C6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCC916A614B6004858C6 /* Foundation.framework */; };
-		956DFCCF16A614B6004858C6 /* AEHelpers.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 956DFCCE16A614B6004858C6 /* AEHelpers.h */; };
 		956DFCD916A614B7004858C6 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCD816A614B7004858C6 /* SenTestingKit.framework */; };
 		956DFCDC16A614B7004858C6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCC916A614B6004858C6 /* Foundation.framework */; };
 		956DFCE816A614B7004858C6 /* AECoreDataHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFCE716A614B7004858C6 /* AECoreDataHelperTests.m */; };
-		956DFD3616A62DA4004858C6 /* NSFetchRequest+orderBy.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2216A62DA4004858C6 /* NSFetchRequest+orderBy.m */; };
-		956DFD3716A62DA4004858C6 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2416A62DA4004858C6 /* NSString+Additions.m */; };
-		956DFD3816A62DA4004858C6 /* AEManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2716A62DA4004858C6 /* AEManagedObject.m */; };
-		956DFD3916A62DA4004858C6 /* AECoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2A16A62DA4004858C6 /* AECoreDataHelper.m */; };
-		956DFD3A16A62DA4004858C6 /* AEAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2C16A62DA4004858C6 /* AEAlert.m */; };
-		956DFD4016A62DF4004858C6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFD3F16A62DF4004858C6 /* UIKit.framework */; };
 		956DFD4916A6346B004858C6 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFD4816A6346B004858C6 /* CoreData.framework */; };
 		956DFD4C16A634B8004858C6 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD4A16A634B8004858C6 /* DataModel.xcdatamodeld */; };
 		956DFD4F16A63714004858C6 /* TestEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD4E16A63714004858C6 /* TestEntity.m */; };
@@ -29,28 +21,13 @@
 		956DFDAE16A65564004858C6 /* AECoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2A16A62DA4004858C6 /* AECoreDataHelper.m */; };
 		956DFDB416A65F90004858C6 /* mocked_respond.json in Resources */ = {isa = PBXBuildFile; fileRef = 956DFDB316A65F90004858C6 /* mocked_respond.json */; };
 		956DFDB716A6606C004858C6 /* AEHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDB616A6606C004858C6 /* AEHTTPClient.m */; };
-		956DFDCA16A68734004858C6 /* NSArray+orderBy.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDC916A68734004858C6 /* NSArray+orderBy.m */; };
 		956DFDDA16A738A3004858C6 /* NSArray+orderByTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDD916A738A3004858C6 /* NSArray+orderByTests.m */; };
 		956DFDDC16A739FB004858C6 /* NSArray+orderBy.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDC916A68734004858C6 /* NSArray+orderBy.m */; };
 		956DFDDF16A73B43004858C6 /* NSFetchRequest+orderByTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDDE16A73B43004858C6 /* NSFetchRequest+orderByTests.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		956DFCC416A614B6004858C6 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "include/${PRODUCT_NAME}";
-			dstSubfolderSpec = 16;
-			files = (
-				956DFCCF16A614B6004858C6 /* AEHelpers.h in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		48184CA2F2DC4D2DB127331E /* Pods-AEHelpersTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEHelpersTests.xcconfig"; path = "Pods/Pods-AEHelpersTests.xcconfig"; sourceTree = SOURCE_ROOT; };
-		956DFCC616A614B6004858C6 /* libAEHelpers.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libAEHelpers.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		956DFCC916A614B6004858C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		956DFCCD16A614B6004858C6 /* AEHelpers-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AEHelpers-Prefix.pch"; sourceTree = "<group>"; };
 		956DFCCE16A614B6004858C6 /* AEHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AEHelpers.h; sourceTree = "<group>"; };
@@ -89,15 +66,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		956DFCC316A614B6004858C6 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				956DFD4016A62DF4004858C6 /* UIKit.framework in Frameworks */,
-				956DFCCA16A614B6004858C6 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		956DFCD316A614B7004858C6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -127,7 +95,6 @@
 		956DFCC716A614B6004858C6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				956DFCC616A614B6004858C6 /* libAEHelpers.a */,
 				956DFCD716A614B7004858C6 /* AEHelpersTests.octest */,
 			);
 			name = Products;
@@ -231,25 +198,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		956DFCC516A614B6004858C6 /* AEHelpers */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 956DFCEB16A614B7004858C6 /* Build configuration list for PBXNativeTarget "AEHelpers" */;
-			buildPhases = (
-				956DFCC216A614B6004858C6 /* Sources */,
-				956DFCC316A614B6004858C6 /* Frameworks */,
-				956DFCC416A614B6004858C6 /* CopyFiles */,
-				D44FA73976774AF586714F1B /* Copy Pods Resources */,
-				FFE5D238C824416D82BE21D3 /* Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = AEHelpers;
-			productName = AEHelpers;
-			productReference = 956DFCC616A614B6004858C6 /* libAEHelpers.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 		956DFCD616A614B7004858C6 /* AEHelpersTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 956DFCEE16A614B7004858C6 /* Build configuration list for PBXNativeTarget "AEHelpersTests" */;
@@ -290,7 +238,6 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				956DFCC516A614B6004858C6 /* AEHelpers */,
 				956DFCD616A614B7004858C6 /* AEHelpersTests */,
 			);
 		};
@@ -349,50 +296,9 @@
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
 		};
-		D44FA73976774AF586714F1B /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
-		};
-		FFE5D238C824416D82BE21D3 /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		956DFCC216A614B6004858C6 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				956DFD3616A62DA4004858C6 /* NSFetchRequest+orderBy.m in Sources */,
-				956DFD3716A62DA4004858C6 /* NSString+Additions.m in Sources */,
-				956DFD3816A62DA4004858C6 /* AEManagedObject.m in Sources */,
-				956DFD3916A62DA4004858C6 /* AECoreDataHelper.m in Sources */,
-				956DFD3A16A62DA4004858C6 /* AEAlert.m in Sources */,
-				956DFDCA16A68734004858C6 /* NSArray+orderBy.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		956DFCD216A614B7004858C6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -459,34 +365,6 @@
 			};
 			name = Release;
 		};
-		956DFCEC16A614B7004858C6 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DSTROOT = /tmp/AEHelpers.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "AEHelpers/AEHelpers-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"OCUNIT=1",
-					"$(inherited)",
-				);
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		956DFCED16A614B7004858C6 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DSTROOT = /tmp/AEHelpers.dst;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "AEHelpers/AEHelpers-Prefix.pch";
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Release;
-		};
 		956DFCEF16A614B7004858C6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 48184CA2F2DC4D2DB127331E /* Pods-AEHelpersTests.xcconfig */;
@@ -531,15 +409,6 @@
 			buildConfigurations = (
 				956DFCE916A614B7004858C6 /* Debug */,
 				956DFCEA16A614B7004858C6 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		956DFCEB16A614B7004858C6 /* Build configuration list for PBXNativeTarget "AEHelpers" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				956DFCEC16A614B7004858C6 /* Debug */,
-				956DFCED16A614B7004858C6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
