@@ -20,6 +20,9 @@
 		956DFD3916A62DA4004858C6 /* AECoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2A16A62DA4004858C6 /* AECoreDataHelper.m */; };
 		956DFD3A16A62DA4004858C6 /* AEAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2C16A62DA4004858C6 /* AEAlert.m */; };
 		956DFD4016A62DF4004858C6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFD3F16A62DF4004858C6 /* UIKit.framework */; };
+		956DFD4916A6346B004858C6 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFD4816A6346B004858C6 /* CoreData.framework */; };
+		956DFD4C16A634B8004858C6 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD4A16A634B8004858C6 /* DataModel.xcdatamodeld */; };
+		956DFD4F16A63714004858C6 /* TestEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD4E16A63714004858C6 /* TestEntity.m */; };
 		99DF6CC0930F45B08911ADBC /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C814268E01BC4FD4B43955E5 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -68,6 +71,10 @@
 		956DFD2B16A62DA4004858C6 /* AEAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEAlert.h; sourceTree = "<group>"; };
 		956DFD2C16A62DA4004858C6 /* AEAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEAlert.m; sourceTree = "<group>"; };
 		956DFD3F16A62DF4004858C6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		956DFD4816A6346B004858C6 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		956DFD4B16A634B8004858C6 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		956DFD4D16A63714004858C6 /* TestEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestEntity.h; sourceTree = "<group>"; };
+		956DFD4E16A63714004858C6 /* TestEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestEntity.m; sourceTree = "<group>"; };
 		B9DE3F2F63B64E55820CCF0D /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		C814268E01BC4FD4B43955E5 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -87,6 +94,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				956DFD4916A6346B004858C6 /* CoreData.framework in Frameworks */,
 				956DFCD916A614B7004858C6 /* SenTestingKit.framework in Frameworks */,
 				956DFCDB16A614B7004858C6 /* UIKit.framework in Frameworks */,
 				956DFCDC16A614B7004858C6 /* Foundation.framework in Frameworks */,
@@ -100,6 +108,7 @@
 		956DFCBB16A614B6004858C6 = {
 			isa = PBXGroup;
 			children = (
+				956DFD4816A6346B004858C6 /* CoreData.framework */,
 				956DFCCB16A614B6004858C6 /* AEHelpers */,
 				956DFCE016A614B7004858C6 /* AEHelpersTests */,
 				956DFCC816A614B6004858C6 /* Frameworks */,
@@ -163,6 +172,9 @@
 			isa = PBXGroup;
 			children = (
 				956DFCE216A614B7004858C6 /* AEHelpersTests-Info.plist */,
+				956DFD4A16A634B8004858C6 /* DataModel.xcdatamodeld */,
+				956DFD4D16A63714004858C6 /* TestEntity.h */,
+				956DFD4E16A63714004858C6 /* TestEntity.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -322,6 +334,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				956DFCE816A614B7004858C6 /* AEHelpersTests.m in Sources */,
+				956DFD4C16A634B8004858C6 /* DataModel.xcdatamodeld in Sources */,
+				956DFD4F16A63714004858C6 /* TestEntity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -388,6 +402,10 @@
 				DSTROOT = /tmp/AEHelpers.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AEHelpers/AEHelpers-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"OCUNIT=1",
+					"$(inherited)",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -416,6 +434,10 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AEHelpers/AEHelpers-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"OCUNIT=1",
+				);
 				INFOPLIST_FILE = "AEHelpersTests/AEHelpersTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = octest;
@@ -468,6 +490,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		956DFD4A16A634B8004858C6 /* DataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				956DFD4B16A634B8004858C6 /* DataModel.xcdatamodel */,
+			);
+			currentVersion = 956DFD4B16A634B8004858C6 /* DataModel.xcdatamodel */;
+			path = DataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 956DFCBD16A614B6004858C6 /* Project object */;
 }
