@@ -25,8 +25,8 @@
 }
 
 - (NSDateFormatter *)dateFormatter {
-    NSDateFormatter *   rfc3339DateFormatter;
-    NSLocale *          enUSPOSIXLocale;
+    NSDateFormatter *rfc3339DateFormatter;
+    NSLocale *enUSPOSIXLocale;
     
     rfc3339DateFormatter = [[[NSDateFormatter alloc] init] autorelease];
     enUSPOSIXLocale = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease];
@@ -67,45 +67,49 @@
 }
 
 - (void)updateFromJSONObject:(id)jsonObject {    
-    if (self && jsonObject) {
-        unsigned int outCount;
-        objc_property_t *properties = class_copyPropertyList([self class], &outCount);        
-        
-        for(int i = 0; i < outCount; i++) {
-            objc_property_t property = properties[i];            
-            NSString *propertyName = [NSString stringWithCString:property_getName(property)
-                                                        encoding:NSUTF8StringEncoding];
-            id jsonValue = [jsonObject valueForKeyPath:propertyName];
-            if ([jsonValue isEqual:[NSNull null]] || jsonValue == nil) {
-                continue;
-            }            
-            
-            NSString *propertyAtr = [NSString stringWithCString:property_getAttributes(property)
-                                                       encoding:NSUTF8StringEncoding];
-            NSArray *attributes = [propertyAtr componentsSeparatedByString:@","];
-            NSString *typeAttribute = [attributes objectAtIndex:0];
-            NSString *propertyType = [typeAttribute substringFromIndex:2];
-            propertyType = [propertyType stringByReplacingOccurrencesOfString:@"\"" withString:@""];
-            
-            if ([propertyAtr rangeOfString:@"NSDate"].location != NSNotFound && [self dateFormatter]) {
-                [self setValue:[[self dateFormatter] dateFromString:jsonValue]
-                        forKey:propertyName];
-            } else if ([jsonValue isKindOfClass:NSClassFromString(propertyType)]) {
-                [self setValue:jsonValue forKey:propertyName];   
-            }
-        }
-        
-        NSNumber *jsonValue = [jsonObject valueForKeyPath:@"id"];
-        if (jsonValue != nil) {
-            [self setValue:jsonValue forKey:@"id"];
-        }
-        
-        if ([self respondsToSelector:@selector(setSyncDate:)]) {
-            self.syncDate = [NSDate date];
-        }
-        
-        free(properties);    
+    if (!self || !jsonObject) {
+        return;
     }
+    
+    unsigned int outCount;
+    objc_property_t *properties = class_copyPropertyList([self class], &outCount);        
+    
+    for(int i = 0; i < outCount; i++) {
+        objc_property_t property;
+        NSString *propertyName, *propertyAtr, *typeAttribute, *propertyType;
+        NSArray *attributes;
+        id jsonValue;
+        
+        property        = properties[i];
+        propertyName    = [NSString stringWithCString:property_getName(property) encoding:NSUTF8StringEncoding];
+        jsonValue       = [jsonObject valueForKeyPath:propertyName];
+        if ([jsonValue isEqual:[NSNull null]] || !jsonValue) {
+            continue;
+        }            
+        
+        propertyAtr     = [NSString stringWithCString:property_getAttributes(property) encoding:NSUTF8StringEncoding];
+        attributes      = [propertyAtr componentsSeparatedByString:@","];
+        typeAttribute   = [attributes objectAtIndex:0];
+        propertyType    = [typeAttribute substringFromIndex:2];
+        propertyType    = [propertyType stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+        
+        if ([propertyAtr rangeOfString:@"NSDate"].location != NSNotFound && [self dateFormatter]) {
+            [self setValue:[[self dateFormatter] dateFromString:jsonValue] forKey:propertyName];
+        } else if ([jsonValue isKindOfClass:NSClassFromString(propertyType)]) {
+            [self setValue:jsonValue forKey:propertyName];   
+        }
+    }
+    
+    NSNumber *jsonIdValue = [jsonObject valueForKeyPath:@"id"];
+    if (jsonIdValue != nil) {
+        [self setValue:jsonIdValue forKey:@"id"];
+    }
+    
+    if ([self respondsToSelector:@selector(setSyncDate:)]) {
+        self.syncDate = [NSDate date];
+    }
+    
+    free(properties);
 }
 
 #pragma mark - Initialization
@@ -168,7 +172,7 @@
     
     for (id jsonString in items) {                                        
         AEManagedObject *entity = [self createOrUpdateFromJsonObject:jsonString
-                                inManagedObjectContext:context];
+                                              inManagedObjectContext:context];
         [result addObject:entity];                     
     }
     
