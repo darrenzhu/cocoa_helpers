@@ -23,7 +23,7 @@
       managedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 + (id)requestFirstResult:(NSFetchRequest *)request
     managedObjectContext:(NSManagedObjectContext *)managedObjectContext;
-+ (BOOL)save:(NSManagedObjectContext*)managedObjectContext;
++ (BOOL)save:(NSManagedObjectContext *)managedObjectContext;
 
 + (NSFetchRequest *)requestEntityWithName:(NSString *)entityName
                             withPredicate:(NSPredicate *)predicate

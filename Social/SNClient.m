@@ -36,8 +36,9 @@
     if (![self isSessionValid]) {
         [self doLoginWorkflow];
     } else {
-        if (_delegate)
+        if (_delegate) {
             [_delegate clientDidLogin:self];
+        }
     }
 }
 
@@ -59,7 +60,6 @@
             if (failed) {
                 failed(operation.error);
             }
-            NSLog(@"Error: %@, %@", operation.error, operation.responseString);
         }
     };
     [operation start];

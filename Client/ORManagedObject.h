@@ -18,8 +18,7 @@
 
 #pragma mark - Initialization
 - (id)initFromJSON:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
-+ (ORManagedObject *)createOrUpdate:(id)json
-             inManagedObjectContext:(NSManagedObjectContext *)context;
++ (ORManagedObject *)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
 + (NSEntityDescription *)enityDescriptionInContext:(NSManagedObjectContext *)context;
 
 #pragma mark - JSON serializaiton

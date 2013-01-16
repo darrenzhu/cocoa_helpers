@@ -26,14 +26,14 @@
 @end
 
 @implementation TWClient
-static NSString* serverUrl = @"https://api.twitter.com/oauth/authorize?oauth_token=";
+static NSString *serverUrl = @"https://api.twitter.com/oauth/authorize?oauth_token=";
 
-static NSString* oauthVersion = @"1.0";
-static NSString* oauthSignatureMethodName = @"HMAC-SHA1";
+static NSString *oauthVersion = @"1.0";
+static NSString *oauthSignatureMethodName = @"HMAC-SHA1";
 
-static NSString* accessTokenKey = @"TWAccessTokenKey";
-static NSString* accessTokenSecretKey = @"TWAccessTokenKeySecret";
-static NSString* expirationDateKey = @"TWExpirationDateKey";
+static NSString *accessTokenKey = @"TWAccessTokenKey";
+static NSString *accessTokenSecretKey = @"TWAccessTokenKeySecret";
+static NSString *expirationDateKey = @"TWExpirationDateKey";
 
 - (id)initWithKey:(NSString *)consumerKey
            secret:(NSString *)consumerSecret

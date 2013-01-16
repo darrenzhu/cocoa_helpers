@@ -10,7 +10,7 @@
 
 @interface TTAlert : NSObject
 
-+ (void)composeAlertViewWithTitle:(NSString*)title 
-                       andMessage:(NSString*)message;
++ (void)composeAlertViewWithTitle:(NSString *)title 
+                       andMessage:(NSString *)message;
 
 @end

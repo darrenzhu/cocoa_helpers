@@ -71,33 +71,24 @@ static Facebook *currentFacebook;
     [self.delegate clientDidLogin:self];
 }
 
-- (void)fbDidNotLogin:(BOOL)cancelled {
-    NSLog(@"fbDidNotLogin");
-}
+- (void)fbDidNotLogin:(BOOL)cancelled {}
 
 - (void)fbDidExtendToken:(NSString *)accessToken expiresAt:(NSDate *)expiresAt {}
 
-- (void)fbDidLogout {
-    NSLog(@"fbDidLogout");
-}
+- (void)fbDidLogout {}
 
-- (void)fbSessionInvalidated {
-    NSLog(@"fbSessionInvalidated");
-}
+- (void)fbSessionInvalidated {}
 
 #pragma mark - FBRequestDelegate
 - (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response {
-    [TTAlert composeAlertViewWithTitle:@""
-                            andMessage:NSLocalizedString(@"Ссылка успешно добавлена", nil)];
+    [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"Ссылка успешно добавлена", nil)];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
     NSString *message = NSLocalizedString(@"К сожалению произошла ошибка", nil);
-    [TTAlert composeAlertViewWithTitle:@""
-                            andMessage:message];
+    [TTAlert composeAlertViewWithTitle:@"" andMessage:message];
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-    NSLog(@"Error %@", error);
 }
 
 @end

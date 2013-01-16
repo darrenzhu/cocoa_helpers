@@ -45,8 +45,7 @@ static NSString* scheme = @"DataModel";
     static NSManagedObjectModel *_managedObjectModel;    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:scheme
-                                                                 withExtension:@"momd"];
+        NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:scheme withExtension:@"momd"];
         _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];  
     });
     return _managedObjectModel;
@@ -63,8 +62,7 @@ static NSString* scheme = @"DataModel";
         
         NSError *error = nil;
         NSManagedObjectModel *model = [self managedObjectModel];
-        _persistentStoreCoordinator =
-            [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
+        _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
 #if OCUNIT
         if (![_persistentStoreCoordinator addPersistentStoreWithType:NSInMemoryStoreType
                                                       configuration:nil
@@ -73,8 +71,7 @@ static NSString* scheme = @"DataModel";
                                                               error:&error])
 #else
         NSString *fileName = [NSString stringWithFormat:@"%@.sqlite", scheme];
-        NSArray *pathes =
-            NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSArray *pathes = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
         NSString *appPath = [pathes lastObject];
         appPath = [appPath stringByAppendingPathComponent:fileName];
         NSURL *storeURL = [NSURL fileURLWithPath:appPath isDirectory:NO];
@@ -168,11 +165,13 @@ static NSString* scheme = @"DataModel";
     
     NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];        
     
-    if (predicate)
+    if (predicate) {
         [fetchRequest setPredicate:predicate];
+    }
     
-    if (sortingDescriptors)
+    if (sortingDescriptors) {
         [fetchRequest setSortDescriptors:sortingDescriptors];
+    }
     
     return fetchRequest;
 }

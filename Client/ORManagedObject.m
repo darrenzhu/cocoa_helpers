@@ -75,17 +75,14 @@
                 continue;
             }            
             
-            NSString *propertyAtr =
-                [NSString stringWithCString:property_getAttributes(property)
-                                   encoding:NSUTF8StringEncoding];
+            NSString *propertyAtr = [NSString stringWithCString:property_getAttributes(property)
+                                                       encoding:NSUTF8StringEncoding];
             NSArray *attributes = [propertyAtr componentsSeparatedByString:@","];
             NSString *typeAttribute = [attributes objectAtIndex:0];
             NSString *propertyType = [typeAttribute substringFromIndex:2];
-            propertyType = [propertyType stringByReplacingOccurrencesOfString:@"\""
-                                                                   withString:@""];
+            propertyType = [propertyType stringByReplacingOccurrencesOfString:@"\"" withString:@""];
             
-            if ([propertyAtr rangeOfString:@"NSDate"].location != NSNotFound &&
-                [self dateFormatter]) {
+            if ([propertyAtr rangeOfString:@"NSDate"].location != NSNotFound && [self dateFormatter]) {
                 [self setValue:[[self dateFormatter] dateFromString:jsonValue]
                         forKey:propertyName];
             } else if ([jsonValue isKindOfClass:NSClassFromString(propertyType)]) {
@@ -128,19 +125,19 @@
     return nil;
 }
 
-+ (ORManagedObject *)createOrUpdate:(id)json
-             inManagedObjectContext:(NSManagedObjectContext *)context {
++ (ORManagedObject *)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
     NSNumber *curId = [json valueForKeyPath:@"id"];        
     if (curId != nil) {
-        ORManagedObject *entity = [self requestFirstResult:[self find:curId]
-                                      managedObjectContext:context];
-        if (entity) {
-            [entity updateFromJSON:json];  
-            return entity;
-        }
+        return nil;
+    }
+
+    ORManagedObject *entity = [self requestFirstResult:[self find:curId] managedObjectContext:context];
+    if (entity) {
+        [entity updateFromJSON:json];
+        return entity;
     }
     
-    return [self create:json inManagedObjectContext:context];    
+    return [self create:json inManagedObjectContext:context];
 }
 
 + (NSEntityDescription *)enityDescriptionInContext:(NSManagedObjectContext *)context {
@@ -200,58 +197,56 @@
                 success:(void (^)(NSArray *entities))success
                 failure:(void (^)(NSError *error))failure {
     
-    [client getPath:path parameters:parameters success:^(AFHTTPRequestOperation *operation,
-                                                         id responseObject) {        
-        if (responseObject) { 
-            if (jsonResponse) {
-                jsonResponse(responseObject);
+    [client getPath:path parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {        
+        if (!responseObject) {
+            return;
+        }
+        
+        if (jsonResponse) {
+            jsonResponse(responseObject);
+        }
+        
+        if (success) {
+            NSArray *items = responseObject;
+            if ([self jsonRoot]) {
+                items = [responseObject valueForKeyPath:[self jsonRoot]];
             }
             
-            if (success) {
-                NSArray *items = responseObject;
-                if ([self jsonRoot]) {
-                    items = [responseObject valueForKeyPath:[self jsonRoot]];
-                }
-                
-                if ([items isKindOfClass:NSArray.class]) {                      
-                    dispatch_async([self jsonQueue], ^{
-                        [self formatJson:items success:success];
-                    });                
-                }
+            if ([items isKindOfClass:NSArray.class]) {
+                dispatch_async([self jsonQueue], ^{
+                    [self formatJson:items success:success];
+                });
             }
-        }        
+        }
+
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (failure)
+        if (failure) {
             failure(error);
+        }
     }];
 }
 
 #pragma mark - Local fetch (new syntax)
 + (NSFetchRequest *)all {
-    return [CoreDataHelper requestWithPredicate:nil 
-                          andSortingDescriptors:nil];;
+    return [CoreDataHelper requestWithPredicate:nil andSortingDescriptors:nil];;
 }
 
 + (NSFetchRequest *)find:(id)itemId {
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"id = %@", itemId];
-    return [CoreDataHelper requestWithPredicate:predicate
-                          andSortingDescriptors:nil];
+    return [CoreDataHelper requestWithPredicate:predicate andSortingDescriptors:nil];
 }
 
 + (NSFetchRequest *)where:(NSPredicate *)wherePredicate {
-    return [CoreDataHelper requestWithPredicate:wherePredicate
-                          andSortingDescriptors:nil];
+    return [CoreDataHelper requestWithPredicate:wherePredicate andSortingDescriptors:nil];
 }
 
 + (NSArray *)requestResult:(NSFetchRequest *)request
       managedObjectContext:(NSManagedObjectContext *)managedObjectContext {
     [request setEntity:[self enityDescriptionInContext:managedObjectContext]];
-    return [CoreDataHelper requestResult:request 
-                    managedObjectContext:managedObjectContext];
+    return [CoreDataHelper requestResult:request managedObjectContext:managedObjectContext];
 }
 
-+ (id)requestFirstResult:(NSFetchRequest *)request
-    managedObjectContext:(NSManagedObjectContext *)managedObjectContext {
++ (id)requestFirstResult:(NSFetchRequest *)request managedObjectContext:(NSManagedObjectContext *)managedObjectContext {
     [request setFetchLimit:1];
     NSArray *result = [self requestResult:request managedObjectContext:managedObjectContext];
     

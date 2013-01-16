@@ -10,11 +10,11 @@
 
 @implementation TTAlert
 
-+ (void)composeAlertViewWithTitle:(NSString*)title 
-                       andMessage:(NSString*)message
++ (void)composeAlertViewWithTitle:(NSString *)title 
+                       andMessage:(NSString *)message
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView* alert = [[[UIAlertView alloc] initWithTitle:title 
+        UIAlertView *alert = [[[UIAlertView alloc] initWithTitle:title
                                                          message:message 
                                                         delegate:nil 
                                                cancelButtonTitle:NSLocalizedString(@"Ok", nil)
