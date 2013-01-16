@@ -24,15 +24,14 @@
 		956DFD4F16A63714004858C6 /* TestEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD4E16A63714004858C6 /* TestEntity.m */; };
 		956DFD5216A63BFC004858C6 /* AEManagedObjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD5116A63BFC004858C6 /* AEManagedObjectTests.m */; };
 		956DFD7816A65031004858C6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFD3F16A62DF4004858C6 /* UIKit.framework */; };
-		956DFDA916A65564004858C6 /* NSFetchRequest+orderBy.h in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2116A62DA4004858C6 /* NSFetchRequest+orderBy.h */; };
 		956DFDAA16A65564004858C6 /* NSFetchRequest+orderBy.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2216A62DA4004858C6 /* NSFetchRequest+orderBy.m */; };
-		956DFDAB16A65564004858C6 /* AEManagedObject.h in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2616A62DA4004858C6 /* AEManagedObject.h */; };
 		956DFDAC16A65564004858C6 /* AEManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2716A62DA4004858C6 /* AEManagedObject.m */; };
-		956DFDAD16A65564004858C6 /* AECoreDataHelper.h in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2916A62DA4004858C6 /* AECoreDataHelper.h */; };
 		956DFDAE16A65564004858C6 /* AECoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2A16A62DA4004858C6 /* AECoreDataHelper.m */; };
 		956DFDB416A65F90004858C6 /* mocked_respond.json in Resources */ = {isa = PBXBuildFile; fileRef = 956DFDB316A65F90004858C6 /* mocked_respond.json */; };
 		956DFDB716A6606C004858C6 /* AEHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDB616A6606C004858C6 /* AEHTTPClient.m */; };
 		956DFDCA16A68734004858C6 /* NSArray+orderBy.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDC916A68734004858C6 /* NSArray+orderBy.m */; };
+		956DFDDA16A738A3004858C6 /* NSArray+orderByTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDD916A738A3004858C6 /* NSArray+orderByTests.m */; };
+		956DFDDC16A739FB004858C6 /* NSArray+orderBy.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDC916A68734004858C6 /* NSArray+orderBy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -81,6 +80,8 @@
 		956DFDB616A6606C004858C6 /* AEHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEHTTPClient.m; sourceTree = "<group>"; };
 		956DFDC816A68734004858C6 /* NSArray+orderBy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+orderBy.h"; sourceTree = "<group>"; };
 		956DFDC916A68734004858C6 /* NSArray+orderBy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+orderBy.m"; sourceTree = "<group>"; };
+		956DFDD816A738A3004858C6 /* NSArray+orderByTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+orderByTests.h"; sourceTree = "<group>"; };
+		956DFDD916A738A3004858C6 /* NSArray+orderByTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+orderByTests.m"; sourceTree = "<group>"; };
 		B2D4354336A44AFDACA09D98 /* libPods-AEHelpersTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AEHelpersTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -169,6 +170,8 @@
 				956DFD5016A63BFC004858C6 /* AEManagedObjectTests.h */,
 				956DFD5116A63BFC004858C6 /* AEManagedObjectTests.m */,
 				956DFCE116A614B7004858C6 /* Supporting Files */,
+				956DFDD816A738A3004858C6 /* NSArray+orderByTests.h */,
+				956DFDD916A738A3004858C6 /* NSArray+orderByTests.m */,
 			);
 			path = AEHelpersTests;
 			sourceTree = "<group>";
@@ -389,17 +392,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				956DFDA916A65564004858C6 /* NSFetchRequest+orderBy.h in Sources */,
+				956DFDDC16A739FB004858C6 /* NSArray+orderBy.m in Sources */,
 				956DFDAA16A65564004858C6 /* NSFetchRequest+orderBy.m in Sources */,
-				956DFDAB16A65564004858C6 /* AEManagedObject.h in Sources */,
 				956DFDAC16A65564004858C6 /* AEManagedObject.m in Sources */,
-				956DFDAD16A65564004858C6 /* AECoreDataHelper.h in Sources */,
 				956DFDAE16A65564004858C6 /* AECoreDataHelper.m in Sources */,
 				956DFCE816A614B7004858C6 /* AECoreDataHelperTests.m in Sources */,
 				956DFD4C16A634B8004858C6 /* DataModel.xcdatamodeld in Sources */,
 				956DFD4F16A63714004858C6 /* TestEntity.m in Sources */,
 				956DFD5216A63BFC004858C6 /* AEManagedObjectTests.m in Sources */,
 				956DFDB716A6606C004858C6 /* AEHTTPClient.m in Sources */,
+				956DFDDA16A738A3004858C6 /* NSArray+orderByTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
