@@ -13,7 +13,7 @@
 		956DFCDB16A614B7004858C6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCDA16A614B7004858C6 /* UIKit.framework */; };
 		956DFCDC16A614B7004858C6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCC916A614B6004858C6 /* Foundation.framework */; };
 		956DFCDF16A614B7004858C6 /* libAEHelpers.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCC616A614B6004858C6 /* libAEHelpers.a */; };
-		956DFCE816A614B7004858C6 /* AEHelpersTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFCE716A614B7004858C6 /* AEHelpersTests.m */; };
+		956DFCE816A614B7004858C6 /* AECoreDataHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFCE716A614B7004858C6 /* AECoreDataHelperTests.m */; };
 		956DFD3616A62DA4004858C6 /* NSFetchRequest+orderBy.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2216A62DA4004858C6 /* NSFetchRequest+orderBy.m */; };
 		956DFD3716A62DA4004858C6 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2416A62DA4004858C6 /* NSString+Additions.m */; };
 		956DFD3816A62DA4004858C6 /* AEManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2716A62DA4004858C6 /* AEManagedObject.m */; };
@@ -58,8 +58,8 @@
 		956DFCD816A614B7004858C6 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		956DFCDA16A614B7004858C6 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		956DFCE216A614B7004858C6 /* AEHelpersTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AEHelpersTests-Info.plist"; sourceTree = "<group>"; };
-		956DFCE616A614B7004858C6 /* AEHelpersTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AEHelpersTests.h; sourceTree = "<group>"; };
-		956DFCE716A614B7004858C6 /* AEHelpersTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AEHelpersTests.m; sourceTree = "<group>"; };
+		956DFCE616A614B7004858C6 /* AECoreDataHelperTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AECoreDataHelperTests.h; sourceTree = "<group>"; };
+		956DFCE716A614B7004858C6 /* AECoreDataHelperTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AECoreDataHelperTests.m; sourceTree = "<group>"; };
 		956DFD2116A62DA4004858C6 /* NSFetchRequest+orderBy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFetchRequest+orderBy.h"; sourceTree = "<group>"; };
 		956DFD2216A62DA4004858C6 /* NSFetchRequest+orderBy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFetchRequest+orderBy.m"; sourceTree = "<group>"; };
 		956DFD2316A62DA4004858C6 /* NSString+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Additions.h"; sourceTree = "<group>"; };
@@ -161,8 +161,8 @@
 		956DFCE016A614B7004858C6 /* AEHelpersTests */ = {
 			isa = PBXGroup;
 			children = (
-				956DFCE616A614B7004858C6 /* AEHelpersTests.h */,
-				956DFCE716A614B7004858C6 /* AEHelpersTests.m */,
+				956DFCE616A614B7004858C6 /* AECoreDataHelperTests.h */,
+				956DFCE716A614B7004858C6 /* AECoreDataHelperTests.m */,
 				956DFCE116A614B7004858C6 /* Supporting Files */,
 			);
 			path = AEHelpersTests;
@@ -333,7 +333,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				956DFCE816A614B7004858C6 /* AEHelpersTests.m in Sources */,
+				956DFCE816A614B7004858C6 /* AECoreDataHelperTests.m in Sources */,
 				956DFD4C16A634B8004858C6 /* DataModel.xcdatamodeld in Sources */,
 				956DFD4F16A63714004858C6 /* TestEntity.m in Sources */,
 			);
