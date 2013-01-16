@@ -55,10 +55,10 @@ static NSString* scheme = @"DataModel";
     static NSPersistentStoreCoordinator *_persistentStoreCoordinator;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSDictionary *options =
-            [NSDictionary dictionaryWithObjectsAndKeys:
-             [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
-             [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption, nil];
+        NSDictionary *options = @{
+            NSMigratePersistentStoresAutomaticallyOption: [NSNumber numberWithBool:YES],
+            NSInferMappingModelAutomaticallyOption: [NSNumber numberWithBool:YES]
+        };
         
         NSError *error = nil;
         NSManagedObjectModel *model = [self managedObjectModel];
