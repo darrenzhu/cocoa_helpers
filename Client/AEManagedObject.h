@@ -17,12 +17,12 @@
 @property(retain, nonatomic) NSDate *syncDate;
 
 #pragma mark - Initialization
-- (id)initFromJSON:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
-+ (AEManagedObject *)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
+- (id)initFromJSONObject:(id)jsonObject inManagedObjectContext:(NSManagedObjectContext *)context;
++ (AEManagedObject *)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
 + (NSEntityDescription *)enityDescriptionInContext:(NSManagedObjectContext *)context;
 
 #pragma mark - JSON serializaiton
-- (void)updateFromJSON:(id)json;
+- (void)updateFromJSONObject:(id)jsonObject;
 - (NSString *)toJSONString;
 
 #pragma mark - Remote fetch

@@ -8,7 +8,6 @@
 
 #import "AEManagedObject.h"
 #import <objc/runtime.h>
-
 #import "JSONKit.h"
 
 @implementation AEManagedObject
@@ -61,8 +60,8 @@
     return [jsonObject JSONString];
 }
 
-- (void)updateFromJSON:(id)json {    
-    if (self && json) {
+- (void)updateFromJSONObject:(id)jsonObject {    
+    if (self && jsonObject) {
         unsigned int outCount;
         objc_property_t *properties = class_copyPropertyList([self class], &outCount);        
         
@@ -70,7 +69,7 @@
             objc_property_t property = properties[i];            
             NSString *propertyName = [NSString stringWithCString:property_getName(property)
                                                         encoding:NSUTF8StringEncoding];
-            id jsonValue = [json valueForKeyPath:propertyName];
+            id jsonValue = [jsonObject valueForKeyPath:propertyName];
             if ([jsonValue isEqual:[NSNull null]] || jsonValue == nil) {
                 continue;
             }            
@@ -90,7 +89,7 @@
             }
         }
         
-        NSNumber *jsonValue = [json valueForKeyPath:@"id"];
+        NSNumber *jsonValue = [jsonObject valueForKeyPath:@"id"];
         if (jsonValue != nil) {
             [self setValue:jsonValue forKey:@"id"];
         }
@@ -104,20 +103,20 @@
 }
 
 #pragma mark - Initialization
-- (id)initFromJSON:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
+- (id)initFromJSONObject:(id)jsonObject inManagedObjectContext:(NSManagedObjectContext *)context {
     NSEntityDescription *description = [self.class enityDescriptionInContext:context];
     self = [super initWithEntity:description insertIntoManagedObjectContext:context];
     if (self) {
-        [self updateFromJSON:json];
+        [self updateFromJSONObject:jsonObject];
     }
     return self;    
 }
 
-+ (AEManagedObject *)create:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {    
++ (AEManagedObject *)createFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {    
     Class class = self.class;
     
     if (class) {
-        AEManagedObject *entity = [[[class alloc] initFromJSON:json                                                     
+        AEManagedObject *entity = [[[class alloc] initFromJSONObject:json                                                     
                                         inManagedObjectContext:context] autorelease]; 
         return entity;
     }
@@ -125,19 +124,19 @@
     return nil;
 }
 
-+ (AEManagedObject *)createOrUpdate:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
++ (AEManagedObject *)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
     NSNumber *curId = [json valueForKeyPath:@"id"];        
-    if (curId != nil) {
+    if (curId == nil) {
         return nil;
     }
 
     AEManagedObject *entity = [self requestFirstResult:[self find:curId] managedObjectContext:context];
     if (entity) {
-        [entity updateFromJSON:json];
+        [entity updateFromJSONObject:json];
         return entity;
     }
     
-    return [self create:json inManagedObjectContext:context];
+    return [self createFromJsonObject:json inManagedObjectContext:context];
 }
 
 + (NSEntityDescription *)enityDescriptionInContext:(NSManagedObjectContext *)context {
@@ -158,7 +157,7 @@
     NSMutableArray *result = [NSMutableArray array];
     
     for (id jsonString in items) {                                        
-        AEManagedObject *entity = [self createOrUpdate:jsonString
+        AEManagedObject *entity = [self createOrUpdateFromJsonObject:jsonString
                                 inManagedObjectContext:context];
         [result addObject:entity];                     
     }
