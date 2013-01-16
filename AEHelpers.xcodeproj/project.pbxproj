@@ -32,6 +32,7 @@
 		956DFDAE16A65564004858C6 /* AECoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD2A16A62DA4004858C6 /* AECoreDataHelper.m */; };
 		956DFDB416A65F90004858C6 /* mocked_respond.json in Resources */ = {isa = PBXBuildFile; fileRef = 956DFDB316A65F90004858C6 /* mocked_respond.json */; };
 		956DFDB716A6606C004858C6 /* AEHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDB616A6606C004858C6 /* AEHTTPClient.m */; };
+		956DFDCA16A68734004858C6 /* NSArray+orderBy.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDC916A68734004858C6 /* NSArray+orderBy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -78,6 +79,8 @@
 		956DFDB316A65F90004858C6 /* mocked_respond.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mocked_respond.json; sourceTree = "<group>"; };
 		956DFDB516A6606C004858C6 /* AEHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEHTTPClient.h; sourceTree = "<group>"; };
 		956DFDB616A6606C004858C6 /* AEHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEHTTPClient.m; sourceTree = "<group>"; };
+		956DFDC816A68734004858C6 /* NSArray+orderBy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+orderBy.h"; sourceTree = "<group>"; };
+		956DFDC916A68734004858C6 /* NSArray+orderBy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+orderBy.m"; sourceTree = "<group>"; };
 		B2D4354336A44AFDACA09D98 /* libPods-AEHelpersTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AEHelpersTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -187,6 +190,8 @@
 		956DFD2016A62DA4004858C6 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				956DFDC816A68734004858C6 /* NSArray+orderBy.h */,
+				956DFDC916A68734004858C6 /* NSArray+orderBy.m */,
 				956DFD2116A62DA4004858C6 /* NSFetchRequest+orderBy.h */,
 				956DFD2216A62DA4004858C6 /* NSFetchRequest+orderBy.m */,
 				956DFD2316A62DA4004858C6 /* NSString+Additions.h */,
@@ -376,6 +381,7 @@
 				956DFD3816A62DA4004858C6 /* AEManagedObject.m in Sources */,
 				956DFD3916A62DA4004858C6 /* AECoreDataHelper.m in Sources */,
 				956DFD3A16A62DA4004858C6 /* AEAlert.m in Sources */,
+				956DFDCA16A68734004858C6 /* NSArray+orderBy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

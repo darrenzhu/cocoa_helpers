@@ -10,8 +10,8 @@
 
 @interface NSArray (orderBy)
 
-- (NSArray*)orderBy:(NSString*)firstSortingParam, ... NS_REQUIRES_NIL_TERMINATION;
-- (NSArray*)orderByDescriptors:(NSSortDescriptor*)firstDescriptor, ... NS_REQUIRES_NIL_TERMINATION;
+- (NSArray *)orderBy:(NSString *)firstSortingParam, ... NS_REQUIRES_NIL_TERMINATION;
+- (NSArray *)orderByDescriptors:(NSSortDescriptor *)firstDescriptor, ... NS_REQUIRES_NIL_TERMINATION;
 - (id)first;
 
 @end
