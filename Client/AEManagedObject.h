@@ -64,7 +64,7 @@
 @end
 
 @interface AEManagedObject (Pivate)
-- (NSDateFormatter *)dateFormatter;
++ (NSDateFormatter *)dateFormatter;
 + (NSString *)jsonRoot;
 + (BOOL)requiresPersistence;
 + (NSDictionary *)propertyMappings;

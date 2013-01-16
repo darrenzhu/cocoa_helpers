@@ -39,18 +39,22 @@
     return _jsonQueue;
 }
 
-- (NSDateFormatter *)dateFormatter {
-    NSDateFormatter *rfc3339DateFormatter;
-    NSLocale *enUSPOSIXLocale;
++ (NSDateFormatter *)dateFormatter {
+    static NSDateFormatter *_rfc3339DateFormatter = nil;
     
-    rfc3339DateFormatter    = [[[NSDateFormatter alloc] init] autorelease];
-    enUSPOSIXLocale         = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSLocale *enUSPOSIXLocale;
+        
+        _rfc3339DateFormatter   = [[[NSDateFormatter alloc] init] autorelease];
+        enUSPOSIXLocale         = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease];
+        
+        [_rfc3339DateFormatter setLocale:enUSPOSIXLocale];
+        [_rfc3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+        [_rfc3339DateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    });
     
-    [rfc3339DateFormatter setLocale:enUSPOSIXLocale];
-    [rfc3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
-    [rfc3339DateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-    
-    return rfc3339DateFormatter;
+    return _rfc3339DateFormatter;
 }
 
 #pragma mark - Serialization
@@ -117,8 +121,8 @@
         propertyType    = [typeAttribute substringFromIndex:2];
         propertyType    = [propertyType stringByReplacingOccurrencesOfString:@"\"" withString:@""];
         
-        if ([propertyAtr rangeOfString:@"NSDate"].location != NSNotFound && [self dateFormatter]) {
-            [self setValue:[[self dateFormatter] dateFromString:jsonValue] forKey:propertyName];
+        if ([propertyAtr rangeOfString:@"NSDate"].location != NSNotFound && [[self class] dateFormatter]) {
+            [self setValue:[[[self class] dateFormatter] dateFromString:jsonValue] forKey:propertyName];
         } else if ([jsonValue isKindOfClass:NSClassFromString(propertyType)]) {
             [self setValue:jsonValue forKey:propertyName];   
         }
