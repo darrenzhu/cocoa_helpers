@@ -8,9 +8,12 @@
 
 #import "TestEntity.h"
 
-
 @implementation TestEntity
-
+@dynamic id;
 @dynamic testField;
+
++ (NSString *)jsonRoot {
+    return nil;
+}
 
 @end

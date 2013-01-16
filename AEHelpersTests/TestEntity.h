@@ -6,12 +6,9 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
+#import "AEManagedObject.h"
 
-
-@interface TestEntity : NSManagedObject
-
-@property (nonatomic, retain) NSString * testField;
-
+@interface TestEntity : AEManagedObject
+@property (nonatomic, retain) NSNumber *id;
+@property (nonatomic, retain) NSString *testField;
 @end
