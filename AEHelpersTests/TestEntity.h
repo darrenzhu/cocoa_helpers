@@ -26,4 +26,5 @@
 @interface TestEntity : AEManagedObject
 @property (nonatomic, retain) NSNumber *id;
 @property (nonatomic, retain) NSString *testField;
+@property (nonatomic, retain) NSString *anotherField;
 @end

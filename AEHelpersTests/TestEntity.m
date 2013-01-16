@@ -26,6 +26,7 @@
 @implementation TestEntity
 @dynamic id;
 @dynamic testField;
+@dynamic anotherField;
 
 + (NSString *)jsonRoot {
     return nil;
