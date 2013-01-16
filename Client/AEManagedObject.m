@@ -43,8 +43,8 @@
     NSDateFormatter *rfc3339DateFormatter;
     NSLocale *enUSPOSIXLocale;
     
-    rfc3339DateFormatter = [[[NSDateFormatter alloc] init] autorelease];
-    enUSPOSIXLocale = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease];
+    rfc3339DateFormatter    = [[[NSDateFormatter alloc] init] autorelease];
+    enUSPOSIXLocale         = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease];
     
     [rfc3339DateFormatter setLocale:enUSPOSIXLocale];
     [rfc3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
@@ -74,10 +74,10 @@
         NSString *propertyAtr = [NSString stringWithCString:property_getAttributes(property)
                                                    encoding:NSUTF8StringEncoding];
         
-        if ([propertyAtr rangeOfString:@"NSString"].location != NSNotFound ||
-            [propertyAtr rangeOfString:@"NSNumber"].location != NSNotFound ||
-            [propertyAtr rangeOfString:@"NSArray"].location != NSNotFound ||
-            [propertyAtr rangeOfString:@"NSDictionary"].location != NSNotFound) {
+        if ([propertyAtr rangeOfString:@"NSString"].location        != NSNotFound ||
+            [propertyAtr rangeOfString:@"NSNumber"].location        != NSNotFound ||
+            [propertyAtr rangeOfString:@"NSArray"].location         != NSNotFound ||
+            [propertyAtr rangeOfString:@"NSDictionary"].location    != NSNotFound) {
             
             NSString *propertyName = [NSString stringWithCString:property_getName(property)
                                                         encoding:NSUTF8StringEncoding];
@@ -145,8 +145,7 @@
     Class class = self.class;
     
     if (class) {
-        AEManagedObject *entity = [[[class alloc] initFromJSONObject:json                                                     
-                                        inManagedObjectContext:context] autorelease]; 
+        AEManagedObject *entity = [[[class alloc] initFromJSONObject:json inManagedObjectContext:context] autorelease]; 
         return entity;
     }
     
@@ -182,12 +181,11 @@
     return YES;
 }
 
-+ (void)formatJson:(NSArray *)items 
-           success:(void (^)(NSArray *entities))success {    
 + (NSDictionary *)propertyMappings {
     return nil;
 }
 
++ (void)formatJson:(NSArray *)items success:(void (^)(NSArray *entities))success {    
 
     NSManagedObjectContext *context = [[AECoreDataHelper createManagedObjectContext] retain];
     [AECoreDataHelper addMergeNotificationForMainContext:context];
