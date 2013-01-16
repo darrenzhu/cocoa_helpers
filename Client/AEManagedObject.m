@@ -54,6 +54,16 @@
 }
 
 #pragma mark - Serialization
++ (NSString *)mappedPropertyNameForPropertyName:(NSString *)propertyName {
+    NSDictionary *mappingsDictionary = [[self class] propertyMappings];
+    NSString *mappedProperty;
+    if (mappingsDictionary && ( mappedProperty = [mappingsDictionary objectForKey:propertyName] )) {
+        return mappedProperty;
+    }
+
+    return propertyName;
+}
+
 - (NSString *)toJSONString {
     unsigned int outCount;
     objc_property_t *properties = class_copyPropertyList([self class], &outCount);            
@@ -71,12 +81,11 @@
             
             NSString *propertyName = [NSString stringWithCString:property_getName(property)
                                                         encoding:NSUTF8StringEncoding];
-            id propertyValue = [self valueForKeyPath:propertyName];            
-            [jsonObject setValue:propertyValue forKey:propertyName];
-        }         
+            id propertyValue = [self valueForKeyPath:propertyName];
+            [jsonObject setValue:propertyValue forKey:[[self class] mappedPropertyNameForPropertyName:propertyName]];
+        }
     }
     free(properties);    
-    [jsonObject setValue:[self valueForKey:@"id"] forKey:@"id"];
     
     return [jsonObject JSONString];
 }
@@ -97,7 +106,7 @@
         
         property        = properties[i];
         propertyName    = [NSString stringWithCString:property_getName(property) encoding:NSUTF8StringEncoding];
-        jsonValue       = [jsonObject valueForKeyPath:propertyName];
+        jsonValue       = [jsonObject valueForKeyPath:[[self class] mappedPropertyNameForPropertyName:propertyName]];
         if ([jsonValue isEqual:[NSNull null]] || !jsonValue) {
             continue;
         }            
@@ -113,11 +122,6 @@
         } else if ([jsonValue isKindOfClass:NSClassFromString(propertyType)]) {
             [self setValue:jsonValue forKey:propertyName];   
         }
-    }
-    
-    NSNumber *jsonIdValue = [jsonObject valueForKeyPath:@"id"];
-    if (jsonIdValue != nil) {
-        [self setValue:jsonIdValue forKey:@"id"];
     }
     
     if ([self respondsToSelector:@selector(setSyncDate:)]) {
@@ -150,7 +154,7 @@
 }
 
 + (AEManagedObject *)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
-    NSNumber *curId = [json valueForKeyPath:@"id"];        
+    id curId = [json valueForKeyPath:[self mappedPropertyNameForPropertyName:@"id"]];
     if (curId == nil) {
         return nil;
     }
@@ -180,6 +184,10 @@
 
 + (void)formatJson:(NSArray *)items 
            success:(void (^)(NSArray *entities))success {    
++ (NSDictionary *)propertyMappings {
+    return nil;
+}
+
 
     NSManagedObjectContext *context = [[AECoreDataHelper createManagedObjectContext] retain];
     [AECoreDataHelper addMergeNotificationForMainContext:context];

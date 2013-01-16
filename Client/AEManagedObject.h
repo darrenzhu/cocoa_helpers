@@ -67,4 +67,5 @@
 - (NSDateFormatter *)dateFormatter;
 + (NSString *)jsonRoot;
 + (BOOL)requiresPersistence;
++ (NSDictionary *)propertyMappings;
 @end

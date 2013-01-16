@@ -34,15 +34,15 @@
 - (void)setUp {
     [super setUp];
     
-    id jsonObject = [@"{\"id\": 1,\"testField\": \"b\"}" objectFromJSONString];
+    id jsonObject = [@"{\"entity_id\": 1,\"testField\": \"b\"}" objectFromJSONString];
     TestEntity *first = (TestEntity *)[TestEntity createOrUpdateFromJsonObject:jsonObject
                                                         inManagedObjectContext:mainThreadContext()];
     
-    jsonObject = [@"{\"id\": 2,\"testField\": \"c\"}" objectFromJSONString];
+    jsonObject = [@"{\"entity_id\": 2,\"testField\": \"c\"}" objectFromJSONString];
     TestEntity *second = (TestEntity *)[TestEntity createOrUpdateFromJsonObject:jsonObject
                                                          inManagedObjectContext:mainThreadContext()];
     
-    jsonObject = [@"{\"id\": 3,\"testField\": \"a\"}" objectFromJSONString];
+    jsonObject = [@"{\"entity_id\": 3,\"testField\": \"a\"}" objectFromJSONString];
     TestEntity *third = (TestEntity *)[TestEntity createOrUpdateFromJsonObject:jsonObject
                                                         inManagedObjectContext:mainThreadContext()];
     [AECoreDataHelper save:mainThreadContext()];

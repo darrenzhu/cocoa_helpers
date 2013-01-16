@@ -36,7 +36,7 @@
 - (void)setUp {
     [super setUp];
     
-    NSString *jsonString = @"{\"id\": 1,\"testField\": \"test value\"}";
+    NSString *jsonString = @"{\"entity_id\": 1,\"testField\": \"test value\"}";
     self.jsonObject = [jsonString objectFromJSONString];
 }
 
@@ -88,7 +88,7 @@
 - (void)testToJSONString {
     TestEntity *entity = (TestEntity *)[TestEntity createOrUpdateFromJsonObject:_jsonObject
                                                          inManagedObjectContext:mainThreadContext()];
-    STAssertEqualObjects(@"{\"id\":1,\"testField\":\"test value\"}", [entity toJSONString], nil);
+    STAssertEqualObjects(@"{\"entity_id\":1,\"testField\":\"test value\"}", [entity toJSONString], nil);
 }
 
 - (void)testRequestAll {
@@ -130,8 +130,7 @@
     
     __block BOOL finished = NO;
     [TestEntity fetchWithClient:[AEHTTPClient sharedClient] path:@"/tests" parameters:nil jsonResponse:^(id json) {
-        NSString *jsonString =
-            @"[{\"id\": 1,\"testField\": \"test value\"},{\"id\": 2,\"testField\": \"another test value\"}]";
+        NSString *jsonString = @"[{\"entity_id\": 1,\"testField\": \"test value\"},{\"entity_id\": 2,\"testField\": \"another test value\"}]";
         STAssertEqualObjects([jsonString objectFromJSONString], json, nil);
     } success:^(NSArray *entities) {
         STAssertEquals(2U, entities.count, nil);
@@ -154,6 +153,17 @@
                                                          inManagedObjectContext:mainThreadContext()];
     NSDate *date = [[entity dateFormatter] dateFromString:@"2013-01-04T01:22:40Z"];
     STAssertEqualObjects(@"2013-01-04T01:22:40Z", [[entity dateFormatter] stringFromDate:date], nil);
+}
+
+- (void)testRespectMappingsDictionary {
+    NSString *jsonString = @"{\"entity_id\":2,\"testField\":\"test value\",\"another_field\":\"test value\"}";
+    id jsonObject = [jsonString objectFromJSONString];
+    TestEntity *entity = [[TestEntity alloc] initFromJSONObject:jsonObject
+                                         inManagedObjectContext:mainThreadContext()];
+    STAssertEqualObjects(@"test value", entity.anotherField, nil);
+    STAssertEqualObjects(@"test value", entity.testField, nil);
+    STAssertEqualObjects(@(2), entity.id, nil);
+    STAssertEqualObjects(jsonString, [entity toJSONString], nil);
 }
 
 @end

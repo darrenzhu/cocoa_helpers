@@ -1,10 +1,10 @@
 [
     {
-        "id": 1,
+        "entity_id": 1,
         "testField": "test value"
     },
     {
-        "id": 2,
+        "entity_id": 2,
         "testField": "another test value"
     }
 ]

@@ -32,4 +32,8 @@
     return nil;
 }
 
++ (NSDictionary *)propertyMappings {
+    return @{ @"anotherField" : @"another_field", @"id": @"entity_id" };
+}
+
 @end
