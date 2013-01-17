@@ -26,7 +26,8 @@
 }
 
 - (IBAction)facebook:(id)sender {
-    self.fbClient = [[AEFBClient alloc] initWithId:@"295109963930116"];
+    self.fbClient = [[AEFBClient alloc] initWithId:@"295109963930116"
+                                       permissions:@[ @"share_item", @"user_work_history"]];
     _fbClient.delegate = self;
     [_fbClient login];
 }
@@ -52,7 +53,19 @@
 }
 
 - (void)clientDidLogin:(AESNClient *)client {
-    NSLog(@"Logged!");
+    NSLog(@"Logged with client %@!", client);
+    
+    [client profileInformationWithSuccess:^(NSDictionary *profile) {
+        _profileTextView.text = [NSString stringWithFormat:@"%@", profile];
+    } failure:^(NSError *error) {
+        NSLog(@"Unable to get profile with client %@, %@", client, error);
+    }];
+    
+    [client friendsInformationWithLimit:10 offset:0 success:^(NSArray *friends) {
+        _friendsTextView.text = [friends componentsJoinedByString:@"\n"];
+    } failure:^(NSError *error) {
+        NSLog(@"Unable to get friends with client %@, %@", client, error);
+    }];    
 }
 
 @end
