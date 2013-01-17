@@ -21,17 +21,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "SNClient.h"
+#import "AESNClient.h"
 
-@interface SNClient () {
+@interface AESNClient () {
     NSString *_accessToken;
     NSDate *_expirationDate;
     
-    id<SNClientDelegate> _delegate;
+    id<AESNClientDelegate> _delegate;
 }
 @end
 
-@implementation SNClient
+@implementation AESNClient
 @synthesize delegate = _delegate;
 @synthesize accessToken = _accessToken;
 @synthesize expirationDate = _expirationDate;
@@ -66,8 +66,7 @@
                success:(void (^)(AFHTTPRequestOperation *operation))success
                 failed:(void (^)(NSError *error))failed {
     
-    AFHTTPRequestOperation *operation =
-        [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.completionBlock = ^{
         if ([operation hasAcceptableStatusCode]) {
             success(operation);
@@ -81,11 +80,11 @@
 }
 
 - (void)doLoginWorkflow {
-    @throw [SNClient overrideExceptionForSelector:_cmd];
+    @throw [AESNClient overrideExceptionForSelector:_cmd];
 }
 
 - (void)regainToken:(NSDictionary*)savedKeysAndValues {
-    @throw [SNClient overrideExceptionForSelector:_cmd];
+    @throw [AESNClient overrideExceptionForSelector:_cmd];
 }
 
 - (void)saveToken:(NSDictionary*)tokensToSave {
@@ -95,7 +94,7 @@
 }
 
 - (BOOL)processWebViewResult:(NSURL*)processUrl {
-    @throw [SNClient overrideExceptionForSelector:_cmd];
+    @throw [AESNClient overrideExceptionForSelector:_cmd];
 }
 
 - (void)setExpirationDate:(NSDate *)expirationDate {

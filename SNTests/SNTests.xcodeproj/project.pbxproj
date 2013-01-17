@@ -21,8 +21,8 @@
 		95B2FBBE16A7AEFB007A1A00 /* AEViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 95B2FBBC16A7AEFB007A1A00 /* AEViewController.xib */; };
 		95B2FBD516A7AFFB007A1A00 /* AEFBClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBCE16A7AFFB007A1A00 /* AEFBClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95B2FBD616A7AFFB007A1A00 /* AESNClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBD016A7AFFB007A1A00 /* AESNClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		95B2FBD716A7AFFB007A1A00 /* TWClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBD216A7AFFB007A1A00 /* TWClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		95B2FBD816A7AFFB007A1A00 /* VKClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBD416A7AFFB007A1A00 /* VKClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		95B2FBD716A7AFFB007A1A00 /* AETWClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBD216A7AFFB007A1A00 /* AETWClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		95B2FBD816A7AFFB007A1A00 /* AEVKClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBD416A7AFFB007A1A00 /* AEVKClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95B2FBDE16A7B02E007A1A00 /* AEAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBDB16A7B02E007A1A00 /* AEAlert.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95B2FBE916A7B07C007A1A00 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBE616A7B07C007A1A00 /* NSString+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
@@ -50,10 +50,10 @@
 		95B2FBCE16A7AFFB007A1A00 /* AEFBClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEFBClient.m; sourceTree = "<group>"; };
 		95B2FBCF16A7AFFB007A1A00 /* AESNClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AESNClient.h; sourceTree = "<group>"; };
 		95B2FBD016A7AFFB007A1A00 /* AESNClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AESNClient.m; sourceTree = "<group>"; };
-		95B2FBD116A7AFFB007A1A00 /* TWClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TWClient.h; sourceTree = "<group>"; };
-		95B2FBD216A7AFFB007A1A00 /* TWClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TWClient.m; sourceTree = "<group>"; };
-		95B2FBD316A7AFFB007A1A00 /* VKClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VKClient.h; sourceTree = "<group>"; };
-		95B2FBD416A7AFFB007A1A00 /* VKClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VKClient.m; sourceTree = "<group>"; };
+		95B2FBD116A7AFFB007A1A00 /* AETWClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AETWClient.h; sourceTree = "<group>"; };
+		95B2FBD216A7AFFB007A1A00 /* AETWClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AETWClient.m; sourceTree = "<group>"; };
+		95B2FBD316A7AFFB007A1A00 /* AEVKClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEVKClient.h; sourceTree = "<group>"; };
+		95B2FBD416A7AFFB007A1A00 /* AEVKClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEVKClient.m; sourceTree = "<group>"; };
 		95B2FBDA16A7B02E007A1A00 /* AEAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEAlert.h; sourceTree = "<group>"; };
 		95B2FBDB16A7B02E007A1A00 /* AEAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEAlert.m; sourceTree = "<group>"; };
 		95B2FBDC16A7B02E007A1A00 /* AECoreDataHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AECoreDataHelper.h; sourceTree = "<group>"; };
@@ -147,10 +147,10 @@
 				95B2FBCE16A7AFFB007A1A00 /* AEFBClient.m */,
 				95B2FBCF16A7AFFB007A1A00 /* AESNClient.h */,
 				95B2FBD016A7AFFB007A1A00 /* AESNClient.m */,
-				95B2FBD116A7AFFB007A1A00 /* TWClient.h */,
-				95B2FBD216A7AFFB007A1A00 /* TWClient.m */,
-				95B2FBD316A7AFFB007A1A00 /* VKClient.h */,
-				95B2FBD416A7AFFB007A1A00 /* VKClient.m */,
+				95B2FBD116A7AFFB007A1A00 /* AETWClient.h */,
+				95B2FBD216A7AFFB007A1A00 /* AETWClient.m */,
+				95B2FBD316A7AFFB007A1A00 /* AEVKClient.h */,
+				95B2FBD416A7AFFB007A1A00 /* AEVKClient.m */,
 			);
 			name = Social;
 			path = ../../Social;
@@ -271,8 +271,8 @@
 				95B2FBBB16A7AEFB007A1A00 /* AEViewController.m in Sources */,
 				95B2FBD516A7AFFB007A1A00 /* AEFBClient.m in Sources */,
 				95B2FBD616A7AFFB007A1A00 /* AESNClient.m in Sources */,
-				95B2FBD716A7AFFB007A1A00 /* TWClient.m in Sources */,
-				95B2FBD816A7AFFB007A1A00 /* VKClient.m in Sources */,
+				95B2FBD716A7AFFB007A1A00 /* AETWClient.m in Sources */,
+				95B2FBD816A7AFFB007A1A00 /* AEVKClient.m in Sources */,
 				95B2FBDE16A7B02E007A1A00 /* AEAlert.m in Sources */,
 				95B2FBE916A7B07C007A1A00 /* NSString+Additions.m in Sources */,
 			);

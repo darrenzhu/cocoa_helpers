@@ -21,16 +21,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "FBClient.h"
-#import "TTAlert.h"
+#import "AEFBClient.h"
+#import "AEAlert.h"
 
-@interface FBClient () <FBSessionDelegate, FBRequestDelegate> {
-    Facebook* _facebook;
-}
+@interface AEFBClient () <FBSessionDelegate, FBRequestDelegate>
+@property (retain, nonatomic) Facebook *facebook;
 @end
 
-@implementation FBClient
-@synthesize facebook = _facebook;
+@implementation AEFBClient
 
 static Facebook *currentFacebook;
 + (Facebook *)currentFacebook {
@@ -40,7 +38,7 @@ static Facebook *currentFacebook;
 - (id)initWithId:(NSString *)id {
     self = [super init];
     if (self) {
-        _facebook = [[Facebook alloc] initWithAppId:id andDelegate:self];     
+        self.facebook = [[Facebook alloc] initWithAppId:id andDelegate:self];
         currentFacebook = _facebook;
     }
     return self;
@@ -73,7 +71,6 @@ static Facebook *currentFacebook;
                           andParams:params
                       andHttpMethod:@"POST"
                         andDelegate:self];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
 }
 
 #pragma mark - FBSessionDelegate
@@ -96,14 +93,12 @@ static Facebook *currentFacebook;
 
 #pragma mark - FBRequestDelegate
 - (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response {
-    [TTAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"Ссылка успешно добавлена", nil)];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    [AEAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"facebook_share_success", nil)];
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
-    NSString *message = NSLocalizedString(@"К сожалению произошла ошибка", nil);
-    [TTAlert composeAlertViewWithTitle:@"" andMessage:message];
-    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+    NSString *message = NSLocalizedString(@"facebook_share_error", nil);
+    [AEAlert composeAlertViewWithTitle:@"" andMessage:message];
 }
 
 @end

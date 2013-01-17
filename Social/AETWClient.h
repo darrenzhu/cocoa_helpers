@@ -1,5 +1,5 @@
 //
-// FBClient.h
+// TWClient.h
 //
 // Copyright (c) 2012 ap4y (lod@pisem.net)
 //
@@ -21,12 +21,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "SNClient.h"
-#import "FBConnect.h"
+#import "AESNClient.h"
 
-@interface FBClient : SNClient
-@property(retain, readonly) Facebook *facebook;
-
-+ (Facebook *)currentFacebook;
-- (id)initWithId:(NSString *)id;
+@interface AETWClient : AESNClient
+- (id)initWithKey:(NSString *)consumerKey
+           secret:(NSString *)consumerSecret
+      andRedirect:(NSString *)redirectString;
 @end

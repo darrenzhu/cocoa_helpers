@@ -21,15 +21,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "TWClient.h"
+#import "AETWClient.h"
 
 #import <CommonCrypto/CommonHMAC.h>
 
-#import "TTAlert.h"
+#import "AEAlert.h"
 #import "NSString+Additions.h"
-#import "NSData+Base64.h"
+//#import "NSData+Base64.h"
 
-@interface TWClient () {    
+@interface AETWClient () {    
     NSMutableDictionary *_oAuthValues;
     NSString *_accessTokenSecret;
     NSString *_verifier;
@@ -40,7 +40,7 @@
 }
 @end
 
-@implementation TWClient
+@implementation AETWClient
 static NSString *serverUrl = @"https://api.twitter.com/oauth/authorize?oauth_token=";
 
 static NSString *oauthVersion = @"1.0";
@@ -248,7 +248,7 @@ static NSString *expirationDateKey = @"TWExpirationDateKey";
     [self setOAuthValue:_redirectString forKey:@"oauth_callback"];
     [self signRequest:request withBody:nil];
         
-    [SNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
+    [AESNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
         [self fillTokenWithResponseBody:[operation responseString]];
         //open webview
         NSString *urlString = [NSString stringWithFormat:@"%@%@", serverUrl,
@@ -274,7 +274,7 @@ static NSString *expirationDateKey = @"TWExpirationDateKey";
     [self setOAuthValue:nil forKey:@"oauth_callback"];
     [self signRequest:request withBody:body];
     
-    [SNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
+    [AESNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
         [self fillTokenWithResponseBody:[operation responseString]];            
         NSMutableDictionary *tokens = [NSMutableDictionary dictionary];
         [tokens setValue:self.accessToken forKey:accessTokenKey];
@@ -357,12 +357,12 @@ static NSString *expirationDateKey = @"TWExpirationDateKey";
     
     [self signRequest:request withBody:body];
     
-    [SNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
-        [TTAlert composeAlertViewWithTitle:@""
+    [AESNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
+        [AEAlert composeAlertViewWithTitle:@""
                                 andMessage:NSLocalizedString(@"Ссылка успешно добавлена", nil)];
     } failed:^(NSError *error) {
         NSString *message = NSLocalizedString(@"К сожалению произошла ошибка", nil);
-        [TTAlert composeAlertViewWithTitle:@""
+        [AEAlert composeAlertViewWithTitle:@""
                                 andMessage:message];
     }];
 }

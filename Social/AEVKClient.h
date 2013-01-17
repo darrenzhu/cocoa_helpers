@@ -21,9 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "SNClient.h"
+#import "AESNClient.h"
 
-@interface VKClient : SNClient
+@interface AEVKClient : AESNClient
 - (id)initWithId:(NSString *)consumerKey
      andRedirect:(NSString *)redirectString;
 @end

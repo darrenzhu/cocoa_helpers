@@ -21,18 +21,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "VKClient.h"
-#import "TTAlert.h"
+#import "AEVKClient.h"
+#import "AEAlert.h"
 #import "NSString+Additions.h"
 #import "AFJSONRequestOperation.h"
 
-@interface VKClient () {
+@interface AEVKClient () {
     NSString *_clientId;
     NSString *_redirectString;
 }
 @end
 
-@implementation VKClient
+@implementation AEVKClient
 static NSString *serverUrl = @"http://api.vk.com/oauth/authorize?";
 static NSString *scope = @"wall";
 
@@ -80,19 +80,19 @@ static NSString *shareLinkMethodUrl =
                                                                   id JSON) {
         if ([JSON valueForKeyPath:@"response"]) {
             NSString *message = NSLocalizedString(@"Ссылка успешно добавлена", nil);
-            [TTAlert composeAlertViewWithTitle:@""
+            [AEAlert composeAlertViewWithTitle:@""
                                     andMessage:message];
         }
         else {
             NSString *message = NSLocalizedString(@"К сожалению произошла ошибка", nil);
-            [TTAlert composeAlertViewWithTitle:@""
+            [AEAlert composeAlertViewWithTitle:@""
                                     andMessage:message];
             NSLog(@"response %@", JSON);
         }
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
         NSString *message = NSLocalizedString(@"К сожалению произошла ошибка", nil);
-        [TTAlert composeAlertViewWithTitle:@""
+        [AEAlert composeAlertViewWithTitle:@""
                                 andMessage:message];
         NSLog(@"Error %@", error);
     }];

@@ -24,18 +24,18 @@
 #import <Foundation/Foundation.h>
 #import "AFHTTPRequestOperation.h"
 
-@protocol SNClientDelegate;
-@interface SNClient : NSObject <UIWebViewDelegate>
+@protocol AESNClientDelegate;
+@interface AESNClient : NSObject <UIWebViewDelegate>
 @property(retain, nonatomic, readonly) NSString *accessToken;
 @property(retain, nonatomic, readonly) NSDate *expirationDate;
-@property(unsafe_unretained, nonatomic) id<SNClientDelegate> delegate;
+@property(unsafe_unretained, nonatomic) id<AESNClientDelegate> delegate;
 
 - (BOOL)isSessionValid;
 - (void)login;
 - (void)shareLink:(NSString *)link withTitle:(NSString *)title andMessage:(NSString *)message;
 @end
 
-@interface SNClient (Private)
+@interface AESNClient (Private)
 + (void)processRequest:(NSURLRequest *)request
                success:(void (^)(AFHTTPRequestOperation *operation))success
                 failed:(void (^)(NSError *error))failed;
@@ -47,7 +47,7 @@
 - (void)setAccessToken:(NSString *)accessToken;
 @end
 
-@protocol SNClientDelegate <NSObject>
-- (void)client:(SNClient *)client showAuthPage:(NSString *)url;
-- (void)clientDidLogin:(SNClient *)client ;
+@protocol AESNClientDelegate <NSObject>
+- (void)client:(AESNClient *)client wantsPresentAuthPage:(NSString *)url;
+- (void)clientDidLogin:(AESNClient *)client ;
 @end
