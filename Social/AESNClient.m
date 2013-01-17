@@ -59,7 +59,17 @@
 
 - (void)shareLink:(NSString *)link
         withTitle:(NSString *)title
-       andMessage:(NSString *)message {}
+       andMessage:(NSString *)message
+          success:(void (^)())success
+          failure:(void (^)(NSError *error))failure {}
+
+- (void)profileInformationWithSuccess:(void (^)(NSDictionary *profile))success
+                              failure:(void (^)(NSError *error))failure {}
+
+- (void)friendsInformationWithLimit:(NSInteger)limit
+                             offset:(NSInteger)offset
+                            success:(void (^)(NSArray *friends))success
+                            failure:(void (^)(NSError *error))failure {}
 
 #pragma mark - private category
 + (void)processRequest:(NSURLRequest *)request
