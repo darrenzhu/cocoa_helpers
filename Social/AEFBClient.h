@@ -28,5 +28,5 @@
 @property(retain, nonatomic, readonly) Facebook *facebook;
 
 + (Facebook *)currentFacebook;
-- (id)initWithId:(NSString *)id;
+- (id)initWithId:(NSString *)appId permissions:(NSArray *)permissions;
 @end

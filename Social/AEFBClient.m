@@ -22,10 +22,12 @@
 // THE SOFTWARE.
 
 #import "AEFBClient.h"
-#import "AEAlert.h"
 
 @interface AEFBClient () <FBSessionDelegate, FBRequestDelegate>
 @property (retain, nonatomic) Facebook *facebook;
+@property (retain, nonatomic) NSMutableDictionary *requestsSuccessCallbacks;
+@property (retain, nonatomic) NSMutableDictionary *requestsFailureCallbacks;
+@property (retain, nonatomic) NSArray *permissions;
 @end
 
 @implementation AEFBClient
@@ -35,11 +37,16 @@ static Facebook *currentFacebook;
     return currentFacebook;
 }
 
-- (id)initWithId:(NSString *)id {
+- (id)initWithId:(NSString *)appId permissions:(NSArray *)permissions {
     self = [super init];
     if (self) {
-        self.facebook = [[Facebook alloc] initWithAppId:id andDelegate:self];
+        self.facebook = [[Facebook alloc] initWithAppId:appId andDelegate:self];
         currentFacebook = _facebook;
+
+        self.requestsSuccessCallbacks = [NSMutableDictionary dictionary];
+        self.requestsFailureCallbacks = [NSMutableDictionary dictionary];
+        
+        self.permissions = permissions;
     }
     return self;
 }
@@ -53,25 +60,51 @@ static Facebook *currentFacebook;
 }
 
 - (void)doLoginWorkflow {
-    NSArray *permissions = [NSArray arrayWithObjects: @"share_item", nil];
-    [_facebook authorize:permissions];
+    [_facebook authorize:_permissions];
 }
 
 - (BOOL)isSessionValid {
     return [_facebook isSessionValid];
 }
 
-- (void)shareLink:(NSString *)link withTitle:(NSString *)title andMessage:(NSString *)message {
+- (void)shareLink:(NSString *)link
+        withTitle:(NSString *)title
+       andMessage:(NSString *)message
+          success:(void (^)())success
+          failure:(void (^)(NSError *error))failure {
+    
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
     [params setObject:link forKey:@"link"];
     [params setObject:title forKey:@"name"];
     [params setObject:message forKey:@"message"];
     
-    [_facebook requestWithGraphPath:@"me/links"
-                          andParams:params
-                      andHttpMethod:@"POST"
-                        andDelegate:self];
+    FBRequest *request = [_facebook requestWithGraphPath:@"me/links"
+                                               andParams:params
+                                           andHttpMethod:@"POST"
+                                             andDelegate:self];
+    
+    [self setRequestCallbacksForPath:[request graphPath] success:success failure:failure];
 }
+
+- (void)profileInformationWithSuccess:(void (^)(NSDictionary *profile))success failure:(void (^)(NSError *error))failure {
+    FBRequest *request = [_facebook requestWithGraphPath:@"me" andDelegate:self];
+    [self setRequestCallbacksForPath:[request graphPath] success:success failure:failure];
+}
+
+- (void)friendsInformationWithLimit:(NSInteger)limit
+                             offset:(NSInteger)offset
+                            success:(void (^)(NSArray *friends))success
+                            failure:(void (^)(NSError *error))failure {
+    
+    NSString *path = [NSString stringWithFormat:@"me/friends?offset=%i", offset];
+    if (limit > 0) {
+        path = [path stringByAppendingFormat:@"&limit=%i", limit];
+    }
+    
+    FBRequest *request = [_facebook requestWithGraphPath:path andDelegate:self];
+    [self setRequestCallbacksForPath:[request graphPath] success:success failure:failure];
+}
+
 
 #pragma mark - FBSessionDelegate
 - (void)fbDidLogin {
@@ -92,13 +125,50 @@ static Facebook *currentFacebook;
 - (void)fbSessionInvalidated {}
 
 #pragma mark - FBRequestDelegate
-- (void)request:(FBRequest *)request didReceiveResponse:(NSURLResponse *)response {
-    [AEAlert composeAlertViewWithTitle:@"" andMessage:NSLocalizedString(@"facebook_share_success", nil)];
+- (void)request:(FBRequest *)request didLoad:(id)result {
+    void (^success)(id profile) = [_requestsSuccessCallbacks valueForKey:request.graphPath];
+    if (success) {
+        success(result && [result valueForKey:@"data"] ? [result valueForKey:@"data"] : result);
+    }
+    
+    [self setRequestCallbacksForPath:[request graphPath] success:nil failure:nil];
 }
 
 - (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
-    NSString *message = NSLocalizedString(@"facebook_share_error", nil);
-    [AEAlert composeAlertViewWithTitle:@"" andMessage:message];
+    void (^failure)(NSError *error) = [_requestsFailureCallbacks valueForKey:request.graphPath];
+    if (failure) {
+        failure(error);
+    }
+    
+    [self setRequestCallbacksForPath:[request graphPath] success:nil failure:nil];
+}
+
+#pragma mark - private
+- (void)setRequestCallbacksForPath:(NSString *)graphPath
+                           success:(void (^)(id profile))success
+                           failure:(void (^)(NSError *error))failure {
+    
+    if (success) {
+        [_requestsSuccessCallbacks setValue:[success copy] forKey:graphPath];
+    } else {
+        void (^success)(id profile) = [_requestsSuccessCallbacks valueForKey:graphPath];
+        if (success) {
+            [success release];
+        }
+        
+        [_requestsSuccessCallbacks removeObjectForKey:graphPath];
+    }
+    
+    if (failure) {
+        [_requestsFailureCallbacks setValue:[failure copy] forKey:graphPath];
+    } else {
+        void (^failure)(NSError *error) = [_requestsFailureCallbacks valueForKey:graphPath];
+        if (failure) {
+            [success release];
+        }
+
+        [_requestsFailureCallbacks removeObjectForKey:graphPath];
+    }
 }
 
 @end
