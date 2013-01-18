@@ -21,9 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AESNClient.h"
+#import "AEOAuthClient.h"
 
-@interface AETWClient : AESNClient
+@interface AETWClient : AEOAuthClient
 - (id)initWithKey:(NSString *)consumerKey
            secret:(NSString *)consumerSecret
       andRedirect:(NSString *)redirectString;
