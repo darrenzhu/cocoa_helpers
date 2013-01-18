@@ -8,11 +8,15 @@
 
 #import "AEViewController.h"
 #import "AEFBClient.h"
+#import "AETWClient.h"
+#import "AELIClient.h"
 
 @interface AEViewController () <AESNClientDelegate>
 @property (weak, nonatomic) IBOutlet UITextView *profileTextView;
 @property (weak, nonatomic) IBOutlet UITextView *friendsTextView;
 @property (strong, nonatomic) AEFBClient *fbClient;
+@property (strong, nonatomic) AETWClient *twClient;
+@property (strong, nonatomic) AELIClient *liClient;
 @end
 
 @implementation AEViewController
@@ -33,9 +37,20 @@
 }
 
 - (IBAction)twitter:(id)sender {
+    self.twClient = [[AETWClient alloc] initWithKey:@"fVprggQkOYWNGZNmnu6bjA"
+                                             secret:@"r4unocIWkFtHzFM9tKFVmY2nKoC4ssabTD1bfpNk"
+                                        andRedirect:@"twengine://auth_token"];
+    _twClient.delegate = self;
+    [_twClient login];
 }
 
 - (IBAction)linkedin:(id)sender {
+    self.liClient = [[AELIClient alloc] initWithKey:@"oghhm15b8dt8"
+                                             secret:@"NTORlXatMJnzn2qj"
+                                        permissions:@[ @"r_fullprofile", @"r_network" ]
+                                        andRedirect:@"linengine://authtoken.com"];
+    _liClient.delegate = self;
+    [_liClient login];
 }
 
 - (IBAction)myspace:(id)sender {
@@ -48,8 +63,14 @@
 }
 
 #pragma mark - AESNClientDelegate
-- (void)client:(AESNClient *)client wantsPresentAuthPage:(NSString *)url {
+- (void)client:(AESNClient *)client wantsPresentAuthPage:(NSURL *)url {
+    UIWebView *_webView = [[UIWebView alloc] initWithFrame:self.view.frame];
+    _webView.delegate = client;
     
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [_webView loadRequest:request];
+    
+    [self.view addSubview:_webView];
 }
 
 - (void)clientDidLogin:(AESNClient *)client {
