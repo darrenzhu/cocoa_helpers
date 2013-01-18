@@ -61,8 +61,9 @@ static NSString *shareLinkMethodUrl =
 - (void)doLoginWorkflow {
     NSString* urlString = [NSString stringWithFormat:@"%@client_id=%@&scope=%@&redirect_uri=%@&display=touch&response_type=token", serverUrl, _clientId, scope, _redirectString];
     
-    if (self.delegate)
-        [self.delegate client:self showAuthPage:urlString];
+    if (self.delegate) {
+        [self.delegate client:self wantsPresentAuthPage:[NSURL URLWithString:urlString]];
+    }
 }
 
 - (void)shareLink:(NSString *)link withTitle:(NSString *)title andMessage:(NSString *)message {

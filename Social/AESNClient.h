@@ -47,7 +47,7 @@
 @interface AESNClient (Private)
 + (void)processRequest:(NSURLRequest *)request
                success:(void (^)(AFHTTPRequestOperation *operation))success
-                failed:(void (^)(NSError *error))failed;
+               failure:(void (^)(NSError *error))failure;
 - (void)doLoginWorkflow;
 - (void)regainToken:(NSDictionary *)savedKeysAndValues;
 - (void)saveToken:(NSDictionary *)tokensToSave;
@@ -57,6 +57,6 @@
 @end
 
 @protocol AESNClientDelegate <NSObject>
-- (void)client:(AESNClient *)client wantsPresentAuthPage:(NSString *)url;
+- (void)client:(AESNClient *)client wantsPresentAuthPage:(NSURL *)url;
 - (void)clientDidLogin:(AESNClient *)client ;
 @end

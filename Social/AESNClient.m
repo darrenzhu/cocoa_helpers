@@ -74,15 +74,15 @@
 #pragma mark - private category
 + (void)processRequest:(NSURLRequest *)request
                success:(void (^)(AFHTTPRequestOperation *operation))success
-                failed:(void (^)(NSError *error))failed {
+               failure:(void (^)(NSError *error))failure {
     
     AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
     operation.completionBlock = ^{
         if ([operation hasAcceptableStatusCode]) {
             success(operation);
         } else {
-            if (failed) {
-                failed(operation.error);
+            if (failure) {
+                failure(operation.error);
             }
         }
     };
@@ -136,8 +136,9 @@
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request 
  navigationType:(UIWebViewNavigationType)navigationType {    
         
-    if ([self processWebViewResult:request.URL])
+    if ([self processWebViewResult:request.URL]) {
         [webView removeFromSuperview];
+    }
     
     return YES;
 }
