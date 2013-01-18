@@ -53,13 +53,7 @@
     [_liClient login];
 }
 
-- (IBAction)myspace:(id)sender {
-}
-
 - (IBAction)google:(id)sender {
-}
-
-- (IBAction)vk:(id)sender {
 }
 
 #pragma mark - AESNClientDelegate
