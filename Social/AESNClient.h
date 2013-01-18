@@ -48,6 +48,9 @@
 + (void)processRequest:(NSURLRequest *)request
                success:(void (^)(AFHTTPRequestOperation *operation))success
                failure:(void (^)(NSError *error))failure;
++ (void)processJsonRequest:(NSURLRequest *)request
+                   success:(void (^)(id json))success
+                   failure:(void (^)(NSError *error))failure;
 - (void)doLoginWorkflow;
 - (void)regainToken:(NSDictionary *)savedKeysAndValues;
 - (void)saveToken:(NSDictionary *)tokensToSave;
