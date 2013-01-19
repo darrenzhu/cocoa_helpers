@@ -10,6 +10,7 @@
 
 #import "AEViewController.h"
 #import "AEFBClient.h"
+#import "AEGPClient.h"
 
 @implementation AppDelegate
 
@@ -28,7 +29,13 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    return [[AEFBClient currentFacebook] handleOpenURL:url];
+    if ([[AEFBClient currentFacebook] handleOpenURL:url]) {
+        return YES;
+    }
+    
+    return [[AEGPClient currentSignIn] handleURL:url
+                               sourceApplication:sourceApplication
+                                      annotation:annotation];
 }
 
 @end
