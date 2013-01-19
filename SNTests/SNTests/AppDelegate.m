@@ -22,10 +22,6 @@
     return YES;
 }
 
-- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url {
-    return [[AEFBClient currentFacebook] handleOpenURL:url];
-}
-
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     return [[AEFBClient currentFacebook] handleOpenURL:url];
