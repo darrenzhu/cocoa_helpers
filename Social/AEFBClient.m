@@ -32,6 +32,9 @@
 
 @implementation AEFBClient
 
+NSString * const fbAccessTokenKey = @"FBAccessTokenKey";
+NSString * const fbExpirationDateKey = @"FBExpirationDateKey";
+
 static Facebook *currentFacebook;
 + (Facebook *)currentFacebook {
     return currentFacebook;
@@ -52,10 +55,10 @@ static Facebook *currentFacebook;
 }
 
 - (void)regainToken:(NSDictionary *)savedKeysAndValues {
-    if ([savedKeysAndValues objectForKey:@"FBAccessTokenKey"] 
-        && [savedKeysAndValues objectForKey:@"FBExpirationDateKey"]) {
-        _facebook.accessToken = [savedKeysAndValues objectForKey:@"FBAccessTokenKey"];
-        _facebook.expirationDate = [savedKeysAndValues objectForKey:@"FBExpirationDateKey"];
+    if ([savedKeysAndValues objectForKey:fbAccessTokenKey]
+        && [savedKeysAndValues objectForKey:fbExpirationDateKey]) {
+        _facebook.accessToken = [savedKeysAndValues objectForKey:fbAccessTokenKey];
+        _facebook.expirationDate = [savedKeysAndValues objectForKey:fbExpirationDateKey];
     }
 }
 
@@ -86,7 +89,8 @@ static Facebook *currentFacebook;
     [self setRequestCallbacksForPath:[request graphPath] success:success failure:failure];
 }
 
-- (void)profileInformationWithSuccess:(void (^)(NSDictionary *profile))success failure:(void (^)(NSError *error))failure {
+- (void)profileInformationWithSuccess:(void (^)(NSDictionary *profile))success
+                              failure:(void (^)(NSError *error))failure {
     FBRequest *request = [_facebook requestWithGraphPath:@"me" andDelegate:self];
     [self setRequestCallbacksForPath:[request graphPath] success:success failure:failure];
 }
@@ -109,11 +113,13 @@ static Facebook *currentFacebook;
 #pragma mark - FBSessionDelegate
 - (void)fbDidLogin {
     NSMutableDictionary *tokens = [NSMutableDictionary dictionary];
-    [tokens setValue:[_facebook accessToken] forKey:@"FBAccessTokenKey"];
-    [tokens setValue:[_facebook expirationDate] forKey:@"FBExpirationDateKey"];
+    [tokens setValue:[_facebook accessToken] forKey:fbAccessTokenKey];
+    [tokens setValue:[_facebook expirationDate] forKey:fbExpirationDateKey];
     [self saveToken:tokens];
     
-    [self.delegate clientDidLogin:self];
+    if (self.delegate) {
+        [self.delegate clientDidLogin:self];
+    }
 }
 
 - (void)fbDidNotLogin:(BOOL)cancelled {}
