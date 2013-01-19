@@ -17,6 +17,7 @@ Pod::Spec.new do |s|
   s.subspec 'Social' do |soc|
     soc.source_files = 'Social'
     soc.dependency 'Facebook-iOS-SDK'
+    soc.dependency 'google-plus-ios-sdk'
     soc.dependency 'NSData+Base64'
   end
 end
