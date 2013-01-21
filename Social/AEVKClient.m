@@ -22,7 +22,6 @@
 // THE SOFTWARE.
 
 #import "AEVKClient.h"
-#import "AEAlert.h"
 #import "NSString+Additions.h"
 #import "AFJSONRequestOperation.h"
 
@@ -79,22 +78,9 @@ static NSString *shareLinkMethodUrl =
                                                         success:^(NSURLRequest *request,
                                                                   NSHTTPURLResponse *response,
                                                                   id JSON) {
-        if ([JSON valueForKeyPath:@"response"]) {
-            NSString *message = NSLocalizedString(@"Ссылка успешно добавлена", nil);
-            [AEAlert composeAlertViewWithTitle:@""
-                                    andMessage:message];
-        }
-        else {
-            NSString *message = NSLocalizedString(@"К сожалению произошла ошибка", nil);
-            [AEAlert composeAlertViewWithTitle:@""
-                                    andMessage:message];
-            NSLog(@"response %@", JSON);
-        }
+        NSLog(@"response %@", JSON);
         
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        NSString *message = NSLocalizedString(@"К сожалению произошла ошибка", nil);
-        [AEAlert composeAlertViewWithTitle:@""
-                                andMessage:message];
         NSLog(@"Error %@", error);
     }];
     

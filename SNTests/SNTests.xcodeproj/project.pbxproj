@@ -26,7 +26,6 @@
 		95B2FBD616A7AFFB007A1A00 /* AESNClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBD016A7AFFB007A1A00 /* AESNClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95B2FBD716A7AFFB007A1A00 /* AETWClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBD216A7AFFB007A1A00 /* AETWClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95B2FBD816A7AFFB007A1A00 /* AEVKClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBD416A7AFFB007A1A00 /* AEVKClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		95B2FBDE16A7B02E007A1A00 /* AEAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBDB16A7B02E007A1A00 /* AEAlert.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95B2FBE916A7B07C007A1A00 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 95B2FBE616A7B07C007A1A00 /* NSString+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
@@ -63,14 +62,6 @@
 		95B2FBD216A7AFFB007A1A00 /* AETWClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AETWClient.m; sourceTree = "<group>"; };
 		95B2FBD316A7AFFB007A1A00 /* AEVKClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEVKClient.h; sourceTree = "<group>"; };
 		95B2FBD416A7AFFB007A1A00 /* AEVKClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEVKClient.m; sourceTree = "<group>"; };
-		95B2FBDA16A7B02E007A1A00 /* AEAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEAlert.h; sourceTree = "<group>"; };
-		95B2FBDB16A7B02E007A1A00 /* AEAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEAlert.m; sourceTree = "<group>"; };
-		95B2FBDC16A7B02E007A1A00 /* AECoreDataHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AECoreDataHelper.h; sourceTree = "<group>"; };
-		95B2FBDD16A7B02E007A1A00 /* AECoreDataHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AECoreDataHelper.m; sourceTree = "<group>"; };
-		95B2FBE116A7B07C007A1A00 /* NSArray+orderBy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+orderBy.h"; sourceTree = "<group>"; };
-		95B2FBE216A7B07C007A1A00 /* NSArray+orderBy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+orderBy.m"; sourceTree = "<group>"; };
-		95B2FBE316A7B07C007A1A00 /* NSFetchRequest+orderBy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFetchRequest+orderBy.h"; sourceTree = "<group>"; };
-		95B2FBE416A7B07C007A1A00 /* NSFetchRequest+orderBy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFetchRequest+orderBy.m"; sourceTree = "<group>"; };
 		95B2FBE516A7B07C007A1A00 /* NSString+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Additions.h"; sourceTree = "<group>"; };
 		95B2FBE616A7B07C007A1A00 /* NSString+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Additions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -123,7 +114,6 @@
 			isa = PBXGroup;
 			children = (
 				95B2FBE016A7B07C007A1A00 /* Categories */,
-				95B2FBD916A7B02E007A1A00 /* Common */,
 				95B2FBCC16A7AFFB007A1A00 /* Social */,
 				95B2FBB016A7AEFB007A1A00 /* AppDelegate.h */,
 				95B2FBB116A7AEFB007A1A00 /* AppDelegate.m */,
@@ -171,25 +161,9 @@
 			path = ../../Social;
 			sourceTree = "<group>";
 		};
-		95B2FBD916A7B02E007A1A00 /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				95B2FBDA16A7B02E007A1A00 /* AEAlert.h */,
-				95B2FBDB16A7B02E007A1A00 /* AEAlert.m */,
-				95B2FBDC16A7B02E007A1A00 /* AECoreDataHelper.h */,
-				95B2FBDD16A7B02E007A1A00 /* AECoreDataHelper.m */,
-			);
-			name = Common;
-			path = ../../Common;
-			sourceTree = "<group>";
-		};
 		95B2FBE016A7B07C007A1A00 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
-				95B2FBE116A7B07C007A1A00 /* NSArray+orderBy.h */,
-				95B2FBE216A7B07C007A1A00 /* NSArray+orderBy.m */,
-				95B2FBE316A7B07C007A1A00 /* NSFetchRequest+orderBy.h */,
-				95B2FBE416A7B07C007A1A00 /* NSFetchRequest+orderBy.m */,
 				95B2FBE516A7B07C007A1A00 /* NSString+Additions.h */,
 				95B2FBE616A7B07C007A1A00 /* NSString+Additions.m */,
 			);
@@ -288,7 +262,6 @@
 				95B2FBD616A7AFFB007A1A00 /* AESNClient.m in Sources */,
 				95B2FBD716A7AFFB007A1A00 /* AETWClient.m in Sources */,
 				95B2FBD816A7AFFB007A1A00 /* AEVKClient.m in Sources */,
-				95B2FBDE16A7B02E007A1A00 /* AEAlert.m in Sources */,
 				95B2FBE916A7B07C007A1A00 /* NSString+Additions.m in Sources */,
 				952066A916A8B8A3006FD6D9 /* AEOAuthClient.m in Sources */,
 				952066AD16A8BFA8006FD6D9 /* AELIClient.m in Sources */,
