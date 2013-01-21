@@ -16,6 +16,11 @@
 
 static NSString * const baseUrl = @"https://api.linkedin.com";
 
+static AELIClient *currentLIClient;
++ (AELIClient *)currentLIClient {
+    return currentLIClient;
+}
+
 - (id)initWithKey:(NSString *)consumerKey
            secret:(NSString *)consumerSecret
       permissions:(NSArray *)permissions
@@ -30,7 +35,7 @@ static NSString * const baseUrl = @"https://api.linkedin.com";
                     authorizePath:@"uas/oauth/authorize"
                   accessTokenPath:@"uas/oauth/accessToken"];
     if (self) {
-        
+        currentLIClient = self;
     }
     
     return self;

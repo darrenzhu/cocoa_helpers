@@ -11,6 +11,7 @@
 #import "AEViewController.h"
 #import "AEFBClient.h"
 #import "AEGPClient.h"
+#import "AELIClient.h"
 
 @implementation AppDelegate
 
@@ -27,6 +28,8 @@
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     if ([[url scheme] isEqualToString:@"ap4y.sntests"]) {
         return [[AEGPClient currentGPClient] processWebViewResult:url];
+    } else if ([[url scheme] isEqualToString:@"linengine"]) {
+        return [[AELIClient currentLIClient] processWebViewResult:url];
     } else {
         return [[AEFBClient currentFacebook] handleOpenURL:url];
     }

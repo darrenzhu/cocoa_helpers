@@ -9,6 +9,7 @@
 #import "AEOAuthClient.h"
 
 @interface AELIClient : AEOAuthClient
++ (AELIClient *)currentLIClient;
 - (id)initWithKey:(NSString *)consumerKey
            secret:(NSString *)consumerSecret
       permissions:(NSArray *)permissions
