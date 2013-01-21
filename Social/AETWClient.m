@@ -68,7 +68,7 @@ static AETWClient *currentTWClient;
           success:(void (^)())success
           failure:(void (^)(NSError *))failure {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/1/statuses/update.json", baseUrl]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/1.1/statuses/update.json", baseUrl]];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
     
@@ -81,6 +81,30 @@ static AETWClient *currentTWClient;
     [AESNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
         if(success) {
             success();
+        }
+    } failure:failure];
+}
+
+- (void)profileInformationWithSuccess:(void (^)(NSDictionary *))success failure:(void (^)(NSError *))failure {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/1.1/account/verify_credentials.json", baseUrl]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [self signRequest:request withBody:nil];
+    
+    [AESNClient processJsonRequest:request success:success failure:failure];
+}
+
+- (void)friendsInformationWithLimit:(NSInteger)limit
+                             offset:(NSInteger)offset
+                            success:(void (^)(NSArray *))success
+                            failure:(void (^)(NSError *))failure {
+    
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/1.1/friends/list.json", baseUrl]];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    [self signRequest:request withBody:nil];
+    
+    [AESNClient processJsonRequest:request success:^(id json) {
+        if (success) {
+            success([json valueForKey:@"users"]);
         }
     } failure:failure];
 }
