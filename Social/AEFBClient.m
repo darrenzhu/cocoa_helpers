@@ -43,22 +43,33 @@ static Facebook *currentFacebook;
 - (id)initWithId:(NSString *)appId permissions:(NSArray *)permissions {
     self = [super init];
     if (self) {
-        self.facebook = [[Facebook alloc] initWithAppId:appId andDelegate:self];
-        currentFacebook = _facebook;
+        self.facebook                   = [[Facebook alloc] initWithAppId:appId andDelegate:self];
+        currentFacebook                 = _facebook;
 
-        self.requestsSuccessCallbacks = [NSMutableDictionary dictionary];
-        self.requestsFailureCallbacks = [NSMutableDictionary dictionary];
+        self.requestsSuccessCallbacks   = [NSMutableDictionary dictionary];
+        self.requestsFailureCallbacks   = [NSMutableDictionary dictionary];
         
-        self.permissions = permissions;
+        self.permissions                = permissions;
     }
     return self;
 }
 
+- (void)dealloc {
+    [_facebook release];
+    [_requestsSuccessCallbacks release];
+    [_requestsFailureCallbacks release];
+    [_permissions release];
+    [super dealloc];
+}
+
+#pragma mark - overriden
+
 - (void)regainToken:(NSDictionary *)savedKeysAndValues {
-    if ([savedKeysAndValues objectForKey:fbAccessTokenKey]
-        && [savedKeysAndValues objectForKey:fbExpirationDateKey]) {
-        _facebook.accessToken = [savedKeysAndValues objectForKey:fbAccessTokenKey];
-        _facebook.expirationDate = [savedKeysAndValues objectForKey:fbExpirationDateKey];
+    if ([savedKeysAndValues objectForKey:fbAccessTokenKey] &&
+        [savedKeysAndValues objectForKey:fbExpirationDateKey]) {
+        
+        _facebook.accessToken       = [savedKeysAndValues objectForKey:fbAccessTokenKey];
+        _facebook.expirationDate    = [savedKeysAndValues objectForKey:fbExpirationDateKey];
     }
 }
 
@@ -91,6 +102,7 @@ static Facebook *currentFacebook;
 
 - (void)profileInformationWithSuccess:(void (^)(NSDictionary *profile))success
                               failure:(void (^)(NSError *error))failure {
+    
     FBRequest *request = [_facebook requestWithGraphPath:@"me" andDelegate:self];
     [self setRequestCallbacksForPath:[request graphPath] success:success failure:failure];
 }
