@@ -18,17 +18,17 @@
 @property (retain, nonatomic) NSString *accessTokenSecret;
 @property (retain, nonatomic) NSString *verifier;
 
-@property (retain, nonatomic) NSString *consumerKey;
-@property (retain, nonatomic) NSString *consumerSecret;
+@property (copy, nonatomic) NSString *consumerKey;
+@property (copy, nonatomic) NSString *consumerSecret;
 
-@property (retain, nonatomic) NSString *redirectString;
+@property (copy, nonatomic) NSString *redirectString;
 
-@property (retain, nonatomic) NSURL *baseUrl;
-@property (retain, nonatomic) NSString *requestTokenPath;
-@property (retain, nonatomic) NSString *authorizePath;
-@property (retain, nonatomic) NSString *accessTokenPath;
+@property (copy, nonatomic) NSURL *baseUrl;
+@property (copy, nonatomic) NSString *requestTokenPath;
+@property (copy, nonatomic) NSString *authorizePath;
+@property (copy, nonatomic) NSString *accessTokenPath;
 
-@property (retain, nonatomic) NSArray *permissions;
+@property (copy, nonatomic) NSArray *permissions;
 @end
 
 @implementation AEOAuthClient
@@ -45,18 +45,18 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
         authorizePath:(NSString *)authorizePath
       accessTokenPath:(NSString *)accessTokenPath {
     
-    self = [super init];
+    self = [self init];
     if (self) {
-        self.consumerKey = consumerKey;
-        self.consumerSecret = consumerSecret;
-        self.redirectString = redirectAddress;
+        self.consumerKey        = consumerKey;
+        self.consumerSecret     = consumerSecret;
+        self.redirectString     = redirectAddress;
         
-        self.permissions = permissions;
+        self.permissions        = permissions;
         
-        self.baseUrl = baseUrl;
-        self.requestTokenPath = requestTokenPath;
-        self.authorizePath = authorizePath;
-        self.accessTokenPath = accessTokenPath;
+        self.baseUrl            = baseUrl;
+        self.requestTokenPath   = requestTokenPath;
+        self.authorizePath      = authorizePath;
+        self.accessTokenPath    = accessTokenPath;
     }
     return self;
 }
@@ -99,8 +99,8 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
 }
 
 - (void)regainToken:(NSDictionary *)savedKeysAndValues {
-    self.accessToken = [savedKeysAndValues valueForKey:[self accessTokenKey]];
-    self.accessTokenSecret = [savedKeysAndValues valueForKey:[self accessTokenSecretKey]];
+    self.accessToken        = [savedKeysAndValues valueForKey:[self accessTokenKey]];
+    self.accessTokenSecret  = [savedKeysAndValues valueForKey:[self accessTokenSecretKey]];
 
     if (_oAuthValues) {
         [_oAuthValues release];
@@ -140,11 +140,10 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
 }
 
 - (BOOL)processWebViewResult:(NSURL *)processUrl {
-    NSString *url = processUrl.absoluteString;
-    NSLog(@"%@", url);
+    NSString *url               = processUrl.absoluteString;
+    NSString *searchedString    = [NSString stringWithFormat:@"%@?", _redirectString];
+    NSRange search              = [url rangeOfString:searchedString];
     
-    NSString *searchedString = [NSString stringWithFormat:@"%@?", _redirectString];
-    NSRange search = [url rangeOfString:searchedString];
     if (search.location != NSNotFound) {
         [self fillTokenWithResponseBody:[url stringByReplacingOccurrencesOfString:searchedString withString:@""]];
         [self getAccessToken];
@@ -157,12 +156,12 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
 
 #pragma mark - Common OAuth methods
 - (void)fillTokenWithResponseBody:(NSString *)body {
-    NSArray *pairs = [body componentsSeparatedByString:@"&"];
+    NSArray *pairs          = [body componentsSeparatedByString:@"&"];
     
     for (NSString *pair in pairs) {
-        NSArray *elements = [pair componentsSeparatedByString:@"="];
-        NSString *key = [elements objectAtIndex:0];
-        NSString *value = [[elements objectAtIndex:1] urlDecodedString];
+        NSArray *elements   = [pair componentsSeparatedByString:@"="];
+        NSString *key       = [elements objectAtIndex:0];
+        NSString *value     = [[elements objectAtIndex:1] urlDecodedString];
         
         if ([key isEqualToString:@"oauth_token"]) {
             self.accessToken = value;
@@ -183,23 +182,21 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
     }
 }
 
-- (NSString *)signatureBaseStringForRequest:(NSMutableURLRequest *)request
-                                   withBody:(NSMutableDictionary *)body {
-    NSMutableArray *parameters = [NSMutableArray array];
-    NSURL *url = request.URL;
+- (NSString *)signatureBaseStringForRequest:(NSMutableURLRequest *)request withBody:(NSMutableDictionary *)body {
+    NSMutableArray *parameters      = [NSMutableArray array];
+    NSURL *url                      = request.URL;
     
     // Get the base URL String (with no parameters)
-    NSCharacterSet *characterSet = [NSCharacterSet characterSetWithCharactersInString:@"?#"];
-    NSArray *urlParts = [url.absoluteString componentsSeparatedByCharactersInSet:characterSet];
-    NSString *baseURL = [urlParts objectAtIndex:0];
+    NSCharacterSet *characterSet    = [NSCharacterSet characterSetWithCharactersInString:@"?#"];
+    NSArray *urlParts               = [url.absoluteString componentsSeparatedByCharactersInSet:characterSet];
+    NSString *baseURL               = [urlParts objectAtIndex:0];
     
     // Add parameters from the query string
-    NSArray *pairs = [url.query componentsSeparatedByString:@"&"];
+    NSArray *pairs                  = [url.query componentsSeparatedByString:@"&"];
     [pairs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSArray *elements = [obj componentsSeparatedByString:@"="];
-        NSString *key = [[elements objectAtIndex:0] urlEncodedString];
-        NSString *value = (elements.count > 1 ?
-                           [[elements objectAtIndex:1] urlEncodedString] : @"");
+        NSArray *elements   = [obj componentsSeparatedByString:@"="];
+        NSString *key       = [[elements objectAtIndex:0] urlEncodedString];
+        NSString *value     = (elements.count > 1 ? [[elements objectAtIndex:1] urlEncodedString] : @"");
         
         [parameters addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                                key, @"key",
@@ -217,9 +214,8 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
     
     // Add parameters from the OAuth header
     [_oAuthValues enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        if ([key hasPrefix:@"oauth_"]  &&
-            ![key isEqualToString:@"oauth_signature"] &&
-            obj && ![obj isEqualToString:@""]) {
+        if ([key hasPrefix:@"oauth_"] &&
+            ![key isEqualToString:@"oauth_signature"] && obj && ![obj isEqualToString:@""]) {
             [parameters addObject:[NSDictionary dictionaryWithObjectsAndKeys:
                                    [key urlEncodedString], @"key",
                                    [obj urlEncodedString], @"value",
@@ -230,9 +226,8 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
     // Sort by name and value
     [parameters sortUsingComparator:^(id obj1, id obj2) {
         NSDictionary *val1 = obj1, *val2 = obj2;
-        NSComparisonResult result =
-        [[val1 objectForKey:@"key"]compare:[val2 objectForKey:@"key"]
-                                   options:NSLiteralSearch];
+        NSComparisonResult result = [[val1 objectForKey:@"key"] compare:[val2 objectForKey:@"key"]
+                                                                options:NSLiteralSearch];
         if (result != NSOrderedSame) return result;
         return [[val1 objectForKey:@"value"] compare:[val2 objectForKey:@"value"]
                                              options:NSLiteralSearch];
@@ -247,12 +242,11 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
     }];
     
     // Create the signature base string
-    NSString *normParams =
-    [[normalizedParameters componentsJoinedByString:@"&"] urlEncodedString];
-    NSString *signatureBaseString = [NSString stringWithFormat:@"%@&%@&%@",
-                                     [[request HTTPMethod] uppercaseString],
-                                     [baseURL urlEncodedString],
-                                     normParams];
+    NSString *normParams                = [[normalizedParameters componentsJoinedByString:@"&"] urlEncodedString];
+    NSString *signatureBaseString       = [NSString stringWithFormat:@"%@&%@&%@",
+                                           [[request HTTPMethod] uppercaseString],
+                                           [baseURL urlEncodedString],
+                                           normParams];
     return signatureBaseString;
 }
 
@@ -263,9 +257,9 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
 }
 
 - (NSString *)generateHMAC_SHA1SignatureFor:(NSString *)baseString {
-    NSString *key = [self generatePlaintextSignatureFor:baseString];
+    NSString *key               = [self generatePlaintextSignatureFor:baseString];
     
-    const char *keyBytes = [key cStringUsingEncoding:NSUTF8StringEncoding];
+    const char *keyBytes        = [key cStringUsingEncoding:NSUTF8StringEncoding];
     const char *baseStringBytes = [baseString cStringUsingEncoding:NSUTF8StringEncoding];
     unsigned char digestBytes[CC_SHA1_DIGEST_LENGTH];
     
@@ -301,10 +295,8 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
     }];
     
     // Set the Authorization header
-    NSString *oauthData = [NSString stringWithFormat:@"OAuth %@",
-                           [oauthHeaders componentsJoinedByString:@", "]];
-    NSDictionary *oauthHeader = [NSDictionary dictionaryWithObjectsAndKeys:
-                                 oauthData, @"Authorization", nil];
+    NSString *oauthData        = [NSString stringWithFormat:@"OAuth %@", [oauthHeaders componentsJoinedByString:@", "]];
+    NSDictionary *oauthHeader  = [NSDictionary dictionaryWithObjectsAndKeys:oauthData, @"Authorization", nil];
     
     // Add the Authorization header to the request
     [oauthHeader enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -314,13 +306,12 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
     NSMutableArray *bodyFields = [NSMutableArray array];
     [body enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if (obj && ![obj isEqualToString:@""]) {
-            [bodyFields addObject:[NSString stringWithFormat:@"%@=%@",
-                                   [key urlEncodedString], [obj urlEncodedString]]];
+            [bodyFields addObject:[NSString stringWithFormat:@"%@=%@", [key urlEncodedString], [obj urlEncodedString]]];
         }
     }];
     
-    NSString *bodyString = [bodyFields componentsJoinedByString:@"&"];
-    NSData *requestBody = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *bodyString    = [bodyFields componentsJoinedByString:@"&"];
+    NSData *requestBody     = [bodyString dataUsingEncoding:NSUTF8StringEncoding];
     [request setHTTPBody:requestBody];
 }
 
@@ -328,13 +319,14 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
 
 - (void)getRequestToken {
     NSString *urlString = [[_baseUrl absoluteString] stringByAppendingString:@"/"];
-    urlString = [urlString stringByAppendingString:_requestTokenPath];
+    urlString           = [urlString stringByAppendingString:_requestTokenPath];
     if (_permissions) {
-        urlString = [urlString stringByAppendingFormat:@"?scope=%@", [_permissions componentsJoinedByString:@","]];
+        urlString       = [urlString stringByAppendingFormat:@"?scope=%@",
+                           [_permissions componentsJoinedByString:@","]];
     }
 
-    NSURL *url = [NSURL URLWithString:urlString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    NSURL *url                      = [NSURL URLWithString:urlString];
+    NSMutableURLRequest *request    = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
     
     [self setOAuthValue:_redirectString forKey:@"oauth_callback"];
