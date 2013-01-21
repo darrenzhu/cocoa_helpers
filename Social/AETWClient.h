@@ -24,6 +24,7 @@
 #import "AEOAuthClient.h"
 
 @interface AETWClient : AEOAuthClient
++ (AETWClient *)currentTWClient;
 - (id)initWithKey:(NSString *)consumerKey
            secret:(NSString *)consumerSecret
       andRedirect:(NSString *)redirectString;

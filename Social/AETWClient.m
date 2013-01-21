@@ -30,6 +30,11 @@
 @implementation AETWClient
 static NSString * const baseUrl = @"https://api.twitter.com";
 
+static AETWClient *currentTWClient;
++ (AETWClient *)currentTWClient {
+    return currentTWClient;
+}
+
 - (id)initWithKey:(NSString *)consumerKey
            secret:(NSString *)consumerSecret
       andRedirect:(NSString *)redirectString {
@@ -42,7 +47,7 @@ static NSString * const baseUrl = @"https://api.twitter.com";
                     authorizePath:@"oauth/authorize"
                   accessTokenPath:@"oauth/access_token"];
     if (self) {
-
+        currentTWClient = self;
     }
     return self;
 }
