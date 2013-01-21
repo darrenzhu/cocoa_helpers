@@ -8,12 +8,16 @@
 
 #import "AESNClient.h"
 
+/**
+ `AESNClient` subclass, implements OAuth 1.x authorization algorithm. Generic client for all OAuth 1.x client classes.
+ */
 @interface AEOAuthClient : AESNClient
 
-@property (retain, nonatomic, readonly) NSMutableDictionary *oAuthValues;
-@property (retain, nonatomic, readonly) NSString *accessTokenSecret;
-@property (retain, nonatomic, readonly) NSString *verifier;
-
+/**
+ Designated initializer for all OAuth 1.x clients. 
+ 
+ @return Initialized instance of the OAuth client class
+*/
 - (id)initWithBaseUrl:(NSURL *)baseUrl
                   key:(NSString *)consumerKey
                secret:(NSString *)consumerSecret
@@ -23,8 +27,12 @@
         authorizePath:(NSString *)authorizePath
       accessTokenPath:(NSString *)accessTokenPath;
 
-- (void)fillTokenWithResponseBody:(NSString *)body;
-- (void)setOAuthValue:(NSString *)value forKey:(NSString *)key;
+/**
+ Adds necessary auth headers for the request and signs requests body
+ 
+ @param request Request to sign
+ @param body POST/PUT requests body to sign
+ */
 - (void)signRequest:(NSMutableURLRequest *)request withBody:(NSMutableDictionary*)body;
 
 @end
