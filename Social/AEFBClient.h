@@ -27,6 +27,6 @@
 @interface AEFBClient : AESNClient
 @property(retain, nonatomic, readonly) Facebook *facebook;
 
-+ (Facebook *)currentFacebook;
++ (AEFBClient *)currentClient;
 - (id)initWithId:(NSString *)appId permissions:(NSArray *)permissions;
 @end

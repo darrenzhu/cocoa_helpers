@@ -35,7 +35,7 @@
     } else if ([[url scheme] isEqualToString:@"twengine"]) {
         return [[AETWClient currentClient] processWebViewResult:url];
     } else {
-        return [[AEFBClient currentFacebook] handleOpenURL:url];
+        return [[AEFBClient currentClient].facebook handleOpenURL:url];
     }
     
     return NO;

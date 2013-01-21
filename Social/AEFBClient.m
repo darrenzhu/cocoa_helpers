@@ -35,16 +35,16 @@
 NSString * const fbAccessTokenKey = @"FBAccessTokenKey";
 NSString * const fbExpirationDateKey = @"FBExpirationDateKey";
 
-static Facebook *currentFacebook;
-+ (Facebook *)currentFacebook {
-    return currentFacebook;
+static AEFBClient *currentClient;
++ (AEFBClient *)currentClient {
+    return currentClient;
 }
 
 - (id)initWithId:(NSString *)appId permissions:(NSArray *)permissions {
     self = [super init];
     if (self) {
         self.facebook                   = [[Facebook alloc] initWithAppId:appId andDelegate:self];
-        currentFacebook                 = _facebook;
+        currentClient                   = self;
 
         self.requestsSuccessCallbacks   = [NSMutableDictionary dictionary];
         self.requestsFailureCallbacks   = [NSMutableDictionary dictionary];
