@@ -167,13 +167,17 @@ static AEFBClient *currentClient;
                            failure:(void (^)(NSError *error))failure {
     
     if (success) {
-        [_requestsSuccessCallbacks setValue:success forKey:graphPath];
-    } else {        
+        void (^successBlock)(id profile) = [success copy];
+        [_requestsSuccessCallbacks setValue:successBlock forKey:graphPath];
+        [successBlock release];
+    } else {
         [_requestsSuccessCallbacks removeObjectForKey:graphPath];
     }
     
     if (failure) {
-        [_requestsFailureCallbacks setValue:failure forKey:graphPath];
+        void (^failureBlock)(id profile) = [failure copy];
+        [_requestsFailureCallbacks setValue:failureBlock forKey:graphPath];
+        [failureBlock release];
     } else {
         [_requestsFailureCallbacks removeObjectForKey:graphPath];
     }
