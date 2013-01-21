@@ -8,10 +8,6 @@
 
 #import "AELIClient.h"
 
-@interface AELIClient ()
-
-@end
-
 @implementation AELIClient
 
 static NSString * const baseUrl = @"https://api.linkedin.com";
@@ -59,16 +55,17 @@ static AELIClient *currentLIClient;
                              success:(void (^)(NSDictionary *))success
                              failure:(void (^)(NSError *))failure {
 
-    NSString *requestString = [baseUrl stringByAppendingString:@"/v1/people/~"];
+    NSString *profilePath   = [baseUrl stringByAppendingString:@"/v1/people/~"];
     if (fields) {
-        requestString = [requestString stringByAppendingFormat:@":(%@)", [fields componentsJoinedByString:@","]];
+        profilePath         = [profilePath stringByAppendingFormat:@":(%@)", [fields componentsJoinedByString:@","]];
     }
-    requestString = [requestString stringByAppendingString:@"?format=json"];
-    NSURL *url = [NSURL URLWithString:requestString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [self signRequest:request withBody:nil];
+    profilePath             = [profilePath stringByAppendingString:@"?format=json"];
+    
+    NSURL *profileUrl                   = [NSURL URLWithString:profilePath];    
+    NSMutableURLRequest *profileRequest = [NSMutableURLRequest requestWithURL:profileUrl];
+    [self signRequest:profileRequest withBody:nil];
 
-    [AESNClient processJsonRequest:request success:success failure:failure];
+    [AESNClient processJsonRequest:profileRequest success:success failure:failure];
 }
 
 - (void)friendsInformationWithLimit:(NSInteger)limit
@@ -84,20 +81,20 @@ static AELIClient *currentLIClient;
                              success:(void (^)(NSArray *))success
                              failure:(void (^)(NSError *))failure {
 
-    NSString *requestString = [baseUrl stringByAppendingString:@"/v1/people/~/connections"];
+    NSString *friendsPath   = [baseUrl stringByAppendingString:@"/v1/people/~/connections"];
     if (fields) {
-        requestString = [requestString stringByAppendingFormat:@":(%@)", [fields componentsJoinedByString:@","]];
+        friendsPath         = [friendsPath stringByAppendingFormat:@":(%@)", [fields componentsJoinedByString:@","]];
     }
-    requestString = [requestString stringByAppendingFormat:@"?format=json&start=%i", offset];
+    friendsPath             = [friendsPath stringByAppendingFormat:@"?format=json&start=%i", offset];
     if (limit > 0) {
-        requestString = [requestString stringByAppendingFormat:@"&count=%i", limit];
+        friendsPath         = [friendsPath stringByAppendingFormat:@"&count=%i", limit];
     }
     
-    NSURL *url = [NSURL URLWithString:requestString];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [self signRequest:request withBody:nil];
+    NSURL *friendsUrl                   = [NSURL URLWithString:friendsPath];
+    NSMutableURLRequest *friendsRequest = [NSMutableURLRequest requestWithURL:friendsUrl];
+    [self signRequest:friendsRequest withBody:nil];
     
-    [AESNClient processJsonRequest:request success:^(id json) {
+    [AESNClient processJsonRequest:friendsRequest success:^(id json) {
         if(success) {
             success([json objectForKey:@"values"]);
         }
