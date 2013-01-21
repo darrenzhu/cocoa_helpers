@@ -10,6 +10,7 @@
 		1C683D0BF18F4547ACA8FD22 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA7B2FE82704E849FFCDFAE /* libPods.a */; };
 		952066A916A8B8A3006FD6D9 /* AEOAuthClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 952066A816A8B8A3006FD6D9 /* AEOAuthClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		952066AD16A8BFA8006FD6D9 /* AELIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 952066AC16A8BFA8006FD6D9 /* AELIClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		954D84E516A8F41C002483B7 /* AEGPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 954D84E416A8F41C002483B7 /* AEGPClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95B2FBA216A7AEFB007A1A00 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95B2FBA116A7AEFB007A1A00 /* UIKit.framework */; };
 		95B2FBA416A7AEFB007A1A00 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95B2FBA316A7AEFB007A1A00 /* Foundation.framework */; };
 		95B2FBA616A7AEFB007A1A00 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95B2FBA516A7AEFB007A1A00 /* CoreGraphics.framework */; };
@@ -36,6 +37,8 @@
 		952066A816A8B8A3006FD6D9 /* AEOAuthClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEOAuthClient.m; sourceTree = "<group>"; };
 		952066AB16A8BFA8006FD6D9 /* AELIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AELIClient.h; sourceTree = "<group>"; };
 		952066AC16A8BFA8006FD6D9 /* AELIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AELIClient.m; sourceTree = "<group>"; };
+		954D84E316A8F41C002483B7 /* AEGPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEGPClient.h; sourceTree = "<group>"; };
+		954D84E416A8F41C002483B7 /* AEGPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEGPClient.m; sourceTree = "<group>"; };
 		95B2FB9D16A7AEFB007A1A00 /* SNTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SNTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		95B2FBA116A7AEFB007A1A00 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		95B2FBA316A7AEFB007A1A00 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -161,6 +164,8 @@
 				952066A816A8B8A3006FD6D9 /* AEOAuthClient.m */,
 				952066AB16A8BFA8006FD6D9 /* AELIClient.h */,
 				952066AC16A8BFA8006FD6D9 /* AELIClient.m */,
+				954D84E316A8F41C002483B7 /* AEGPClient.h */,
+				954D84E416A8F41C002483B7 /* AEGPClient.m */,
 			);
 			name = Social;
 			path = ../../Social;
@@ -287,6 +292,7 @@
 				95B2FBE916A7B07C007A1A00 /* NSString+Additions.m in Sources */,
 				952066A916A8B8A3006FD6D9 /* AEOAuthClient.m in Sources */,
 				952066AD16A8BFA8006FD6D9 /* AELIClient.m in Sources */,
+				954D84E516A8F41C002483B7 /* AEGPClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

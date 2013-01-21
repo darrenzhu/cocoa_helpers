@@ -10,6 +10,7 @@
 
 #import "AEViewController.h"
 #import "AEFBClient.h"
+#import "AEGPClient.h"
 
 @implementation AppDelegate
 
@@ -24,7 +25,13 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    return [[AEFBClient currentFacebook] handleOpenURL:url];
+    if ([[url scheme] isEqualToString:@"ap4y.sntests"]) {
+        return [[AEGPClient currentGPClient] processWebViewResult:url];
+    } else {
+        return [[AEFBClient currentFacebook] handleOpenURL:url];
+    }
+    
+    return NO;
 }
 
 @end

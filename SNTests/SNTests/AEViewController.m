@@ -10,6 +10,7 @@
 #import "AEFBClient.h"
 #import "AETWClient.h"
 #import "AELIClient.h"
+#import "AEGPClient.h"
 
 @interface AEViewController () <AESNClientDelegate>
 @property (weak, nonatomic) IBOutlet UITextView *profileTextView;
@@ -17,6 +18,7 @@
 @property (strong, nonatomic) AEFBClient *fbClient;
 @property (strong, nonatomic) AETWClient *twClient;
 @property (strong, nonatomic) AELIClient *liClient;
+@property (strong, nonatomic) AEGPClient *gpClient;
 @end
 
 @implementation AEViewController
@@ -54,17 +56,26 @@
 }
 
 - (IBAction)google:(id)sender {
+    self.gpClient = [[AEGPClient alloc] initWithClientID:@"869080294705.apps.googleusercontent.com"
+                                                language:@"en"
+                                                   scope:@[ @"https://www.googleapis.com/auth/plus.me" ]
+                                              bundleName:@"ap4y.SNTests"];
+
+    _gpClient.delegate = self;
+    [_gpClient login];
 }
 
 #pragma mark - AESNClientDelegate
 - (void)client:(AESNClient *)client wantsPresentAuthPage:(NSURL *)url {
-    UIWebView *_webView = [[UIWebView alloc] initWithFrame:self.view.frame];
-    _webView.delegate = client;
+//    UIWebView *_webView = [[UIWebView alloc] initWithFrame:self.view.frame];
+//    _webView.delegate = client;
+//    
+//    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+//    [_webView loadRequest:request];
+//    
+//    [self.view addSubview:_webView];
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [_webView loadRequest:request];
-    
-    [self.view addSubview:_webView];
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 - (void)clientDidLogin:(AESNClient *)client {
@@ -75,6 +86,10 @@
     } failure:^(NSError *error) {
         NSLog(@"Unable to get profile with client %@, %@", client, error);
     }];
+    
+    if ([client isKindOfClass:[AEGPClient class]]) {
+        _friendsTextView.text = @"";
+    }
     
     [client friendsInformationWithLimit:10 offset:0 success:^(NSArray *friends) {
         _friendsTextView.text = [friends componentsJoinedByString:@"\n"];
