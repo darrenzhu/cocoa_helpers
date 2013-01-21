@@ -18,10 +18,10 @@
 
 @implementation AEGPClient
 
-NSString * const baseUrl                = @"https://accounts.google.com/o/oauth2";
-NSString * const plusBaseUrl            = @"https://www.googleapis.com/plus/v1";
-NSString * const gpAccessTokenSaveKey   = @"GPAccessTokenKey";
-NSString * const gpExpireDateSaveKey    = @"GPExpirationDateKey";
+static NSString * const baseUrl                = @"https://accounts.google.com/o/oauth2";
+static NSString * const plusBaseUrl            = @"https://www.googleapis.com/plus/v1";
+static NSString * const gpAccessTokenSaveKey   = @"GPAccessTokenKey";
+static NSString * const gpExpireDateSaveKey    = @"GPExpirationDateKey";
 
 static AEGPClient *currentGPClient;
 + (AEGPClient *)currentClient {
