@@ -43,7 +43,7 @@ static AEFBClient *currentClient;
 - (id)initWithId:(NSString *)appId permissions:(NSArray *)permissions {
     self = [super init];
     if (self) {
-        self.facebook                   = [[Facebook alloc] initWithAppId:appId andDelegate:self];
+        _facebook                       = [[Facebook alloc] initWithAppId:appId andDelegate:self];
         currentClient                   = self;
 
         self.requestsSuccessCallbacks   = [NSMutableDictionary dictionary];
@@ -167,24 +167,14 @@ static AEFBClient *currentClient;
                            failure:(void (^)(NSError *error))failure {
     
     if (success) {
-        [_requestsSuccessCallbacks setValue:[success copy] forKey:graphPath];
-    } else {
-        void (^success)(id profile) = [_requestsSuccessCallbacks valueForKey:graphPath];
-        if (success) {
-            [success release];
-        }
-        
+        [_requestsSuccessCallbacks setValue:success forKey:graphPath];
+    } else {        
         [_requestsSuccessCallbacks removeObjectForKey:graphPath];
     }
     
     if (failure) {
-        [_requestsFailureCallbacks setValue:[failure copy] forKey:graphPath];
+        [_requestsFailureCallbacks setValue:failure forKey:graphPath];
     } else {
-        void (^failure)(NSError *error) = [_requestsFailureCallbacks valueForKey:graphPath];
-        if (failure) {
-            [success release];
-        }
-
         [_requestsFailureCallbacks removeObjectForKey:graphPath];
     }
 }
