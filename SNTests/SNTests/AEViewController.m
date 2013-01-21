@@ -67,7 +67,9 @@
 
 #pragma mark - AESNClientDelegate
 - (void)client:(AESNClient *)client wantsPresentAuthPage:(NSURL *)url {
-//  You can present web view or use SSO via openURL
+/**  
+    You can present web view or use SSO via openURL
+*/
 //    UIWebView *_webView = [[UIWebView alloc] initWithFrame:self.view.frame];
 //    _webView.delegate = client;
 //    

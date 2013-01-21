@@ -27,6 +27,7 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    
     if ([[url scheme] isEqualToString:@"ap4y.sntests"]) {
         return [[AEGPClient currentClient] processWebViewResult:url];
     } else if ([[url scheme] isEqualToString:@"linengine"]) {
