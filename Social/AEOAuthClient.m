@@ -337,11 +337,11 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
         //open webview
         NSString *authorizePath = [NSString stringWithFormat:@"%@?oauth_token=%@", _authorizePath,
                                    [self.oAuthValues objectForKey:@"oauth_token"]];
-        NSURL *authorizeUrl = [_baseUrl URLByAppendingPathComponent:authorizePath];
+        NSURL *authorizeUrl = [NSURL URLWithString:authorizePath relativeToURL:_baseUrl];
         
         if (self.delegate) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.delegate client:self wantsPresentAuthPage:authorizeUrl];
+                [self.delegate client:self wantsPresentAuthPage:[authorizeUrl absoluteURL]];
             });
         }
     } failure:^(NSError *error) {
