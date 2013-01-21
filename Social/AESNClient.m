@@ -24,18 +24,21 @@
 #import "AESNClient.h"
 #import "AFJSONRequestOperation.h"
 
-@interface AESNClient () {
-    NSString *_accessToken;
-    NSDate *_expirationDate;
-    
-    id<AESNClientDelegate> _delegate;
-}
+@interface AESNClient ()
+@property (retain, nonatomic) NSString *accessToken;
+@property (retain, nonatomic) NSDate *expirationDate;
 @end
 
 @implementation AESNClient
 @synthesize delegate = _delegate;
 @synthesize accessToken = _accessToken;
 @synthesize expirationDate = _expirationDate;
+
+- (void)dealloc {
+    [_accessToken release];
+    [_expirationDate release];
+    [super dealloc];
+}
 
 - (BOOL)isSessionValid {
     return ( _accessToken != nil &&
