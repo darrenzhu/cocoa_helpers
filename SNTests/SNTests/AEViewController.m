@@ -55,29 +55,27 @@
     [_liClient login];
 }
 
-- (IBAction)myspace:(id)sender {
-}
-
 - (IBAction)google:(id)sender {
-}
-
-- (IBAction)vk:(id)sender {
     self.gpClient = [[AEGPClient alloc] initWithClientID:@"869080294705.apps.googleusercontent.com"
                                                 language:@"en"
-                                                   scope:@[ @"https://www.googleapis.com/auth/plus.me" ]];
+                                                   scope:@[ @"https://www.googleapis.com/auth/plus.me" ]
+                                              bundleName:@"ap4y.SNTests"];
+
     _gpClient.delegate = self;
     [_gpClient login];
 }
 
 #pragma mark - AESNClientDelegate
 - (void)client:(AESNClient *)client wantsPresentAuthPage:(NSURL *)url {
-    UIWebView *_webView = [[UIWebView alloc] initWithFrame:self.view.frame];
-    _webView.delegate = client;
+//    UIWebView *_webView = [[UIWebView alloc] initWithFrame:self.view.frame];
+//    _webView.delegate = client;
+//    
+//    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+//    [_webView loadRequest:request];
+//    
+//    [self.view addSubview:_webView];
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:url];
-    [_webView loadRequest:request];
-    
-    [self.view addSubview:_webView];
+    [[UIApplication sharedApplication] openURL:url];
 }
 
 - (void)clientDidLogin:(AESNClient *)client {

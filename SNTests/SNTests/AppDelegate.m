@@ -29,13 +29,13 @@
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    if ([[AEFBClient currentFacebook] handleOpenURL:url]) {
-        return YES;
+    if ([[url scheme] isEqualToString:@"ap4y.sntests"]) {
+        return [[AEGPClient currentGPClient] processWebViewResult:url];
+    } else {
+        return [[AEFBClient currentFacebook] handleOpenURL:url];
     }
     
-    return [[AEGPClient currentSignIn] handleURL:url
-                               sourceApplication:sourceApplication
-                                      annotation:annotation];
+    return NO;
 }
 
 @end
