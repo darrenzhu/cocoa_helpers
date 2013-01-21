@@ -136,7 +136,7 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
                          nil] retain];
     }
     
-    [self getRequestToken];
+    [self requestRequestToken];
 }
 
 - (BOOL)processWebViewResult:(NSURL *)processUrl {
@@ -146,7 +146,7 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
     
     if (search.location != NSNotFound) {
         [self fillTokenWithResponseBody:[url stringByReplacingOccurrencesOfString:searchedString withString:@""]];
-        [self getAccessToken];
+        [self requestAccessToken];
         
         return YES;
     }
@@ -317,7 +317,7 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
 
 #pragma mark - OAuth implementation
 
-- (void)getRequestToken {
+- (void)requestRequestToken {
     NSString *urlString = [[_baseUrl absoluteString] stringByAppendingString:@"/"];
     urlString           = [urlString stringByAppendingString:_requestTokenPath];
     if (_permissions) {
@@ -349,7 +349,7 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
     }];
 }
 
-- (void)getAccessToken {
+- (void)requestAccessToken {
     NSURL *url = [_baseUrl URLByAppendingPathComponent:_accessTokenPath];
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [request setHTTPMethod:@"POST"];
