@@ -1,5 +1,5 @@
 //
-// FBClient.m
+// AEFBClient.m
 //
 // Copyright (c) 2012 ap4y (lod@pisem.net)
 //
