@@ -7,11 +7,13 @@
 //
 
 #import "AESNClient.h"
-#import "GPPSignIn.h"
 
 @interface AEGPClient : AESNClient
 
-+ (GPPSignIn *)currentSignIn;
-- (id)initWithClientID:(NSString *)clientID language:(NSString *)language scope:(NSArray *)scope;
++ (AEGPClient *)currentGPClient;
+- (id)initWithClientID:(NSString *)clientID
+              language:(NSString *)language
+                 scope:(NSArray *)scope
+            bundleName:(NSString *)bundleName;
 
 @end
