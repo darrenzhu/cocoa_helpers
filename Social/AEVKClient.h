@@ -24,6 +24,5 @@
 #import "AESNClient.h"
 
 @interface AEVKClient : AESNClient
-- (id)initWithId:(NSString *)consumerKey
-     andRedirect:(NSString *)redirectString;
+- (id)initWithId:(NSString *)consumerKey scope:(NSArray *)scope redirectUrlString:(NSString *)redirectString;
 @end

@@ -23,103 +23,96 @@
 
 #import "AEVKClient.h"
 #import "NSString+Additions.h"
-#import "AFJSONRequestOperation.h"
 
-@interface AEVKClient () {
-    NSString *_clientId;
-    NSString *_redirectString;
-}
+@interface AEVKClient ()
+@property (copy, nonatomic) NSString *clientId;
+@property (copy, nonatomic) NSString *redirectString;
+@property (copy, nonatomic) NSArray *scope;
 @end
 
 @implementation AEVKClient
-static NSString *serverUrl = @"http://api.vk.com/oauth/authorize?";
-static NSString *scope = @"wall";
+static NSString * const baseUrl = @"http://api.vk.com";
 
-static NSString *accessTokenKey = @"VKAccessTokenKey";
-static NSString *expirationDateKey = @"VKExpirationDateKey";
+static NSString * const accessTokenKey = @"VKAccessTokenKey";
+static NSString * const expirationDateKey = @"VKExpirationDateKey";
 
-static NSString *shareLinkMethodUrl =
-    @"https://api.vk.com/method/wall.post?attachments=%@&access_token=%@&message=%@";
-
-
-- (id)initWithId:(NSString *)consumerKey
-     andRedirect:(NSString *)redirectString {
+- (id)initWithId:(NSString *)consumerKey scope:(NSArray *)scope redirectUrlString:(NSString *)redirectString {
+    
     self = [super init];
     if (self) {
-        _clientId = consumerKey;
-        _redirectString = redirectString;
+        self.clientId       = consumerKey;
+        self.redirectString = redirectString;
+        self.scope          = scope;
     }
     return self;
 }
 
+- (void)dealloc {
+    [_clientId release];
+    [_redirectString release];
+    [_scope release];
+    [super dealloc];
+}
+
+#pragma mark - overrides
 - (void)regainToken:(NSDictionary *)savedKeysAndValues {
     self.accessToken = [savedKeysAndValues valueForKey:accessTokenKey];
     self.expirationDate = [savedKeysAndValues valueForKey:expirationDateKey];
 }
 
-- (void)doLoginWorkflow {
-    NSString* urlString = [NSString stringWithFormat:@"%@client_id=%@&scope=%@&redirect_uri=%@&display=touch&response_type=token", serverUrl, _clientId, scope, _redirectString];
+- (void)doLoginWorkflow {    
+    NSString *requestTokenPath = [NSString stringWithFormat:@"%@/oauth/authorize", baseUrl];
+    requestTokenPath           = [requestTokenPath stringByAppendingFormat:@"?client_id=%@&scope=%@&redirect_uri=%@",
+                                  _clientId, [_scope componentsJoinedByString:@","], _redirectString];
+    requestTokenPath           = [requestTokenPath stringByAppendingString:@"&display=touch&response_type=token"];
     
     if (self.delegate) {
-        [self.delegate client:self wantsPresentAuthPage:[NSURL URLWithString:urlString]];
+        [self.delegate client:self wantsPresentAuthPage:[NSURL URLWithString:requestTokenPath]];
     }
 }
 
-- (void)shareLink:(NSString *)link withTitle:(NSString *)title andMessage:(NSString *)message {
-
-    NSString *urlString =  [NSString stringWithFormat:shareLinkMethodUrl,
-                            link, self.accessToken, [message urlEncodedString]];
+- (BOOL)processWebViewResult:(NSURL *)processUrl {    
+    NSString *absoluteString    = processUrl.absoluteString;
+    NSRange redirectStringRange = [absoluteString rangeOfString:[NSString stringWithFormat:@"%@#", _redirectString]];
     
-    NSURL *url = [NSURL URLWithString:urlString];    
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-
-    AFJSONRequestOperation *operation =
-        [AFJSONRequestOperation JSONRequestOperationWithRequest:request
-                                                        success:^(NSURLRequest *request,
-                                                                  NSHTTPURLResponse *response,
-                                                                  id JSON) {
-        NSLog(@"response %@", JSON);
+    if (redirectStringRange.location != NSNotFound) {
+        NSRegularExpression *regex;
+        NSTextCheckingResult *checkingResult;
+        NSString *token, *expires;
         
-    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-        NSLog(@"Error %@", error);
-    }];
-    
-    [operation start];
-}
-
-- (BOOL)processWebViewResult:(NSURL *)processUrl {
-    NSString *url = processUrl.absoluteString;
-    
-    NSRange search = [url rangeOfString:[NSString stringWithFormat:@"%@#", _redirectString]];
-    if (search.location != NSNotFound) {
-        NSRegularExpression *regex =
-            [NSRegularExpression regularExpressionWithPattern:@"access_token=[^&?]+"
-                                                      options:0
-                                                        error:nil];
-        NSTextCheckingResult *result = [regex firstMatchInString:url
-                                                         options:0
-                                                           range:NSMakeRange(0, url.length)];
-        NSString *token = [url substringWithRange:result.range];
-        self.accessToken = [token stringByReplacingOccurrencesOfString:@"access_token="
-                                                            withString:@""];
+        regex               = [NSRegularExpression regularExpressionWithPattern:@"access_token=[^&?]+"
+                                                                        options:0
+                                                                          error:nil];
+        checkingResult      = [regex firstMatchInString:absoluteString
+                                                options:0
+                                                  range:NSMakeRange(0, absoluteString.length)];
         
-        regex = [NSRegularExpression regularExpressionWithPattern:@"expires_in=[^&?]+"
-                                                          options:0
-                                                            error:nil];
-        result = [regex firstMatchInString:url options:0 range:NSMakeRange(0, url.length)];
-        NSString *expires = [url substringWithRange:result.range];
-        expires = [expires stringByReplacingOccurrencesOfString:@"expires_in=" withString:@""];
-        NSNumberFormatter *f = [[[NSNumberFormatter alloc] init] autorelease];
-        NSInteger timeInterval = [f numberFromString:expires].integerValue;
-        self.expirationDate = [[NSDate date] dateByAddingTimeInterval:timeInterval];
+        token               = [absoluteString substringWithRange:checkingResult.range];
+        self.accessToken    = [token stringByReplacingOccurrencesOfString:@"access_token="
+                                                               withString:@""];
         
-        NSMutableDictionary *tokens = [NSMutableDictionary dictionary];
+        regex               = [NSRegularExpression regularExpressionWithPattern:@"expires_in=[^&?]+"
+                                                                        options:0
+                                                                          error:nil];
+        checkingResult      = [regex firstMatchInString:absoluteString
+                                                options:0
+                                                  range:NSMakeRange(0, absoluteString.length)];
+        
+        expires             = [absoluteString substringWithRange:checkingResult.range];
+        expires             = [expires stringByReplacingOccurrencesOfString:@"expires_in=" withString:@""];
+        
+        NSNumberFormatter *f            = [[[NSNumberFormatter alloc] init] autorelease];
+        NSInteger timeInterval          = [f numberFromString:expires].integerValue;
+        self.expirationDate             = [[NSDate date] dateByAddingTimeInterval:timeInterval];
+        
+        NSMutableDictionary *tokens     = [NSMutableDictionary dictionary];
         [tokens setValue:self.accessToken forKey:accessTokenKey];
         [tokens setValue:self.expirationDate forKey:expirationDateKey];
-        [self saveToken:tokens];    
+        [self saveToken:tokens];
         
-        if (self.delegate)
+        if (self.delegate) {
             [self.delegate clientDidLogin:self];
+        }
         
         return YES;
     }
@@ -127,5 +120,20 @@ static NSString *shareLinkMethodUrl =
     return NO;
 }
 
+- (void)shareLink:(NSString *)link
+        withTitle:(NSString *)title
+       andMessage:(NSString *)message
+          success:(void (^)())success
+          failure:(void (^)(NSError *))failure {
+
+    NSString *sharePath = [NSString stringWithFormat:@"%@/method/wall.post", baseUrl];
+    sharePath           = [sharePath stringByAppendingFormat:@"?attachments=%@&access_token=%@&message=%@",
+                           link, self.accessToken, [message urlEncodedString]];
+    
+    NSURL *shareUrl                 = [NSURL URLWithString:sharePath];
+    NSMutableURLRequest *request    = [NSMutableURLRequest requestWithURL:shareUrl];
+
+    [AESNClient processJsonRequest:request success:success failure:failure];
+}
 
 @end
