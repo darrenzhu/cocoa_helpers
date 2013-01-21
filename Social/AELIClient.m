@@ -13,7 +13,7 @@
 static NSString * const baseUrl = @"https://api.linkedin.com";
 
 static AELIClient *currentLIClient;
-+ (AELIClient *)currentLIClient {
++ (AELIClient *)currentClient {
     return currentLIClient;
 }
 

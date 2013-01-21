@@ -28,11 +28,11 @@
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
     if ([[url scheme] isEqualToString:@"ap4y.sntests"]) {
-        return [[AEGPClient currentGPClient] processWebViewResult:url];
+        return [[AEGPClient currentClient] processWebViewResult:url];
     } else if ([[url scheme] isEqualToString:@"linengine"]) {
-        return [[AELIClient currentLIClient] processWebViewResult:url];
+        return [[AELIClient currentClient] processWebViewResult:url];
     } else if ([[url scheme] isEqualToString:@"twengine"]) {
-        return [[AETWClient currentTWClient] processWebViewResult:url];
+        return [[AETWClient currentClient] processWebViewResult:url];
     } else {
         return [[AEFBClient currentFacebook] handleOpenURL:url];
     }

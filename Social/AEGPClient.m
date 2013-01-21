@@ -24,7 +24,7 @@ NSString * const gpAccessTokenSaveKey   = @"GPAccessTokenKey";
 NSString * const gpExpireDateSaveKey    = @"GPExpirationDateKey";
 
 static AEGPClient *currentGPClient;
-+ (AEGPClient *)currentGPClient {
++ (AEGPClient *)currentClient {
     return currentGPClient;
 }
 

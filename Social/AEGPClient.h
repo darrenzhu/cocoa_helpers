@@ -10,7 +10,7 @@
 
 @interface AEGPClient : AESNClient
 
-+ (AEGPClient *)currentGPClient;
++ (AEGPClient *)currentClient;
 - (id)initWithClientID:(NSString *)clientID
               language:(NSString *)language
                  scope:(NSArray *)scope

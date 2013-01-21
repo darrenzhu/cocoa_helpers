@@ -31,7 +31,7 @@
 static NSString * const baseUrl = @"https://api.twitter.com";
 
 static AETWClient *currentTWClient;
-+ (AETWClient *)currentTWClient {
++ (AETWClient *)currentClient {
     return currentTWClient;
 }
 
