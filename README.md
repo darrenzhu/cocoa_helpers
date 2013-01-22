@@ -1,89 +1,56 @@
-My everyday cocoa stuff.
+## NSManagedObject with JSON support and refined fetched requests
 
-## REST api clients ##
+ Common base class for `JSON` based managed objects. Solves general tasks:
 
-Wrapper for the `AFHTTPClient`. Returns decoded from json `CoreData` objects. Contains methods fro easier entities requests:
+ - `JSON` serialization and desirialization. Fast serialization process via `JSONKit` with type-checking and mappings.
+ - Fetching remote items. All actions performed in background (using `GCD`), main thread active only when synthesizing saved entites from `objectID`.
+ - Simplified fetch requests. ActiveRecord-like behaviour.
 
-	- (NSArray*)all:(NSManagedObjectContext*)context;
-	- (NSArray*)all:(NSManagedObjectContext*)context
-			orderBy:(NSString*)firstSortingParam, ... NS_REQUIRES_NIL_TERMINATION;
-	- (NSArray*)all:(NSManagedObjectContext*)context 
- 	orderByDescriptors:(NSSortDescriptor*)firstDescriptor, ... NS_REQUIRES_NIL_TERMINATION;
+ ```objective-c
+NSFetchRequest *request = [[TestEntity find:@(1)] orderBy:@"id", nil];
+NSFetchRequest *request = [TestEntity find:@(1)];
+NSFetchRequest *request = [TestEntity where:predicate];
+```
 
-	- (id)find:(NSManagedObjectContext*)context itemId:(id)itemId;
+ - Handles json root objects, dates and allow to create temporary requested entities.
 
-	- (NSArray*)where:(NSManagedObjectContext*)context 
-	   wherePredicate:(NSPredicate*)wherePredicate;
-	- (NSArray*)where:(NSManagedObjectContext*)context 
-	   wherePredicate:(NSPredicate*)wherePredicate 
-	   		  orderBy:(NSString*)firstSortingParam, ... NS_REQUIRES_NIL_TERMINATION;
-	- (NSArray*)where:(NSManagedObjectContext*)context 
-	   wherePredicate:(NSPredicate*)wherePredicate 
-   	orderByDescriptors:(NSSortDescriptor*)firstDescriptor, ... NS_REQUIRES_NIL_TERMINATION;
+## CoreData helpers
 
-Concrete client class should implement:
-	
-	- (NSDateFormatter *)dateFormatter;
-	- (NSEntityDescription *)enityDescriptionInContext:(NSManagedObjectContext *)context;
+Solves common `CoreData` task:
 
-`NSDateFormatter` for correct decodin/encoding of the HTTP requests date params and `NSEntityDescription` to point the entitity which it posses
+- Creating contexts, model, coordinator.
+- Dedicated context singleton for the main thread.
+- Simple fetched requests.
+- Merging notifications.
+- Automatic switching to memory store for unit tests
 
-Client entities base class should implement `NSDateFormatter` for correct decoding of the dates
+## Social networks
 
-	- (NSDateFormatter*)dateFormatter;
+Clients for social networks with common interface, authentication, credentials caching.
 
-## Social networks ##
+- Generic `OAuth1.x` implementation.
+- `Keychain` token storage.
+- `SSO` supported where possible.
+- Implemented wrappers for fetching user `profile`, `connections` and creating `shares`.
+- Implemented clients for: `Facebook`, `Twitter`, `LinkedIn`, `Google+`, `Xing`, `Vkontakte`.
 
-Clients for the social networks (facebook, twitter, vkontakte) with common interface, authentication credentials caching
-
-Exposes:
-
-	- (BOOL)isSessionValid;
-	- (void)login;
-	- (void)shareLink:(NSString*)link withTitle:(NSString*)title andMessage:(NSString*)message;
-
-Should be implemented in concrete class:
-
-	@interface SNClient (Private)
-	- (void)doLoginWorkflow;
-	- (void)regainToken:(NSDictionary*)savedKeysAndValues;
-	- (void)saveToken:(NSDictionary*)tokensToSave;
-	- (BOOL)processWebViewResult:(NSURL*)processUrl;
-	@end
-
-Optianal delegate inteface:
-
-	@protocol SNClientDelegate <NSObject>
-	- (void)client:(SNClient*)client showAuthPage:(NSString*)url;
-	- (void)clientDidLogin:(SNClient*)client ;
-	@end
-
-## Unit testing (OCUnit+OCMock) ##
-
-Class methods for stubing REST api requests (via `AFHTTPNetworking`) with results from txt file (saved handshakes):
-
-	+ (void)stubGetPath:(NSString*)path 
-	      forClientMock:(id)clientMock
-	          andParams:(NSDictionary*)params 
-	  withHandshakeFile:(NSString*)handshakeFile;
+## Unit testing
 
 Async test looping with blocks:
 
-	- (void)runAsyncTestUntil:(NSTimeInterval)interval 
-                     test:(void (^)())test;
-	- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test 
-	        withInterval:(NSTimeInterval)interval;
-	- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test;
+ ```objective-c
+- (void)runAsyncTestUntil:(NSTimeInterval)interval
+                   test:(void (^)())test;
+- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test
+        withInterval:(NSTimeInterval)interval;
+- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test;
+```
 
-implement your async test in block and return endCondition.trigger after getting callback result, looping continues till interval expiration.
+implement your async test in block and return `endCondition.trigger` after getting callback result, looping continues till interval expiration.
 
-## Other ##
+## Installation
 
-Also contains useful categories and wrapper for the common `CoreData` activities.
-
-## Usage ##
-
-Drop files to your project. Some features are barelly tested and contains only basic implementation.
+[cocoapods](http://cocoapods.org) `podspec` included. Unit test included. Social network client examples included.
 
 ## License ##
 
