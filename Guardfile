@@ -3,7 +3,7 @@ guard :ocunit,
       :build_variables  => 'ONLY_ACTIVE_ARCH=NO',
       :test_paths       => ['AEHelpersTests'],
       :workspace        => 'AEHelpers.xcworkspace',
-      :scheme           => 'AEHelpers',
+      :scheme           => 'AEHelpersTests',
       :test_bundle      => 'AEHelpersTests' do
 
   watch(%r{^AEHelpersTests/.+Tests\.m})

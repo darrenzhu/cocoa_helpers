@@ -1,5 +1,5 @@
 //
-// AEHelpers.h
+// AEXingClient.h
 //
 // Copyright (c) 2012 ap4y (lod@pisem.net)
 //
@@ -21,8 +21,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#import "AEOAuthClient.h"
 
-@interface AEHelpers : NSObject
+@interface AEXingClient : AEOAuthClient
++ (AEXingClient *)currentClient;
 
+- (id)initWithKey:(NSString *)consumerKey
+           secret:(NSString *)consumerSecret
+      andRedirect:(NSString *)redirectString;
+
+- (void)profileInformationWithFields:(NSArray *)fields
+                             success:(void (^)(NSDictionary *))success
+                             failure:(void (^)(NSError *))failure;
+
+- (void)friendsInformationWithFields:(NSArray *)fields
+                               limit:(NSInteger)limit
+                              offset:(NSInteger)offset
+                             success:(void (^)(NSArray *))success
+                             failure:(void (^)(NSError *))failure;
 @end
