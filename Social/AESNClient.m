@@ -31,9 +31,9 @@
 @end
 
 @implementation AESNClient
-@synthesize delegate = _delegate;
-@synthesize accessToken = _accessToken;
-@synthesize expirationDate = _expirationDate;
+//@synthesize delegate = _delegate;
+//@synthesize accessToken = _accessToken;
+//@synthesize expirationDate = _expirationDate;
 
 static NSString * const keychainAccount = @"access_token";
 
