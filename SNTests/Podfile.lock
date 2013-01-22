@@ -3,15 +3,18 @@ PODS:
 - AFNetworking (1.1.0)
 - Facebook-iOS-SDK (3.1.1)
 - NSData+Base64 (1.0.0)
+- SSKeychain (0.1.4)
 
 DEPENDENCIES:
 - AFNetworking
 - Facebook-iOS-SDK
 - NSData+Base64
+- SSKeychain
 
 SPEC CHECKSUMS:
   AFNetworking: 761a418233d280c1e0580bcb76ff9cb4c3073d17
   Facebook-iOS-SDK: 5fc068ebfd8c8c9b0fad476bc36dbbf1fffeebc8
   NSData+Base64: 8b910cb8a64f45daec6fb15936c36a9a911c57ca
+  SSKeychain: bae692a4354f48691ca3463a121dc8060f781a7d
 
 COCOAPODS: 0.16.1
