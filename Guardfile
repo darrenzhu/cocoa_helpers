@@ -7,7 +7,7 @@ guard :ocunit,
       :test_bundle      => 'AEHelpersTests' do
 
   watch(%r{^AEHelpersTests/.+Tests\.m})
-  watch(%r{^Common/(.+)\.[m,h]$}) { |m| "AEHelpersTests/#{m[1]}Tests.m" }
-  watch(%r{^Client/(.+)\.[m,h]$}) { |m| "AEHelpersTests/#{m[1]}Tests.m" }
-  watch(%r{^Categories/(.+)\.[m,h]$}) { |m| "AEHelpersTests/#{m[1]}Tests.m" }
+  watch(%r{^AEHelpers/Common/(.+)\.[m,h]$}) { |m| "AEHelpersTests/#{m[1]}Tests.m" }
+  watch(%r{^AEHelpers/Client/(.+)\.[m,h]$}) { |m| "AEHelpersTests/#{m[1]}Tests.m" }
+  watch(%r{^AEHelpers/Categories/(.+)\.[m,h]$}) { |m| "AEHelpersTests/#{m[1]}Tests.m" }
 end
