@@ -23,6 +23,7 @@
 
 #import "AESNClient.h"
 #import "AFJSONRequestOperation.h"
+#import "SSKeychain.h"
 
 @interface AESNClient ()
 @property (retain, nonatomic) NSString *accessToken;
@@ -33,6 +34,8 @@
 @synthesize delegate = _delegate;
 @synthesize accessToken = _accessToken;
 @synthesize expirationDate = _expirationDate;
+
+static NSString * const keychainAccount = @"access_token";
 
 - (void)dealloc {
     [_accessToken release];
@@ -48,8 +51,16 @@
 
 - (void)login {    
     if (![self isSessionValid]) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [self regainToken:[defaults dictionaryRepresentation]];
+        NSData *encodedData = [SSKeychain passwordDataForService:NSStringFromClass([self class])
+                                                         account:keychainAccount];
+        
+        if (encodedData) {
+            NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:encodedData];
+            NSDictionary *restoredTokens = [unarchiver decodeObject];
+            
+            [self regainToken:restoredTokens];
+            [unarchiver release];
+        }
     }
     
     if (![self isSessionValid]) {
@@ -123,10 +134,15 @@
     @throw [AESNClient overrideExceptionForSelector:_cmd];
 }
 
-- (void)saveToken:(NSDictionary*)tokensToSave {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setValuesForKeysWithDictionary:tokensToSave];
-    [defaults synchronize];
+- (void)saveToken:(NSDictionary*)tokensToSave {    
+    NSMutableData *archivedData = [NSMutableData data];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:archivedData];
+    [archiver setOutputFormat:NSPropertyListXMLFormat_v1_0];
+    [archiver encodeObject:tokensToSave];
+    [archiver finishEncoding];
+    
+    [SSKeychain setPasswordData:archivedData forService:NSStringFromClass([self class]) account:keychainAccount];
+    [archiver release];
 }
 
 - (BOOL)processWebViewResult:(NSURL*)processUrl {
