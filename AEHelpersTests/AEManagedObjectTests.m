@@ -88,7 +88,7 @@
 - (void)testToJSONString {
     TestEntity *entity = (TestEntity *)[TestEntity createOrUpdateFromJsonObject:_jsonObject
                                                          inManagedObjectContext:mainThreadContext()];
-    STAssertEqualObjects(@"{\"entity_id\":1,\"testField\":\"test value\"}", [entity toJSONString], nil);
+    STAssertEqualObjects(@"{\"entity\":{\"entity_id\":1,\"testField\":\"test value\"}}", [entity toJSONString], nil);
 }
 
 - (void)testRequestAll {
@@ -130,7 +130,7 @@
     
     __block BOOL finished = NO;
     [TestEntity fetchWithClient:[AEHTTPClient sharedClient] path:@"/tests" parameters:nil jsonResponse:^(id json) {
-        NSString *jsonString = @"[{\"entity_id\": 1,\"testField\": \"test value\"},{\"entity_id\": 2,\"testField\": \"another test value\"}]";
+        NSString *jsonString = @"{\"entity\":[{\"entity_id\": 1,\"testField\": \"test value\"},{\"entity_id\": 2,\"testField\": \"another test value\"}]}";
         STAssertEqualObjects([jsonString objectFromJSONString], json, nil);
     } success:^(NSArray *entities) {
         STAssertEquals(2U, entities.count, nil);
@@ -161,7 +161,8 @@
     STAssertEqualObjects(@"test value", entity.anotherField, nil);
     STAssertEqualObjects(@"test value", entity.testField, nil);
     STAssertEqualObjects(@(2), entity.id, nil);
-    STAssertEqualObjects(jsonString, [entity toJSONString], nil);
+    NSString *rootedJsonObject = [NSString stringWithFormat:@"{\"entity\":%@}", jsonString];
+    STAssertEqualObjects(rootedJsonObject, [entity toJSONString], nil);
 }
 
 @end

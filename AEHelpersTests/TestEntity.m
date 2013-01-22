@@ -29,7 +29,7 @@
 @dynamic anotherField;
 
 + (NSString *)jsonRoot {
-    return nil;
+    return @"entity";
 }
 
 + (NSDictionary *)propertyMappings {

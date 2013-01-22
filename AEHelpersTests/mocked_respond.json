@@ -1,10 +1,12 @@
-[
-    {
-        "entity_id": 1,
-        "testField": "test value"
-    },
-    {
-        "entity_id": 2,
-        "testField": "another test value"
-    }
-]
+{
+    "entity": [
+        {
+             "entity_id": 1,
+             "testField": "test value"
+        },
+        {
+             "entity_id": 2,
+             "testField": "another test value"
+        }
+    ]
+}

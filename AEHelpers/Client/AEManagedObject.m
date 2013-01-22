@@ -91,6 +91,10 @@
     }
     free(properties);    
     
+    if ([[self class] jsonRoot]) {
+        jsonObject = [NSDictionary dictionaryWithObject:jsonObject forKey:[[self class] jsonRoot]];
+    }
+    
     return [jsonObject JSONString];
 }
 
@@ -249,10 +253,13 @@
         if (success) {
             NSArray *items = responseObject;
             if ([self jsonRoot]) {
-                items = [responseObject valueForKeyPath:[self jsonRoot]];
+                items = [responseObject valueForKey:[self jsonRoot]];
             }
             
-            if ([items isKindOfClass:NSArray.class]) {
+            if ([items isKindOfClass:NSArray.class] &&
+                [items count] > 0 &&
+                ![[items objectAtIndex:0] isKindOfClass:[NSNull class]]) { //JSONKit returns sometimes array with NSNull
+                
                 dispatch_async([self jsonQueue], ^{
                     [self formatJson:items success:success];
                 });
