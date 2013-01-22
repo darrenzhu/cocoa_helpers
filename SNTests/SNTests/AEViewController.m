@@ -11,6 +11,7 @@
 #import "AETWClient.h"
 #import "AELIClient.h"
 #import "AEGPClient.h"
+#import "AEXingClient.h"
 
 @interface AEViewController () <AESNClientDelegate>
 @property (weak, nonatomic) IBOutlet UITextView *profileTextView;
@@ -19,6 +20,7 @@
 @property (strong, nonatomic) AETWClient *twClient;
 @property (strong, nonatomic) AELIClient *liClient;
 @property (strong, nonatomic) AEGPClient *gpClient;
+@property (strong, nonatomic) AEXingClient *xingClient;
 @end
 
 @implementation AEViewController
@@ -63,6 +65,15 @@
 
     _gpClient.delegate = self;
     [_gpClient login];
+}
+
+- (IBAction)xing:(id)sender {
+    self.xingClient = [[AEXingClient alloc] initWithKey:@"16dd72a0a44612267d62"
+                                                 secret:@"cad772e883326c2b89bd50737bfe42548b7a67d3"
+                                            andRedirect:@"xingengine://callback"];
+    _xingClient.delegate = self;
+    [_xingClient login];
+    
 }
 
 #pragma mark - AESNClientDelegate

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1C683D0BF18F4547ACA8FD22 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA7B2FE82704E849FFCDFAE /* libPods.a */; };
+		95116DDE16AE1C7F00EB8C27 /* AEXingClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116DDD16AE1C7F00EB8C27 /* AEXingClient.m */; };
 		952066A916A8B8A3006FD6D9 /* AEOAuthClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 952066A816A8B8A3006FD6D9 /* AEOAuthClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		952066AD16A8BFA8006FD6D9 /* AELIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 952066AC16A8BFA8006FD6D9 /* AELIClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		954D84E516A8F41C002483B7 /* AEGPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 954D84E416A8F41C002483B7 /* AEGPClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -32,6 +33,8 @@
 /* Begin PBXFileReference section */
 		06557171705A4A13ADAD9F1B /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		1CA7B2FE82704E849FFCDFAE /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		95116DDC16AE1C7F00EB8C27 /* AEXingClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEXingClient.h; sourceTree = "<group>"; };
+		95116DDD16AE1C7F00EB8C27 /* AEXingClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEXingClient.m; sourceTree = "<group>"; };
 		952066A716A8B8A3006FD6D9 /* AEOAuthClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEOAuthClient.h; sourceTree = "<group>"; };
 		952066A816A8B8A3006FD6D9 /* AEOAuthClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEOAuthClient.m; sourceTree = "<group>"; };
 		952066AB16A8BFA8006FD6D9 /* AELIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AELIClient.h; sourceTree = "<group>"; };
@@ -156,6 +159,8 @@
 				952066AC16A8BFA8006FD6D9 /* AELIClient.m */,
 				954D84E316A8F41C002483B7 /* AEGPClient.h */,
 				954D84E416A8F41C002483B7 /* AEGPClient.m */,
+				95116DDC16AE1C7F00EB8C27 /* AEXingClient.h */,
+				95116DDD16AE1C7F00EB8C27 /* AEXingClient.m */,
 			);
 			name = Social;
 			path = ../../Social;
@@ -266,6 +271,7 @@
 				952066A916A8B8A3006FD6D9 /* AEOAuthClient.m in Sources */,
 				952066AD16A8BFA8006FD6D9 /* AELIClient.m in Sources */,
 				954D84E516A8F41C002483B7 /* AEGPClient.m in Sources */,
+				95116DDE16AE1C7F00EB8C27 /* AEXingClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

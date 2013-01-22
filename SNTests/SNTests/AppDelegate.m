@@ -13,6 +13,7 @@
 #import "AEGPClient.h"
 #import "AELIClient.h"
 #import "AETWClient.h"
+#import "AEXingClient.h"
 
 @implementation AppDelegate
 
@@ -34,6 +35,8 @@
         return [[AELIClient currentClient] processWebViewResult:url];
     } else if ([[url scheme] isEqualToString:@"twengine"]) {
         return [[AETWClient currentClient] processWebViewResult:url];
+    } else if ([[url scheme] isEqualToString:@"xingengine"]) {
+        return [[AEXingClient currentClient] processWebViewResult:url];
     } else {
         return [[AEFBClient currentClient].facebook handleOpenURL:url];
     }
