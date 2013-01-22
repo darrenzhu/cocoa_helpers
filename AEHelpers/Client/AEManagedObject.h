@@ -35,6 +35,8 @@
  - Fetching remote items. All actions performed in background (using GCD), main thread active only when synthesizing saved entites from objectID
  - Simplified fetch requests. ActiveRecord-like behaviour.
  - Handles json root objects, dates and allow to create temporary requested entities.
+ 
+ @discussion Some methods use property `id` (server side id of the entity). You should create this property with dynamic accessors.
  */
 @interface AEManagedObject : NSManagedObject
 /**
