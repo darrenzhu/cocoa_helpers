@@ -34,23 +34,23 @@
 }
 
 - (IBAction)facebook:(id)sender {
-    self.fbClient = [[AEFBClient alloc] initWithId:@"295109963930116"
+    self.fbClient = [[AEFBClient alloc] initWithId:@"YOUR_ID"
                                        permissions:@[ @"share_item", @"user_work_history"]];
     _fbClient.delegate = self;
     [_fbClient login];
 }
 
 - (IBAction)twitter:(id)sender {
-    self.twClient = [[AETWClient alloc] initWithKey:@"fVprggQkOYWNGZNmnu6bjA"
-                                             secret:@"r4unocIWkFtHzFM9tKFVmY2nKoC4ssabTD1bfpNk"
+    self.twClient = [[AETWClient alloc] initWithKey:@"YOUR_KEY"
+                                             secret:@"YOU_SECRET"
                                         andRedirect:@"twengine://auth_token"];
     _twClient.delegate = self;
     [_twClient login];
 }
 
 - (IBAction)linkedin:(id)sender {
-    self.liClient = [[AELIClient alloc] initWithKey:@"oghhm15b8dt8"
-                                             secret:@"NTORlXatMJnzn2qj"
+    self.liClient = [[AELIClient alloc] initWithKey:@"YOUR_KEY"
+                                             secret:@"YOU_SECRET"
                                         permissions:@[ @"r_fullprofile", @"r_network" ]
                                         andRedirect:@"linengine://authtoken.com"];
     _liClient.delegate = self;
@@ -58,7 +58,7 @@
 }
 
 - (IBAction)google:(id)sender {
-    self.gpClient = [[AEGPClient alloc] initWithClientID:@"869080294705.apps.googleusercontent.com"
+    self.gpClient = [[AEGPClient alloc] initWithClientID:@"YOUR_CLIENT_ID"
                                                 language:@"en"
                                                    scope:@[ @"https://www.googleapis.com/auth/plus.me" ]
                                               bundleName:@"ap4y.SNTests"];
@@ -68,8 +68,8 @@
 }
 
 - (IBAction)xing:(id)sender {
-    self.xingClient = [[AEXingClient alloc] initWithKey:@"16dd72a0a44612267d62"
-                                                 secret:@"cad772e883326c2b89bd50737bfe42548b7a67d3"
+    self.xingClient = [[AEXingClient alloc] initWithKey:@"YOUR_KEY"
+                                                 secret:@"YOU_SECRET"
                                             andRedirect:@"xingengine://callback"];
     _xingClient.delegate = self;
     [_xingClient login];
