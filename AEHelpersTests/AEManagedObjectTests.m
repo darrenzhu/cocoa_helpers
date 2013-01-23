@@ -168,4 +168,40 @@
     STAssertEqualObjects(rootedJsonObject, [[entity toJSONObject] JSONString], nil);
 }
 
+- (void)testSerializeAssociations {
+    TestEntity *entity          = [[TestEntity alloc] initFromJSONObject:_jsonObject
+                                                  inManagedObjectContext:mainThreadContext()];
+    TestSubentity *oneToOne     = [NSEntityDescription insertNewObjectForEntityForName:@"TestSubentity"
+                                                                inManagedObjectContext:mainThreadContext()];
+    TestSubentity *oneToMany    = [NSEntityDescription insertNewObjectForEntityForName:@"TestSubentity"
+                                                                inManagedObjectContext:mainThreadContext()];
+    oneToOne.id                 = @1;
+    oneToOne.title              = @"Title 1";
+    entity.oneToOne             = oneToOne;
+    
+    oneToMany.id                = @2;
+    oneToMany.title             = @"Title 2";
+    [entity addOneToManyObject:oneToMany];
+
+    [mainThreadContext() save:nil];
+    
+    NSDictionary *expected = @{
+        @"entity": @{
+            @"entity_id": @1,
+            @"testField": @"test value",
+            @"oneToOne": @{
+                @"id":  @1,
+                @"title": @"Title 1"
+            },
+            @"oneToMany": @[
+                @{
+                    @"id":  @2,
+                    @"title": @"Title 2"
+                }
+            ]
+        }
+    };
+    STAssertEqualObjects(expected, [entity toJSONObject], nil);
+}
+
 @end

@@ -69,29 +69,60 @@
 }
 
 - (id)toJSONObject {
+    return [self toJSONObjectWithRootObject:YES andRelations:YES];
+}
+
+/** 
+ This method support serialization with 1 level depth, because reverse association can produce infinity loops.
+ */
+- (id)toJSONObjectWithRootObject:(BOOL)withRootObject andRelations:(BOOL)withRelations {
     unsigned int outCount;
-    objc_property_t *properties = class_copyPropertyList([self class], &outCount);            
+    objc_property_t *properties     = class_copyPropertyList([self class], &outCount);            
     NSMutableDictionary *jsonObject = [NSMutableDictionary dictionary];
     
     for(int i = 0; i < outCount; i++) {
-        objc_property_t property = properties[i];        
-        NSString *propertyAtr = [NSString stringWithCString:property_getAttributes(property)
-                                                   encoding:NSUTF8StringEncoding];
+        objc_property_t property    = properties[i];        
+        NSString *propertyAtr       = [NSString stringWithCString:property_getAttributes(property)
+                                                         encoding:NSUTF8StringEncoding];
+        NSString *propertyName      = [NSString stringWithCString:property_getName(property)
+                                                         encoding:NSUTF8StringEncoding];
+
+        BOOL hasSupportedType       = [propertyAtr rangeOfString:@"NSString"].location        != NSNotFound ||
+                                      [propertyAtr rangeOfString:@"NSNumber"].location        != NSNotFound ||
+                                      [propertyAtr rangeOfString:@"NSArray"].location         != NSNotFound ||
+                                      [propertyAtr rangeOfString:@"NSDictionary"].location    != NSNotFound;
         
-        if ([propertyAtr rangeOfString:@"NSString"].location        != NSNotFound ||
-            [propertyAtr rangeOfString:@"NSNumber"].location        != NSNotFound ||
-            [propertyAtr rangeOfString:@"NSArray"].location         != NSNotFound ||
-            [propertyAtr rangeOfString:@"NSDictionary"].location    != NSNotFound) {
+        id propertyValue            = [self valueForKey:propertyName];
+        NSString *mappedKey         = [[self class] mappedPropertyNameForPropertyName:propertyName];                
+        
+        if (hasSupportedType) {
             
-            NSString *propertyName = [NSString stringWithCString:property_getName(property)
-                                                        encoding:NSUTF8StringEncoding];
-            id propertyValue = [self valueForKeyPath:propertyName];
-            [jsonObject setValue:propertyValue forKey:[[self class] mappedPropertyNameForPropertyName:propertyName]];
+            [jsonObject setValue:propertyValue forKey:mappedKey];
+            
+        } else if (!withRelations) {
+          
+            continue;
+            
+        } else if ([propertyValue respondsToSelector:@selector(toJSONObjectWithRootObject:andRelations:)]) {
+
+            [jsonObject setValue:[propertyValue toJSONObjectWithRootObject:NO andRelations:NO] forKey:mappedKey];
+            
+        } else if ([propertyValue isKindOfClass:[NSSet class]]) {
+            
+            NSSet *manyAssociations     = (NSSet *)propertyValue;
+            NSMutableArray *accumulator = [NSMutableArray array];
+            [manyAssociations enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+                if ([obj respondsToSelector:@selector(toJSONObjectWithRootObject:andRelations:)]) {
+                    [accumulator addObject:[obj toJSONObjectWithRootObject:NO andRelations:NO]];
+                }
+            }];
+            
+            if ([accumulator count] > 0) [jsonObject setValue:accumulator forKey:mappedKey];
         }
     }
     free(properties);    
     
-    if ([[self class] jsonRoot]) {
+    if (withRootObject && [[self class] jsonRoot]) {
         jsonObject = [NSDictionary dictionaryWithObject:jsonObject forKey:[[self class] jsonRoot]];
     }
     

@@ -78,7 +78,19 @@
 - (void)updateFromJSONObject:(id)jsonObject;
 
 /**
- Serializes managed object into json object.
+ Serializes managed object into json object with respec to json root name and relations.
+ 
+ @param withRootObject Defines wheither result object should contain root object.
+ @param withRelations Defines wheither result object should contain serialized associaitions.
+ 
+ @discussion This method provides only 1 level depth of relations serilization.
+ 
+ @return A string with serialized object.
+ */
+- (id)toJSONObjectWithRootObject:(BOOL)withRootObject andRelations:(BOOL)withRelations;
+
+/**
+ Serializes managed object into json object with root object and 1 level of relations.
  
  @return A string with serialized object.
  */
