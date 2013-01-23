@@ -201,7 +201,22 @@
             ]
         }
     };
-    STAssertEqualObjects(expected, [entity toJSONObject], nil);
+    
+    NSDictionary *serialized = [entity toJSONObject];
+    STAssertEqualObjects(expected, serialized, nil);
+    
+    TestEntity *deserialized = [[TestEntity alloc] initFromJSONObject:[serialized objectForKey:@"entity"]
+                                               inManagedObjectContext:mainThreadContext()];
+
+    STAssertEqualObjects(@(1),          deserialized.id,                nil);
+    STAssertEqualObjects(@"test value", deserialized.testField,         nil);
+    STAssertEqualObjects(@(1),          deserialized.oneToOne.id,       nil);
+    STAssertEqualObjects(@"Title 1",    deserialized.oneToOne.title,    nil);
+    STAssertEquals(1U,                  [deserialized.oneToMany count], nil);
+    
+    TestSubentity *oneToManyDeserialized = [[deserialized.oneToMany allObjects] lastObject];
+    STAssertEqualObjects(@(2),          oneToManyDeserialized.id,       nil);
+    STAssertEqualObjects(@"Title 2",    oneToManyDeserialized.title,    nil);
 }
 
 @end

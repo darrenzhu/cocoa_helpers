@@ -68,6 +68,23 @@
     return propertyName;
 }
 
+- (NSString *)propertyNameFromPropertyDescription:(objc_property_t)property {
+    return [NSString stringWithCString:property_getName(property) encoding:NSUTF8StringEncoding];
+}
+
+- (NSString *)propertyTypeFromPropertyDescription:(objc_property_t)property {
+    NSString *propertyAtr, *typeAttribute, *propertyType;
+    NSArray *attributes;
+    
+    propertyAtr     = [NSString stringWithCString:property_getAttributes(property) encoding:NSUTF8StringEncoding];
+    attributes      = [propertyAtr componentsSeparatedByString:@","];
+    typeAttribute   = [attributes objectAtIndex:0];
+    propertyType    = [typeAttribute substringFromIndex:2];
+    propertyType    = [propertyType stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+    
+    return propertyType;
+}
+
 - (id)toJSONObject {
     return [self toJSONObjectWithRootObject:YES andRelations:YES];
 }
@@ -129,37 +146,75 @@
     return jsonObject;
 }
 
-- (void)updateFromJSONObject:(id)jsonObject {    
-    if (!self || !jsonObject) {
-        return;
-    }
+- (void)updateFromJSONObject:(id)jsonObject {
+    [self updateFromJSONObject:jsonObject withRelations:YES];
+}
+
+- (void)updateFromJSONObject:(id)jsonObject withRelations:(BOOL)withRelations {
+    if (!self || !jsonObject) return;
     
     unsigned int outCount;
     objc_property_t *properties = class_copyPropertyList([self class], &outCount);        
     
     for(int i = 0; i < outCount; i++) {
         objc_property_t property;
-        NSString *propertyName, *propertyAtr, *typeAttribute, *propertyType;
-        NSArray *attributes;
+        NSString *propertyName, *propertyType, *mappedKey;
         id jsonValue;
         
         property        = properties[i];
-        propertyName    = [NSString stringWithCString:property_getName(property) encoding:NSUTF8StringEncoding];
-        jsonValue       = [jsonObject valueForKeyPath:[[self class] mappedPropertyNameForPropertyName:propertyName]];
-        if ([jsonValue isEqual:[NSNull null]] || !jsonValue) {
-            continue;
-        }            
+        propertyName    = [self propertyNameFromPropertyDescription:property];
         
-        propertyAtr     = [NSString stringWithCString:property_getAttributes(property) encoding:NSUTF8StringEncoding];
-        attributes      = [propertyAtr componentsSeparatedByString:@","];
-        typeAttribute   = [attributes objectAtIndex:0];
-        propertyType    = [typeAttribute substringFromIndex:2];
-        propertyType    = [propertyType stringByReplacingOccurrencesOfString:@"\"" withString:@""];
+        mappedKey       = [[self class] mappedPropertyNameForPropertyName:propertyName];
+        jsonValue       = [jsonObject valueForKey:mappedKey];
         
-        if ([propertyAtr rangeOfString:@"NSDate"].location != NSNotFound && [[self class] dateFormatter]) {
+        if ([jsonValue isEqual:[NSNull null]] || !jsonValue) continue;
+        
+        propertyType    = [self propertyTypeFromPropertyDescription:property];            
+        
+        if ([propertyType isEqualToString:@"NSDate"] && [[self class] dateFormatter]) {
+            
             [self setValue:[[[self class] dateFormatter] dateFromString:jsonValue] forKey:propertyName];
+            
         } else if ([jsonValue isKindOfClass:NSClassFromString(propertyType)]) {
-            [self setValue:jsonValue forKey:propertyName];   
+            
+            [self setValue:jsonValue forKey:propertyName];
+            
+        } else if (!withRelations) {
+            
+            continue;
+            
+        } if ([propertyType isEqualToString:@"NSSet"] || [propertyType isEqualToString:@"NSOrderedSet"]) {
+            
+            /* NSOrderedSet is not a subclass of NSSet */
+            if (![jsonValue isKindOfClass:[NSArray class]] || [jsonValue count] <= 0) continue;
+            
+            NSArray *relations                              = (NSArray *)jsonValue;
+            NSMutableArray *accumulator                     = [NSMutableArray array];
+            
+            NSDictionary *relationsMetadata                 = [[self entity] relationshipsByName];
+            NSRelationshipDescription *relationDescription  = [relationsMetadata objectForKey:propertyName];
+            
+            if (!relationDescription) continue;
+            
+            NSEntityDescription *relationEntity             = [relationDescription destinationEntity];
+            
+            [relations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                
+                id propertyValue = [[AEManagedObject alloc] initWithEntity:relationEntity
+                                            insertIntoManagedObjectContext:mainThreadContext()];
+                [propertyValue updateFromJSONObject:obj withRelations:NO];
+                [accumulator addObject:propertyValue];
+                [propertyValue release];
+            }];
+            
+            [self setValue:[NSSet setWithArray:accumulator] forKey:propertyName];
+            
+        } else if ([NSClassFromString(propertyType) isSubclassOfClass:[AEManagedObject class]]) {
+                
+            id propertyValue = [NSEntityDescription insertNewObjectForEntityForName:propertyType
+                                                             inManagedObjectContext:self.managedObjectContext];
+            [propertyValue updateFromJSONObject:jsonValue withRelations:NO];
+            [self setValue:propertyValue forKey:propertyName];
         }
     }
     

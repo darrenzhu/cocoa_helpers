@@ -68,12 +68,25 @@
 + (AEManagedObject *)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
 
 #pragma mark - JSON serializaiton
+
 /**
- Deserializes managed object from json object.
+ Deserializes managed object from json object with relations.
+ 
+ @param jsonObject Parsed JSON dictionary.
+ @param withRelations Defines wheither result object should contain deserialized relations.
+ 
+ @discussion This method provides only 1 level depth of relations deserialization.
+ 
+ @return A managed object with property values from json object.
+ */
+- (void)updateFromJSONObject:(id)jsonObject withRelations:(BOOL)withRelations;
+
+/**
+ Deserializes managed object from json object with relations.
  
  @param jsonObject Parsed JSON dictionary.
  
- @return A string with serialized object.
+ @return A managed object with property values from json object.
  */
 - (void)updateFromJSONObject:(id)jsonObject;
 
