@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C60" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1811" systemVersion="12C3104" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="TestEntity" representedClassName="TestEntity" syncable="YES">
         <attribute name="anotherField" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="testField" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="oneToMany" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TestSubentity" inverseName="oneToMany" inverseEntity="TestSubentity" syncable="YES"/>
+        <relationship name="oneToOne" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="TestSubentity" inverseName="oneToOne" inverseEntity="TestSubentity" syncable="YES"/>
+    </entity>
+    <entity name="TestSubentity" representedClassName="TestSubentity" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="oneToMany" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TestEntity" inverseName="oneToMany" inverseEntity="TestEntity" syncable="YES"/>
+        <relationship name="oneToOne" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="TestEntity" inverseName="oneToOne" inverseEntity="TestEntity" syncable="YES"/>
     </entity>
     <elements>
-        <element name="TestEntity" positionX="160" positionY="192" width="128" height="90"/>
+        <element name="TestEntity" positionX="160" positionY="192" width="128" height="120"/>
+        <element name="TestSubentity" positionX="160" positionY="192" width="128" height="105"/>
     </elements>
 </model>

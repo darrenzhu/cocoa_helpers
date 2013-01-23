@@ -22,11 +22,14 @@
 // THE SOFTWARE.
 
 #import "TestEntity.h"
+#import "TestSubentity.h"
 
 @implementation TestEntity
 @dynamic id;
 @dynamic testField;
 @dynamic anotherField;
+@dynamic oneToMany;
+@dynamic oneToOne;
 
 + (NSString *)jsonRoot {
     return @"entity";

@@ -1,5 +1,5 @@
 //
-// TestEntity.h
+//  TestSubentity.h
 //
 // Copyright (c) 2012 ap4y (lod@pisem.net)
 //
@@ -21,20 +21,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import "AEManagedObject.h"
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 
-@class TestSubentity;
-@interface TestEntity : AEManagedObject
-@property (nonatomic, retain) NSNumber *id;
-@property (nonatomic, retain) NSString *testField;
-@property (nonatomic, retain) NSString *anotherField;
-@property (retain, nonatomic) NSSet *oneToMany;
-@property (retain, nonatomic) TestSubentity *oneToOne;
-@end
-
-@interface TestEntity (CoreDataGeneratedAccessors)
-- (void)addOneToManyObject:(TestSubentity *)value;
-- (void)removeOneToManyObject:(TestSubentity *)value;
-- (void)addOneToMany:(NSSet *)values;
-- (void)removeOneToMany:(NSSet *)values;
+@class TestEntity;
+@interface TestSubentity : NSManagedObject
+@property (retain, nonatomic) NSNumber *id;
+@property (retain, nonatomic) NSString *title;
+@property (retain, nonatomic) TestEntity *oneToMany;
+@property (retain, nonatomic) TestEntity *oneToOne;
 @end
