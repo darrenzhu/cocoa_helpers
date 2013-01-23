@@ -88,7 +88,8 @@
 - (void)testToJSONString {
     TestEntity *entity = (TestEntity *)[TestEntity createOrUpdateFromJsonObject:_jsonObject
                                                          inManagedObjectContext:mainThreadContext()];
-    STAssertEqualObjects(@"{\"entity\":{\"entity_id\":1,\"testField\":\"test value\"}}", [entity toJSONString], nil);
+    STAssertEqualObjects(@"{\"entity\":{\"entity_id\":1,\"testField\":\"test value\"}}",
+                         [[entity toJSONObject] JSONString], nil);
 }
 
 - (void)testRequestAll {
@@ -162,7 +163,7 @@
     STAssertEqualObjects(@"test value", entity.testField, nil);
     STAssertEqualObjects(@(2), entity.id, nil);
     NSString *rootedJsonObject = [NSString stringWithFormat:@"{\"entity\":%@}", jsonString];
-    STAssertEqualObjects(rootedJsonObject, [entity toJSONString], nil);
+    STAssertEqualObjects(rootedJsonObject, [[entity toJSONObject] JSONString], nil);
 }
 
 @end

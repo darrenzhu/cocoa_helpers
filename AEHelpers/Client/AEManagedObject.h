@@ -78,11 +78,11 @@
 - (void)updateFromJSONObject:(id)jsonObject;
 
 /**
- Serializes managed object to json object and retruns it as string.
+ Serializes managed object into json object.
  
  @return A string with serialized object.
  */
-- (NSString *)toJSONString;
+- (id)toJSONObject;
 
 #pragma mark - Remote fetch
 /**

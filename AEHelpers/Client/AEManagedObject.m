@@ -68,7 +68,7 @@
     return propertyName;
 }
 
-- (NSString *)toJSONString {
+- (id)toJSONObject {
     unsigned int outCount;
     objc_property_t *properties = class_copyPropertyList([self class], &outCount);            
     NSMutableDictionary *jsonObject = [NSMutableDictionary dictionary];
@@ -95,7 +95,7 @@
         jsonObject = [NSDictionary dictionaryWithObject:jsonObject forKey:[[self class] jsonRoot]];
     }
     
-    return [jsonObject JSONString];
+    return jsonObject;
 }
 
 - (void)updateFromJSONObject:(id)jsonObject {    
