@@ -6,16 +6,16 @@ Pod::Spec.new do |s|
   s.license      = 'MIT'
   s.author       = { "ap4y" => "lod@pisem.net" }
   s.source       = { :git => "https://github.com/ap4y/cocoa_helpers.git", :tag => "0.0.7" }
-  s.platform     = :ios
+  s.platform     = :ios, '5.0'
 
   s.subspec 'REST' do |rest|
-    rest.source_files = 'Categories', 'Client', 'Common'
+    rest.source_files = 'AEHelpers/Categories', 'AEHelpers/Client', 'AEHelpers/Common'
     rest.dependency 'JSONKit'
     rest.dependency 'AFNetworking'
   end
 
   s.subspec 'Social' do |soc|
-    soc.source_files = 'Social'
+    soc.source_files = 'AEHelpers/Social'
     soc.dependency 'Facebook-iOS-SDK'
     soc.dependency 'NSData+Base64'
     soc.dependency 'SSKeychain'
