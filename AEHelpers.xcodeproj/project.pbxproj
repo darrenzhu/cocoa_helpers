@@ -26,6 +26,8 @@
 		956DFDDA16A738A3004858C6 /* NSArray+orderByTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDD916A738A3004858C6 /* NSArray+orderByTests.m */; };
 		956DFDDF16A73B43004858C6 /* NSFetchRequest+orderByTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDDE16A73B43004858C6 /* NSFetchRequest+orderByTests.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95DEE7E516B0786700812763 /* TestSubentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 95DEE7E416B0786700812763 /* TestSubentity.m */; };
+		95DEE7E916B09A9700812763 /* AEManagedObject+AEJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 95DEE7E816B09A9700812763 /* AEManagedObject+AEJSONSerialization.m */; };
+		95DEE7EF16B09F0C00812763 /* AEManagedObject+AERemoteFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 95DEE7EE16B09F0C00812763 /* AEManagedObject+AERemoteFetch.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +64,10 @@
 		956DFDDE16A73B43004858C6 /* NSFetchRequest+orderByTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFetchRequest+orderByTests.m"; sourceTree = "<group>"; };
 		95DEE7E316B0786700812763 /* TestSubentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSubentity.h; sourceTree = "<group>"; };
 		95DEE7E416B0786700812763 /* TestSubentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubentity.m; sourceTree = "<group>"; };
+		95DEE7E716B09A9700812763 /* AEManagedObject+AEJSONSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AEManagedObject+AEJSONSerialization.h"; sourceTree = "<group>"; };
+		95DEE7E816B09A9700812763 /* AEManagedObject+AEJSONSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AEManagedObject+AEJSONSerialization.m"; sourceTree = "<group>"; };
+		95DEE7ED16B09F0C00812763 /* AEManagedObject+AERemoteFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AEManagedObject+AERemoteFetch.h"; sourceTree = "<group>"; };
+		95DEE7EE16B09F0C00812763 /* AEManagedObject+AERemoteFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AEManagedObject+AERemoteFetch.m"; sourceTree = "<group>"; };
 		B2D4354336A44AFDACA09D98 /* libPods-AEHelpersTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AEHelpersTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -97,6 +103,10 @@
 			children = (
 				95116EBA16AE2F7D00EB8C27 /* AEManagedObject.h */,
 				95116EBB16AE2F7D00EB8C27 /* AEManagedObject.m */,
+				95DEE7E716B09A9700812763 /* AEManagedObject+AEJSONSerialization.h */,
+				95DEE7E816B09A9700812763 /* AEManagedObject+AEJSONSerialization.m */,
+				95DEE7ED16B09F0C00812763 /* AEManagedObject+AERemoteFetch.h */,
+				95DEE7EE16B09F0C00812763 /* AEManagedObject+AERemoteFetch.m */,
 			);
 			path = Client;
 			sourceTree = "<group>";
@@ -314,6 +324,8 @@
 				95116ED616AE2F7E00EB8C27 /* AEAlert.m in Sources */,
 				95116ED716AE2F7E00EB8C27 /* AECoreDataHelper.m in Sources */,
 				95DEE7E516B0786700812763 /* TestSubentity.m in Sources */,
+				95DEE7E916B09A9700812763 /* AEManagedObject+AEJSONSerialization.m in Sources */,
+				95DEE7EF16B09F0C00812763 /* AEManagedObject+AERemoteFetch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

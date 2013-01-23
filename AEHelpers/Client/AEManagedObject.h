@@ -25,7 +25,6 @@
 #import <CoreData/CoreData.h>
 
 #import "NSFetchRequest+orderBy.h"
-#import "AFHTTPClient.h"
 #import "AECoreDataHelper.h"
 
 /**
@@ -36,113 +35,22 @@
  - Simplified fetch requests. ActiveRecord-like behaviour.
  - Handles json root objects, dates and allow to create temporary requested entities.
  
+ Tasks are separated by categories, so you can use only neccessary modules.
+ 
  @discussion Some methods use property `id` (server side id of the entity). You should create this property with dynamic accessors.
  */
 @interface AEManagedObject : NSManagedObject
-/**
- Updated timestamp of the entity. Changes during deserialization.
- */
-@property(retain, nonatomic) NSDate *syncDate;
-
-#pragma mark - Initialization
-/**
- Initializes new managed object from json object in requested context.
- 
- @param jsonObject Parsed JSON dictionary.
- @param context A context used for managed object.
- 
- @return An initialized object with property values from json object in requested context.
- */
-- (id)initFromJSONObject:(id)jsonObject inManagedObjectContext:(NSManagedObjectContext *)context;
-
-/**
- Factory method for creating or updating managed object from json object in requested context.
- 
- @param json Parsed JSON dictionary.
- @param context A context used for managed object.
- 
- @discussion This method will request from coordinator saved object by field `id`. This behaviour can be redefined via mapping.
- 
- @return Created or updated managed object with property values from json object in requested context.
- */
-+ (AEManagedObject *)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
-
-#pragma mark - JSON serializaiton
-
-/**
- Deserializes managed object from json object with relations.
- 
- @param jsonObject Parsed JSON dictionary.
- @param withRelations Defines wheither result object should contain deserialized relations.
- 
- @discussion This method provides only 1 level depth of relations deserialization.
- 
- @return A managed object with property values from json object.
- */
-- (void)updateFromJSONObject:(id)jsonObject withRelations:(BOOL)withRelations;
-
-/**
- Deserializes managed object from json object with relations.
- 
- @param jsonObject Parsed JSON dictionary.
- 
- @return A managed object with property values from json object.
- */
-- (void)updateFromJSONObject:(id)jsonObject;
-
-/**
- Serializes managed object into json object with respect to json root name and relations.
- 
- @param withRootObject Defines wheither result object should contain root object.
- @param withRelations Defines wheither result object should contain serialized relations.
- 
- @discussion This method provides only 1 level depth of relations serialization.
- 
- @return A disctionary with serialized object.
- */
-- (id)toJSONObjectWithRootObject:(BOOL)withRootObject andRelations:(BOOL)withRelations;
-
-/**
- Serializes managed object into json object with root object and 1 level of relations.
- 
- @return An disctionary with serialized object.
- */
-- (id)toJSONObject;
-
-#pragma mark - Remote fetch
-/**
- Performs GET request with path and parameters via provided client, deserializes response in background.
- 
- @param client `AFHTTPClient` subclass to perform request.
- @param path Requested path.
- @param parameters Request parameters (query string).
- @param success A block, will be invoked with success operation.
- @param failure A block, will be invoked with failed operation.
- */
-+ (void)fetchWithClient:(AFHTTPClient *)client
-                   path:(NSString *)path 
-             parameters:(NSDictionary *)parameters                
-                success:(void (^)(NSArray *entities))success 
-                failure:(void (^)(NSError *error))failure;
-
-/**
- Performs GET request with path and parameters via provided client, deserializes response in background. Allowes to acces to the plain json response.
- 
- @param client `AFHTTPClient` subclass to perform request.
- @param path Requested path.
- @param parameters Request parameters (query string).
- @param jsonResponse A block, will be invoked after receiving json response.
- @param success A block, will be invoked with success operation.
- @param failure A block, will be invoked with failed operation.
- */
-+ (void)fetchWithClient:(AFHTTPClient *)client
-                   path:(NSString *)path 
-             parameters:(NSDictionary *)parameters  
-           jsonResponse:(void (^)(id json))jsonResponse
-                success:(void (^)(NSArray *entities))success 
-                failure:(void (^)(NSError *error))failure;
 
 #pragma mark - Local fetch (new syntax)
+/**
+ Returns current class `NSEntityDescription` object. 
+ 
+ @param context An entity context.
+ 
+ @return An entity description for current class.
+ */
++ (NSEntityDescription *)enityDescriptionInContext:(NSManagedObjectContext *)context;
+
 /**
  Creates fetch request for all objects of the current class.
  

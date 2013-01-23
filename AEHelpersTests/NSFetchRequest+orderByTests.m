@@ -25,6 +25,8 @@
 #import "JSONKit.h"
 #import "TestEntity.h"
 
+#import "AEManagedObject+AEJSONSerialization.h"
+
 @interface NSFetchRequest_orderByTests ()
 @property (retain, nonatomic) NSArray *assert;
 @end

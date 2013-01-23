@@ -26,6 +26,9 @@
 #import "JSONKit.h"
 #import "AEHTTPClient.h"
 
+#import "AEManagedObject+AEJSONSerialization.h"
+#import "AEManagedObject+AERemoteFetch.h"
+
 #import "TestEntity.h"
 #import "TestSubentity.h"
 
