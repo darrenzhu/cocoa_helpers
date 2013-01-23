@@ -23,9 +23,11 @@
 
 #import "AEManagedObjectTests.h"
 #import "OHHTTPStubs.h"
-#import "TestEntity.h"
 #import "JSONKit.h"
 #import "AEHTTPClient.h"
+
+#import "TestEntity.h"
+#import "TestSubentity.h"
 
 @interface AEManagedObjectTests ()
 @property(retain, nonatomic) id jsonObject;

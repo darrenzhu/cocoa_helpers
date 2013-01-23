@@ -25,6 +25,7 @@
 		956DFDB716A6606C004858C6 /* AEHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDB616A6606C004858C6 /* AEHTTPClient.m */; };
 		956DFDDA16A738A3004858C6 /* NSArray+orderByTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDD916A738A3004858C6 /* NSArray+orderByTests.m */; };
 		956DFDDF16A73B43004858C6 /* NSFetchRequest+orderByTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDDE16A73B43004858C6 /* NSFetchRequest+orderByTests.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		95DEE7E516B0786700812763 /* TestSubentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 95DEE7E416B0786700812763 /* TestSubentity.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +60,8 @@
 		956DFDD916A738A3004858C6 /* NSArray+orderByTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+orderByTests.m"; sourceTree = "<group>"; };
 		956DFDDD16A73B43004858C6 /* NSFetchRequest+orderByTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFetchRequest+orderByTests.h"; sourceTree = "<group>"; };
 		956DFDDE16A73B43004858C6 /* NSFetchRequest+orderByTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFetchRequest+orderByTests.m"; sourceTree = "<group>"; };
+		95DEE7E316B0786700812763 /* TestSubentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSubentity.h; sourceTree = "<group>"; };
+		95DEE7E416B0786700812763 /* TestSubentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubentity.m; sourceTree = "<group>"; };
 		B2D4354336A44AFDACA09D98 /* libPods-AEHelpersTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AEHelpersTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -184,6 +187,8 @@
 				956DFD4E16A63714004858C6 /* TestEntity.m */,
 				956DFDB516A6606C004858C6 /* AEHTTPClient.h */,
 				956DFDB616A6606C004858C6 /* AEHTTPClient.m */,
+				95DEE7E316B0786700812763 /* TestSubentity.h */,
+				95DEE7E416B0786700812763 /* TestSubentity.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -308,6 +313,7 @@
 				95116ED516AE2F7E00EB8C27 /* AEManagedObject.m in Sources */,
 				95116ED616AE2F7E00EB8C27 /* AEAlert.m in Sources */,
 				95116ED716AE2F7E00EB8C27 /* AECoreDataHelper.m in Sources */,
+				95DEE7E516B0786700812763 /* TestSubentity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

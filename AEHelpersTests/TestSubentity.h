@@ -21,11 +21,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
+#import "AEManagedObject.h"
 
 @class TestEntity;
-@interface TestSubentity : NSManagedObject
+@interface TestSubentity : AEManagedObject
 @property (retain, nonatomic) NSNumber *id;
 @property (retain, nonatomic) NSString *title;
 @property (retain, nonatomic) TestEntity *oneToMany;
