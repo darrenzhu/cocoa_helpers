@@ -124,8 +124,9 @@
 
             [jsonObject setValue:[propertyValue toJSONObjectWithRootObject:NO andRelations:NO] forKey:mappedKey];
             
-        } else if ([propertyValue isKindOfClass:[NSSet class]]) {
+        } else if ([propertyValue isKindOfClass:[NSSet class]] || [propertyValue isKindOfClass:[NSOrderedSet class]]) {
             
+            /* NSOrderedSet is not a subclass of NSSet */
             NSSet *manyAssociations     = (NSSet *)propertyValue;
             NSMutableArray *accumulator = [NSMutableArray array];
             [manyAssociations enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
