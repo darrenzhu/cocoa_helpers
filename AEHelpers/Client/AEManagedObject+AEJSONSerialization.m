@@ -170,7 +170,9 @@
             /* NSOrderedSet is not a subclass of NSSet */
             if (![jsonValue isKindOfClass:[NSArray class]] || [jsonValue count] <= 0) continue;
             
-            NSSet *manyRelation = [self manyRelationsFromJson:jsonValue forPropertyName:propertyName];
+            NSSet *manyRelation = [self manyRelationsFromJson:jsonValue
+                                              forPropertyName:propertyName
+                                        inManagedObjectContet:self.managedObjectContext];
             if (!manyRelation) continue;
             
             [self setValue:manyRelation forKey:propertyName];
@@ -215,7 +217,10 @@
     return propertyType;
 }
 
-- (NSSet *)manyRelationsFromJson:(id)jsonObject forPropertyName:(NSString *)propertyName {
+- (NSSet *)manyRelationsFromJson:(id)jsonObject
+                 forPropertyName:(NSString *)propertyName
+           inManagedObjectContet:(NSManagedObjectContext *)context {
+    
     NSArray *relations                              = (NSArray *)jsonObject;
     NSMutableArray *accumulator                     = [NSMutableArray array];
     
@@ -229,7 +234,7 @@
     [relations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         
         id propertyValue = [[AEManagedObject alloc] initWithEntity:relationEntity
-                                    insertIntoManagedObjectContext:mainThreadContext()];
+                                    insertIntoManagedObjectContext:context];
         [propertyValue updateFromJSONObject:obj withRelations:NO];
         [accumulator addObject:propertyValue];
         [propertyValue release];
