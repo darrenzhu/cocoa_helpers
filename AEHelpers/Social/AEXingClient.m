@@ -79,7 +79,14 @@ static AEXingClient *currentClient;
     NSMutableURLRequest *profileRequest = [NSMutableURLRequest requestWithURL:profileUrl];
     [self signRequest:profileRequest withBody:nil];
     
-    [AESNClient processJsonRequest:profileRequest success:success failure:failure];
+    [AESNClient processJsonRequest:profileRequest success:^(id json) {
+        
+        NSArray *users = [json objectForKey:@"users"];
+        if (!users || [users count] <= 0) return;
+         
+        if (success) success([users objectAtIndex:0]);
+        
+    } failure:failure];
 }
 
 - (void)friendsInformationWithLimit:(NSInteger)limit
