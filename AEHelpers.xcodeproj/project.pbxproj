@@ -21,10 +21,11 @@
 		956DFD4F16A63714004858C6 /* TestEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD4E16A63714004858C6 /* TestEntity.m */; };
 		956DFD5216A63BFC004858C6 /* AEManagedObjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD5116A63BFC004858C6 /* AEManagedObjectTests.m */; };
 		956DFD7816A65031004858C6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFD3F16A62DF4004858C6 /* UIKit.framework */; };
-		956DFDB416A65F90004858C6 /* mocked_respond.json in Resources */ = {isa = PBXBuildFile; fileRef = 956DFDB316A65F90004858C6 /* mocked_respond.json */; };
 		956DFDB716A6606C004858C6 /* AEHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDB616A6606C004858C6 /* AEHTTPClient.m */; };
 		956DFDDA16A738A3004858C6 /* NSArray+orderByTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDD916A738A3004858C6 /* NSArray+orderByTests.m */; };
 		956DFDDF16A73B43004858C6 /* NSFetchRequest+orderByTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDDE16A73B43004858C6 /* NSFetchRequest+orderByTests.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		95B9E46D16B71E5E007BDA3A /* mocked_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 95B9E46C16B71E5E007BDA3A /* mocked_response.json */; };
+		95B9E47016B71E68007BDA3A /* submit_mocked_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 95B9E46F16B71E68007BDA3A /* submit_mocked_response.json */; };
 		95DEE7E516B0786700812763 /* TestSubentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 95DEE7E416B0786700812763 /* TestSubentity.m */; };
 		95DEE7E916B09A9700812763 /* AEManagedObject+AEJSONSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = 95DEE7E816B09A9700812763 /* AEManagedObject+AEJSONSerialization.m */; };
 		95DEE7EF16B09F0C00812763 /* AEManagedObject+AERemoteFetch.m in Sources */ = {isa = PBXBuildFile; fileRef = 95DEE7EE16B09F0C00812763 /* AEManagedObject+AERemoteFetch.m */; };
@@ -55,13 +56,14 @@
 		956DFD4E16A63714004858C6 /* TestEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestEntity.m; sourceTree = "<group>"; };
 		956DFD5016A63BFC004858C6 /* AEManagedObjectTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEManagedObjectTests.h; sourceTree = "<group>"; };
 		956DFD5116A63BFC004858C6 /* AEManagedObjectTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEManagedObjectTests.m; sourceTree = "<group>"; };
-		956DFDB316A65F90004858C6 /* mocked_respond.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mocked_respond.json; sourceTree = "<group>"; };
 		956DFDB516A6606C004858C6 /* AEHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEHTTPClient.h; sourceTree = "<group>"; };
 		956DFDB616A6606C004858C6 /* AEHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEHTTPClient.m; sourceTree = "<group>"; };
 		956DFDD816A738A3004858C6 /* NSArray+orderByTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+orderByTests.h"; sourceTree = "<group>"; };
 		956DFDD916A738A3004858C6 /* NSArray+orderByTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+orderByTests.m"; sourceTree = "<group>"; };
 		956DFDDD16A73B43004858C6 /* NSFetchRequest+orderByTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSFetchRequest+orderByTests.h"; sourceTree = "<group>"; };
 		956DFDDE16A73B43004858C6 /* NSFetchRequest+orderByTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFetchRequest+orderByTests.m"; sourceTree = "<group>"; };
+		95B9E46C16B71E5E007BDA3A /* mocked_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mocked_response.json; sourceTree = "<group>"; };
+		95B9E46F16B71E68007BDA3A /* submit_mocked_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = submit_mocked_response.json; sourceTree = "<group>"; };
 		95DEE7E316B0786700812763 /* TestSubentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSubentity.h; sourceTree = "<group>"; };
 		95DEE7E416B0786700812763 /* TestSubentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubentity.m; sourceTree = "<group>"; };
 		95DEE7E716B09A9700812763 /* AEManagedObject+AEJSONSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AEManagedObject+AEJSONSerialization.h"; sourceTree = "<group>"; };
@@ -190,7 +192,8 @@
 		956DFCE116A614B7004858C6 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				956DFDB316A65F90004858C6 /* mocked_respond.json */,
+				95B9E46F16B71E68007BDA3A /* submit_mocked_response.json */,
+				95B9E46C16B71E5E007BDA3A /* mocked_response.json */,
 				956DFCE216A614B7004858C6 /* AEHelpersTests-Info.plist */,
 				956DFD4A16A634B8004858C6 /* DataModel.xcdatamodeld */,
 				956DFD4D16A63714004858C6 /* TestEntity.h */,
@@ -256,7 +259,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				956DFDB416A65F90004858C6 /* mocked_respond.json in Resources */,
+				95B9E46D16B71E5E007BDA3A /* mocked_response.json in Resources */,
+				95B9E47016B71E68007BDA3A /* submit_mocked_response.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

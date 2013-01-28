@@ -129,7 +129,7 @@
 
 - (void)testFetchWithClient {
     [OHHTTPStubs addRequestHandler:^OHHTTPStubsResponse *(NSURLRequest *request, BOOL onlyCheck) {
-        return [OHHTTPStubsResponse responseWithFile:@"mocked_respond.json"
+        return [OHHTTPStubsResponse responseWithFile:@"mocked_response.json"
                                          contentType:@"application/json"
                                         responseTime:0.1];
     }];
