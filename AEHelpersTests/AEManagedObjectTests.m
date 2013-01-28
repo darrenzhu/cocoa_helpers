@@ -224,4 +224,83 @@
     STAssertEqualObjects(@"Title 2",    oneToManyDeserialized.title,    nil);
 }
 
+- (void)testSubmitNewObject {
+    [OHHTTPStubs shouldStubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+        
+        NSString *jsonString = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
+        
+        STAssertEqualObjects(@"{\"entity\":{\"entity_id\":0,\"testField\":\"test Field\"}}", jsonString, nil);
+        STAssertEqualObjects(@"http://api.test.com/tests", [request.URL absoluteString], nil);
+        return YES;
+        
+    } withStubResponse:^OHHTTPStubsResponse *(NSURLRequest *request) {
+        
+        return [OHHTTPStubsResponse responseWithFile:@"submit_mocked_response.json"
+                                         contentType:@"application/json"
+                                        responseTime:0.1];
+    }];
+
+    __block BOOL finished = NO;
+    TestEntity *entity  = (TestEntity *)[NSEntityDescription insertNewObjectForEntityForName:@"TestEntity"
+                                                                      inManagedObjectContext:mainThreadContext()];
+    entity.testField    = @"test Field";
+    [AECoreDataHelper save:mainThreadContext()];
+    
+    [entity submitRecordWithClient:[AEHTTPClient sharedClient] path:@"/tests" success:^(AEManagedObject *entity) {
+       
+        STAssertNotNil(entity, nil);
+
+        TestEntity *testEntity = (TestEntity *)entity;
+        STAssertEqualObjects(@(1), testEntity.id, nil);
+        STAssertEqualObjects(@"test value", testEntity.testField, nil);
+        
+        finished = YES;
+    } failure:^(NSError *error) {
+        STFail(nil);
+    }];
+    
+    loopWithRunLoop(2);
+    STAssertTrue(finished, nil);
+}
+
+- (void)testSubmitUpdatedObject {
+    [OHHTTPStubs shouldStubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+        
+        NSString *jsonString = [[NSString alloc] initWithData:[request HTTPBody] encoding:NSUTF8StringEncoding];
+        
+        STAssertEqualObjects(@"{\"entity\":{\"entity_id\":1,\"testField\":\"test Field\"}}", jsonString, nil);
+        STAssertEqualObjects(@"http://api.test.com/tests/1", [request.URL absoluteString], nil);
+        return YES;
+        
+    } withStubResponse:^OHHTTPStubsResponse *(NSURLRequest *request) {
+        
+        return [OHHTTPStubsResponse responseWithFile:@"submit_mocked_response.json"
+                                         contentType:@"application/json"
+                                        responseTime:0.1];
+    }];
+    
+    __block BOOL finished = NO;
+    TestEntity *entity  = (TestEntity *)[NSEntityDescription insertNewObjectForEntityForName:@"TestEntity"
+                                                                      inManagedObjectContext:mainThreadContext()];
+    entity.testField    = @"test Field";
+    entity.id           = @(1);
+    [AECoreDataHelper save:mainThreadContext()];
+    
+    [entity submitRecordWithClient:[AEHTTPClient sharedClient] path:@"/tests" success:^(AEManagedObject *entity) {
+        
+        STAssertNotNil(entity, nil);
+        
+        TestEntity *testEntity = (TestEntity *)entity;
+        STAssertEqualObjects(@(1), testEntity.id, nil);
+        STAssertEqualObjects(@"test value", testEntity.testField, nil);
+        
+        finished = YES;
+    } failure:^(NSError *error) {
+        STFail(nil);
+    }];
+    
+    loopWithRunLoop(2);
+    STAssertTrue(finished, nil);
+}
+
 @end

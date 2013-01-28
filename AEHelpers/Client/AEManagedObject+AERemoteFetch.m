@@ -78,6 +78,56 @@
     }];
 }
 
+#pragma mark - create/update
+
+- (void)submitRecordWithClient:(AFHTTPClient *)client
+                          path:(NSString *)path
+                       success:(void (^)(AEManagedObject *entity))success
+                       failure:(void (^)(NSError *error))failure {
+    
+    void (^successBlock)(AFHTTPRequestOperation *operation, id responseObject) =
+        ^(AFHTTPRequestOperation *operation, id responseObject) {
+
+            NSDictionary *jsonObject = responseObject;
+            if ([[self class] jsonRoot]) {
+                jsonObject = [responseObject valueForKey:[[self class] jsonRoot]];
+            }
+            
+            if (![jsonObject isKindOfClass:[NSDictionary class]]) return;
+                
+            dispatch_async([[self class] jsonQueue], ^{
+                NSManagedObjectContext *context = [AECoreDataHelper createManagedObjectContext];
+                [AECoreDataHelper addMergeNotificationForMainContext:context];
+                
+                id objectCopyInBackContext      = [context objectWithID:[self objectID]];
+                
+                [objectCopyInBackContext updateFromJSONObject:jsonObject];
+                [AECoreDataHelper save:context];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    if (success) success(self);
+                });
+            });
+        };
+
+    void (^failureBlock)(AFHTTPRequestOperation *operation, id responseObject) =
+        ^(AFHTTPRequestOperation *operation, NSError *error) {
+            
+            if (failure) failure(error);
+        };
+    
+    id entityId = [self valueForKey:@"id"];
+    if (entityId && ![entityId isEqual:@(0)]) {
+        
+        NSString *putPath = [path stringByAppendingFormat:@"/%@", [self valueForKey:@"id"]];
+        [client putPath:putPath parameters:[self toJSONObject] success:successBlock failure:failureBlock];
+    } else {
+        
+        [client postPath:path parameters:[self toJSONObject] success:successBlock failure:failureBlock];
+    }
+}
+
 #pragma mark - private
 
 + (dispatch_queue_t)jsonQueue {

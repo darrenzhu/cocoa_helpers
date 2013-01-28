@@ -58,4 +58,18 @@
                 success:(void (^)(NSArray *entities))success
                 failure:(void (^)(NSError *error))failure;
 
+/**
+ Performs PUT or POST request in order to submit changes to the server. This method will automatically updates managed object with data from response.
+ 
+ @param client `AFHTTPClient` subclass to perform request.
+ @param path Requested path.
+ @param success A block, will be invoked with success operation.
+ @param failure A block, will be invoked with failed operation.
+ 
+ @discussion We are identifying new object by id. You can't get id on clint side with object creation. If object has id we will perform PUT request with RESTful path (/path/id).
+ */
+- (void)submitRecordWithClient:(AFHTTPClient *)client
+                          path:(NSString *)path
+                       success:(void (^)(AEManagedObject *entity))success
+                       failure:(void (^)(NSError *error))failure;
 @end

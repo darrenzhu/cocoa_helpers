@@ -47,6 +47,7 @@ NSString * const baseUrlString = @"http://api.test.com";
     [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
     [self setStringEncoding:NSUTF8StringEncoding];
 	[self setDefaultHeader:@"Accept" value:@"application/json"];
+    [self setParameterEncoding:AFJSONParameterEncoding];
     
     return self;
 }
