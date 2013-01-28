@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name         = "AEHelpers"
-  s.version      = "0.0.8"
+  s.version      = "0.0.9"
   s.summary      = "Cocoa helpers."
   s.homepage     = "https://github.com/ap4y/cocoa_helpers"
   s.license      = 'MIT'
   s.author       = { "ap4y" => "lod@pisem.net" }
-  s.source       = { :git => "https://github.com/ap4y/cocoa_helpers.git", :tag => "0.0.8" }
+  s.source       = { :git => "https://github.com/ap4y/cocoa_helpers.git", :tag => "0.0.9" }
   s.platform     = :ios, '5.0'
 
   s.subspec 'REST' do |rest|
