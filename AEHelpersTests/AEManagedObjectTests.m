@@ -32,6 +32,13 @@
 #import "TestEntity.h"
 #import "TestSubentity.h"
 
+#define loopWithRunLoop(interval) \
+    NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:2]; \
+    while (!finished && [loopUntil timeIntervalSinceNow] > 0) { \
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode \
+                                 beforeDate:loopUntil]; \
+    }
+
 @interface AEManagedObjectTests ()
 @property(retain, nonatomic) id jsonObject;
 @end
@@ -143,14 +150,9 @@
         finished = YES;
     } failure:^(NSError *error) {
         STFail(nil);
-    }];
+    }];        
     
-    NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:2];
-    while (!finished && [loopUntil timeIntervalSinceNow] > 0) {
-        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-                                 beforeDate:loopUntil];
-    }
-    
+    loopWithRunLoop(2);
     STAssertTrue(finished, nil);
 }
 
