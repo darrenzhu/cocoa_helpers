@@ -64,6 +64,8 @@
 		956DFDDE16A73B43004858C6 /* NSFetchRequest+orderByTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSFetchRequest+orderByTests.m"; sourceTree = "<group>"; };
 		95B9E46C16B71E5E007BDA3A /* mocked_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = mocked_response.json; sourceTree = "<group>"; };
 		95B9E46F16B71E68007BDA3A /* submit_mocked_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = submit_mocked_response.json; sourceTree = "<group>"; };
+		95B9E48516B72D1A007BDA3A /* AETestHelpers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AETestHelpers.h; sourceTree = "<group>"; };
+		95B9E48616B72D1A007BDA3A /* AETestHelpers.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AETestHelpers.m; sourceTree = "<group>"; };
 		95DEE7E316B0786700812763 /* TestSubentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestSubentity.h; sourceTree = "<group>"; };
 		95DEE7E416B0786700812763 /* TestSubentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestSubentity.m; sourceTree = "<group>"; };
 		95DEE7E716B09A9700812763 /* AEManagedObject+AEJSONSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AEManagedObject+AEJSONSerialization.h"; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				95116EB216AE2F7D00EB8C27 /* Categories */,
 				95116EB916AE2F7D00EB8C27 /* Client */,
 				95116EBC16AE2F7D00EB8C27 /* Common */,
+				95B9E48416B72D1A007BDA3A /* Tests */,
 				956DFCCC16A614B6004858C6 /* Supporting Files */,
 			);
 			path = AEHelpers;
@@ -204,6 +207,15 @@
 				95DEE7E416B0786700812763 /* TestSubentity.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		95B9E48416B72D1A007BDA3A /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				95B9E48516B72D1A007BDA3A /* AETestHelpers.h */,
+				95B9E48616B72D1A007BDA3A /* AETestHelpers.m */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
