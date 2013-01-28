@@ -87,7 +87,9 @@ static AELIClient *currentLIClient;
                              offset:(NSInteger)offset
                             success:(void (^)(NSArray *))success
                             failure:(void (^)(NSError *))failure {
-    [self friendsInformationWithFields:nil limit:limit offset:offset success:success failure:failure];
+    
+    NSArray *defaultFields = @[ @"id", @"first-name", @"last-name", @"location:(name)", @"headline" ];
+    [self friendsInformationWithFields:defaultFields limit:limit offset:offset success:success failure:failure];
 }
 
 - (void)friendsInformationWithFields:(NSArray *)fields
