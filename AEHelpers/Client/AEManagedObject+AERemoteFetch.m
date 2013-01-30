@@ -26,6 +26,11 @@
 
 @implementation AEManagedObject (AERemoteFetch)
 
+/**
+ With this entity id we will be checking for unsaved entities (decision POST/PUT). Check against string.
+ */
+static NSString * const kUnsavedClientSideEntityId = @"0";
+
 + (void)fetchWithClient:(AFHTTPClient *)client
                    path:(NSString *)path
              parameters:(NSDictionary *)parameters
@@ -117,8 +122,8 @@
             if (failure) failure(error);
         };
     
-    id entityId = [self valueForKey:@"id"];
-    if (entityId && ![entityId isEqual:@(0)]) {
+    NSString *entityId = [NSString stringWithFormat:@"%@", [self valueForKey:@"id"]];
+    if ([self valueForKey:@"id"] && [entityId length] > 0 && ![entityId isEqual:kUnsavedClientSideEntityId]) {
         
         NSString *putPath = [path stringByAppendingFormat:@"/%@", [self valueForKey:@"id"]];
         [client putPath:putPath parameters:[self toJSONObject] success:successBlock failure:failureBlock];
