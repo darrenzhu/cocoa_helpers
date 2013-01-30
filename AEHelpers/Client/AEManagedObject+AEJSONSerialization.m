@@ -48,10 +48,19 @@
     return nil;
 }
 
-+ (AEManagedObject *)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
++ (AEManagedObject *)createOrUpdateFromJsonObject:(id)json
+                           inManagedObjectContext:(NSManagedObjectContext *)context {
+    
+    return [self createOrUpdateFromJsonObject:json withRelations:YES inManagedObjectContext:context];
+}
+
++ (AEManagedObject *)createOrUpdateFromJsonObject:(id)json
+                                    withRelations:(BOOL)withRelations
+                           inManagedObjectContext:(NSManagedObjectContext *)context {
+    
     id curId = [json valueForKeyPath:[self mappedPropertyNameForPropertyName:@"id"]];
-    if (curId == nil) {
-        return nil;
+    if (!curId) {
+        return [self createFromJsonObject:json inManagedObjectContext:context];;
     }
     
     NSFetchRequest *findRequest = [AEManagedObject find:curId];
@@ -59,12 +68,12 @@
                                        inManagedObjectContext:context]];
     AEManagedObject *entity     = [AECoreDataHelper requestFirstResult:findRequest managedObjectContext:context];
     
-    if (entity) {
-        [entity updateFromJSONObject:json];
-        return entity;
+    if (!entity) {
+        return [self createFromJsonObject:json inManagedObjectContext:context];
     }
     
-    return [self createFromJsonObject:json inManagedObjectContext:context];
+    [entity updateFromJSONObject:json withRelations:withRelations];
+    return entity;
 }
 
 #pragma mark - serialization
@@ -179,9 +188,9 @@
             
         } else if ([NSClassFromString(propertyType) isSubclassOfClass:[AEManagedObject class]]) {
             
-            id propertyValue = [NSEntityDescription insertNewObjectForEntityForName:propertyType
-                                                             inManagedObjectContext:self.managedObjectContext];
-            [propertyValue updateFromJSONObject:jsonValue withRelations:NO];
+            id propertyValue = [NSClassFromString(propertyType) createOrUpdateFromJsonObject:jsonValue
+                                                                               withRelations:NO
+                                                                      inManagedObjectContext:self.managedObjectContext];
             [self setValue:propertyValue forKey:propertyName];
         }
     }
@@ -230,14 +239,13 @@
     if (!relationDescription) return nil;
     
     NSEntityDescription *relationEntity             = [relationDescription destinationEntity];
-    
+    Class managedObjectClass                        = NSClassFromString([relationEntity managedObjectClassName]);
     [relations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         
-        id propertyValue = [[AEManagedObject alloc] initWithEntity:relationEntity
-                                    insertIntoManagedObjectContext:context];
-        [propertyValue updateFromJSONObject:obj withRelations:NO];
+        id propertyValue = [managedObjectClass createOrUpdateFromJsonObject:obj
+                                                              withRelations:NO
+                                                     inManagedObjectContext:context];
         [accumulator addObject:propertyValue];
-        [propertyValue release];
     }];
     
     return [NSSet setWithArray:accumulator];
