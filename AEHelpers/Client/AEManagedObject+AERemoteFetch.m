@@ -85,10 +85,11 @@ static NSString * const kUnsavedClientSideEntityId = @"0";
 
 #pragma mark - create/update
 
-- (void)submitRecordWithClient:(AFHTTPClient *)client
-                          path:(NSString *)path
-                       success:(void (^)(AEManagedObject *entity))success
-                       failure:(void (^)(NSError *error))failure {
++ (void)submitRecord:(AEManagedObject *)record
+          withClient:(AFHTTPClient *)client
+                path:(NSString *)path
+             success:(void (^)(id entity))success
+             failure:(void (^)(NSError *error))failure {
     
     void (^successBlock)(AFHTTPRequestOperation *operation, id responseObject) =
         ^(AFHTTPRequestOperation *operation, id responseObject) {
@@ -104,14 +105,17 @@ static NSString * const kUnsavedClientSideEntityId = @"0";
                 NSManagedObjectContext *context = [AECoreDataHelper createManagedObjectContext];
                 [AECoreDataHelper addMergeNotificationForMainContext:context];
                 
-                id objectCopyInBackContext      = [context objectWithID:[self objectID]];
-                
-                [objectCopyInBackContext updateFromJSONObject:jsonObject];
+                AEManagedObject *objectCopyInBackContext = [self createOrUpdateFromJsonObject:jsonObject
+                                                                       inManagedObjectContext:context];
                 [AECoreDataHelper save:context];
                 
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    /**
+                     We are removing previous entity because it was a temp client side representation
+                     */
+                    [record.managedObjectContext rollback];
                     
-                    if (success) success(self);
+                    if (success) success([mainThreadContext() objectWithID:[objectCopyInBackContext objectID]]);
                 });
             });
         };
@@ -122,14 +126,14 @@ static NSString * const kUnsavedClientSideEntityId = @"0";
             if (failure) failure(error);
         };
     
-    NSString *entityId = [NSString stringWithFormat:@"%@", [self valueForKey:@"id"]];
-    if ([self valueForKey:@"id"] && [entityId length] > 0 && ![entityId isEqual:kUnsavedClientSideEntityId]) {
+    NSString *entityId = [NSString stringWithFormat:@"%@", [record valueForKey:@"id"]];
+    if ([record valueForKey:@"id"] && [entityId length] > 0 && ![entityId isEqual:kUnsavedClientSideEntityId]) {
         
-        NSString *putPath = [path stringByAppendingFormat:@"/%@", [self valueForKey:@"id"]];
-        [client putPath:putPath parameters:[self toJSONObject] success:successBlock failure:failureBlock];
+        NSString *putPath = [path stringByAppendingFormat:@"/%@", entityId];
+        [client putPath:putPath parameters:[record toJSONObject] success:successBlock failure:failureBlock];
     } else {
         
-        [client postPath:path parameters:[self toJSONObject] success:successBlock failure:failureBlock];
+        [client postPath:path parameters:[record toJSONObject] success:successBlock failure:failureBlock];
     }
 }
 

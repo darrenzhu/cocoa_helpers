@@ -244,20 +244,22 @@
     TestEntity *entity  = (TestEntity *)[NSEntityDescription insertNewObjectForEntityForName:@"TestEntity"
                                                                       inManagedObjectContext:mainThreadContext()];
     entity.testField    = @"test Field";
-    [AECoreDataHelper save:mainThreadContext()];
     
-    [entity submitRecordWithClient:[AEHTTPClient sharedClient] path:@"/tests" success:^(AEManagedObject *entity) {
-       
-        STAssertNotNil(entity, nil);
-
-        TestEntity *testEntity = (TestEntity *)entity;
-        STAssertEqualObjects(@(1), testEntity.id, nil);
-        STAssertEqualObjects(@"test value", testEntity.testField, nil);
-        
-        finished = YES;
-    } failure:^(NSError *error) {
-        STFail(nil);
-    }];
+    [TestEntity submitRecord:entity
+                  withClient:[AEHTTPClient sharedClient]
+                        path:@"/tests"
+                     success:^(id entity) {
+                         
+                         STAssertNotNil(entity, nil);
+                         
+                         TestEntity *testEntity = (TestEntity *)entity;
+                         STAssertEqualObjects(@(1), testEntity.id, nil);
+                         STAssertEqualObjects(@"test value", testEntity.testField, nil);
+                         
+                         finished = YES;
+                     } failure:^(NSError *error) {
+                         STFail(nil);
+                     }];
     
     loopWithRunLoop(2);
     STAssertTrue(finished, nil);
@@ -284,21 +286,23 @@
                                                                       inManagedObjectContext:mainThreadContext()];
     entity.testField    = @"test Field";
     entity.id           = @(1);
-    [AECoreDataHelper save:mainThreadContext()];
     
-    [entity submitRecordWithClient:[AEHTTPClient sharedClient] path:@"/tests" success:^(AEManagedObject *entity) {
+    [TestEntity submitRecord:entity
+                  withClient:[AEHTTPClient sharedClient]
+                        path:@"/tests"
+                     success:^(id entity) {
+                         
+                         STAssertNotNil(entity, nil);
+                         
+                         TestEntity *testEntity = (TestEntity *)entity;
+                         STAssertEqualObjects(@(1), testEntity.id, nil);
+                         STAssertEqualObjects(@"test value", testEntity.testField, nil);
+                         
+                         finished = YES;
+                     } failure:^(NSError *error) {
+                         STFail(nil);
+                     }];
         
-        STAssertNotNil(entity, nil);
-        
-        TestEntity *testEntity = (TestEntity *)entity;
-        STAssertEqualObjects(@(1), testEntity.id, nil);
-        STAssertEqualObjects(@"test value", testEntity.testField, nil);
-        
-        finished = YES;
-    } failure:^(NSError *error) {
-        STFail(nil);
-    }];
-    
     loopWithRunLoop(2);
     STAssertTrue(finished, nil);
 }

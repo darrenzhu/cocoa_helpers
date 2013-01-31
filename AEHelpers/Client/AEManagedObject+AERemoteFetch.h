@@ -59,17 +59,21 @@
                 failure:(void (^)(NSError *error))failure;
 
 /**
- Performs PUT or POST request in order to submit changes to the server. This method will automatically updates managed object with data from response.
+ Performs PUT or POST request in order to submit changes to the server. This method will return new instance with data from response in `success` block.
  
+ @param record A record to submit.
  @param client `AFHTTPClient` subclass to perform request.
  @param path Requested path.
  @param success A block, will be invoked with success operation.
  @param failure A block, will be invoked with failed operation.
  
- @discussion We are identifying new object by id. You can't get id on clint side with object creation. If object has id we will perform PUT request with RESTful path (/path/id).
+ @discussion We are identifying new object by id. You can't get id on clint side with object creation. If object has id we will perform PUT request with RESTful path (/path/id). 
+    You don't need to save managed object before post, in most cases you can't provide all necessary data on client side and pass validations. This method will rollback all changes in record managed object context, and will return new entity in `success` block. This new instance will be created or updated entity.
+    If `failure` encoutered rollback will not be performed, so you can try to resubmit.
  */
-- (void)submitRecordWithClient:(AFHTTPClient *)client
-                          path:(NSString *)path
-                       success:(void (^)(AEManagedObject *entity))success
-                       failure:(void (^)(NSError *error))failure;
++ (void)submitRecord:(AEManagedObject *)record
+          withClient:(AFHTTPClient *)client
+                path:(NSString *)path
+             success:(void (^)(id entity))success
+             failure:(void (^)(NSError *error))failure;
 @end
