@@ -63,7 +63,9 @@ static AELIClient *currentLIClient;
 
 #pragma mark - Public methods
 - (void)profileInformationWithSuccess:(void (^)(NSDictionary *))success failure:(void (^)(NSError *))failure {
-    [self profileInformationWithFields:nil success:success failure:failure];
+    
+    NSArray *defaultFields = @[ @"id", @"first-name", @"last-name", @"location:(name)", @"headline" ];
+    [self profileInformationWithFields:defaultFields success:success failure:failure];
 }
 
 - (void)profileInformationWithFields:(NSArray *)fields
