@@ -47,7 +47,7 @@ static AEGPClient *currentGPClient;
               language:(NSString *)language
                  scope:(NSArray *)scope
             bundleName:(NSString *)bundleName {
-    self = [super init];
+    self = [super initWithBaseURL:[NSURL URLWithString:plusBaseUrl]];
     if (self) {
         
         self.clientID           = clientID;

@@ -38,7 +38,7 @@ static NSString * const expirationDateKey = @"VKExpirationDateKey";
 
 - (id)initWithId:(NSString *)consumerKey scope:(NSArray *)scope redirectUrlString:(NSString *)redirectString {
     
-    self = [super init];
+    self = [super initWithBaseURL:[NSURL URLWithString:baseUrl]];
     if (self) {
         self.clientId       = consumerKey;
         self.redirectString = redirectString;

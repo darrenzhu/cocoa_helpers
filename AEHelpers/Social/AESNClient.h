@@ -21,7 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+#import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
+#import "AFJSONRequestOperation.h"
 
 /**
  Generic class for all auth client classes. Manages common behaviour:
@@ -31,7 +33,7 @@
  - Exposes common actions for users
 */
 @protocol AESNClientDelegate;
-@interface AESNClient : NSObject <UIWebViewDelegate>
+@interface AESNClient : AFHTTPClient <UIWebViewDelegate>
 
 /**
  Current OAuth access token

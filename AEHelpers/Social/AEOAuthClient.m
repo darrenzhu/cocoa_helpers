@@ -60,7 +60,7 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
         authorizePath:(NSString *)authorizePath
       accessTokenPath:(NSString *)accessTokenPath {
     
-    self = [self init];
+    self = [self initWithBaseURL:baseUrl];
     if (self) {
         self.consumerKey        = consumerKey;
         self.consumerSecret     = consumerSecret;

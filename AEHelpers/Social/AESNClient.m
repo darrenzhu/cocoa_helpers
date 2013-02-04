@@ -22,7 +22,6 @@
 // THE SOFTWARE.
 
 #import "AESNClient.h"
-#import "AFJSONRequestOperation.h"
 #import "SSKeychain.h"
 
 @interface AESNClient ()
@@ -34,9 +33,13 @@
 
 static NSString *keychainAccount;
 
-- (id)init {
-    self = [super init];
+- (id)initWithBaseURL:(NSURL *)url {
+    self = [super initWithBaseURL:url];
     if (self) {
+        [self registerHTTPOperationClass:[AFJSONRequestOperation class]];
+        [self setStringEncoding:NSUTF8StringEncoding];
+        [self setDefaultHeader:@"Accept" value:@"application/json"];
+        
         keychainAccount = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"];        
     }
     return self;
