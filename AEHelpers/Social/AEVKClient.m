@@ -133,7 +133,16 @@ static NSString * const expirationDateKey = @"VKExpirationDateKey";
     NSURL *shareUrl                 = [NSURL URLWithString:sharePath];
     NSMutableURLRequest *request    = [NSMutableURLRequest requestWithURL:shareUrl];
 
-    [AESNClient processJsonRequest:request success:success failure:failure];
+    AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        if (success) success();
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        if (failure) failure(error);
+    }];    
+    [operation start];
 }
 
 @end

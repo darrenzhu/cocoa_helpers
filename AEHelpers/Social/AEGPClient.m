@@ -69,12 +69,17 @@ static AEGPClient *currentGPClient;
 }
 
 - (void)profileInformationWithSuccess:(void (^)(NSDictionary *))success failure:(void (^)(NSError *))failure {
-    NSString *profilePath           = [NSString stringWithFormat:@"%@/people/me?access_token=%@",
-                                       plusBaseUrl, self.accessToken];
-    NSURL *profileUrl               = [NSURL URLWithString:profilePath];
-    NSURLRequest *profileRequest    = [NSURLRequest requestWithURL:profileUrl];
     
-    [AESNClient processJsonRequest:profileRequest success:success failure:failure];
+    [self getPath:@"people/me"
+       parameters:@{ @"access_token": self.accessToken }
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              
+              if (success) success(responseObject);
+              
+          } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              
+              if (failure) failure(error);
+          }];
 }
 
 #pragma mark - overrides
@@ -133,11 +138,15 @@ static AEGPClient *currentGPClient;
     [authorizationRequest setHTTPMethod:@"POST"];
     [authorizationRequest setHTTPBody:[requestBody dataUsingEncoding:NSUTF8StringEncoding]];
     
-    [AESNClient processJsonRequest:authorizationRequest success:^(id json) {        
-        [self clientDidLoginWithJsonData:json];
-    } failure:^(NSError *error) {
-        NSLog(@"%@", error);
-    }];
+    AFJSONRequestOperation *operation =
+        [AFJSONRequestOperation
+         JSONRequestOperationWithRequest:authorizationRequest
+         success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+             [self clientDidLoginWithJsonData:JSON];
+         } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+             NSLog(@"%@", error);
+         }];
+    [operation start];
 }
 
 - (void)clientDidLoginWithJsonData:(id)jsonData {

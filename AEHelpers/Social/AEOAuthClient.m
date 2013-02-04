@@ -347,21 +347,26 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
     [self setOAuthValue:_redirectString forKey:@"oauth_callback"];
     [self signRequest:request withBody:nil];
     
-    [AESNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
+    AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
         [self fillTokenWithResponseBody:[operation responseString]];
         //open webview
         NSString *authorizePath = [NSString stringWithFormat:@"%@?oauth_token=%@", _authorizePath,
                                    [self.oAuthValues objectForKey:@"oauth_token"]];
-        NSURL *authorizeUrl = [NSURL URLWithString:authorizePath relativeToURL:_baseUrl];
+        NSURL *authorizeUrl     = [NSURL URLWithString:authorizePath relativeToURL:_baseUrl];
         
         if (self.delegate) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.delegate client:self wantsPresentAuthPage:[authorizeUrl absoluteURL]];
             });
         }
-    } failure:^(NSError *error) {
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {        
         NSLog(@"%@", error);
     }];
+    
+    [operation start];
 }
 
 - (void)requestAccessToken {
@@ -375,7 +380,9 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
     [self setOAuthValue:nil forKey:@"oauth_callback"];
     [self signRequest:request withBody:body];
     
-    [AESNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
+    AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
         [self fillTokenWithResponseBody:[operation responseString]];
         
         NSMutableDictionary *tokens = [NSMutableDictionary dictionary];
@@ -386,7 +393,12 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
         if (self.delegate) {
             [self.delegate clientDidLogin:self];
         }
-    } failure:nil];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"%@", error);
+    }];
+    
+    [operation start];
 }
 
 @end

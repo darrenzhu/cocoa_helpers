@@ -116,28 +116,6 @@
 @interface AESNClient (Private)
 
 /**
- Helper method for enqueuing requests with AFNetworking. Used for signed requests.
- 
- @param request Request to enqueue
- @param success A Block, invoked for success response
- @param failure A Block, invoked for failed response
- */
-+ (void)processRequest:(NSURLRequest *)request
-               success:(void (^)(AFHTTPRequestOperation *operation))success
-               failure:(void (^)(NSError *error))failure;
-
-/**
-  Helper method for enqueuing JSON requests with AFNetworking. Used for signed requests.
- 
- @param request Request to enqueue
- @param success A Block, invoked for success response
- @param failure A Block, invoked for failed response
- */
-+ (void)processJsonRequest:(NSURLRequest *)request
-                   success:(void (^)(id json))success
-                   failure:(void (^)(NSError *error))failure;
-
-/**
  Starts auth process. This will restarts all process from the begining.
  
  @discussion You should override this method and provide idempotent starting point for your client.

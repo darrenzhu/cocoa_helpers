@@ -95,44 +95,6 @@ static NSString *keychainAccount;
                             failure:(void (^)(NSError *error))failure {}
 
 #pragma mark - private category
-+ (void)processRequest:(NSURLRequest *)request
-               success:(void (^)(AFHTTPRequestOperation *operation))success
-               failure:(void (^)(NSError *error))failure {
-    
-    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
-    operation.completionBlock = ^{
-        if ([operation hasAcceptableStatusCode]) {
-            success(operation);
-        } else {
-            if (failure) {
-                failure(operation.error);
-            }
-        }
-    };
-    [operation start];
-}
-
-+ (void)processJsonRequest:(NSURLRequest *)request
-                   success:(void (^)(id json))success
-                   failure:(void (^)(NSError *error))failure {
-    AFJSONRequestOperation *operation =
-        [AFJSONRequestOperation JSONRequestOperationWithRequest:request
-                                                        success:^(NSURLRequest *request,
-                                                                  NSHTTPURLResponse *response,
-                                                                  id JSON) {
-                                                            if(success) {
-                                                                success(JSON);
-                                                            }
-                                                        } failure:^(NSURLRequest *request,
-                                                                    NSHTTPURLResponse *response,
-                                                                    NSError *error,
-                                                                    id JSON) {
-                                                            if (failure) {
-                                                                failure(error);
-                                                            }
-                                                        }];
-    [operation start];
-}
 
 - (void)doLoginWorkflow {
     @throw [AESNClient overrideExceptionForSelector:_cmd];

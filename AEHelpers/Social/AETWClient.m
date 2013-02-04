@@ -78,11 +78,17 @@ static AETWClient *currentTWClient;
     
     [self signRequest:request withBody:body];
     
-    [AESNClient processRequest:request success:^(AFHTTPRequestOperation *operation) {
-        if(success) {
-            success();
-        }
-    } failure:failure];
+    AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        if (success) success();
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+
+        if (failure) failure(error);
+    }];
+
+    [operation start];
 }
 
 - (void)profileInformationWithSuccess:(void (^)(NSDictionary *))success failure:(void (^)(NSError *))failure {
@@ -90,7 +96,18 @@ static AETWClient *currentTWClient;
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [self signRequest:request withBody:nil];
     
-    [AESNClient processJsonRequest:request success:success failure:failure];
+    AFJSONRequestOperation *operation =
+    [AFJSONRequestOperation
+     JSONRequestOperationWithRequest:request
+     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+         
+         if(success) success(JSON);
+         
+     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+         
+         if (failure) failure(error);
+     }];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 - (void)friendsInformationWithLimit:(NSInteger)limit
@@ -102,11 +119,20 @@ static AETWClient *currentTWClient;
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     [self signRequest:request withBody:nil];
     
-    [AESNClient processJsonRequest:request success:^(id json) {
-        if (success) {
-            success([json valueForKey:@"users"]);
-        }
-    } failure:failure];
+    AFJSONRequestOperation *operation =
+    [AFJSONRequestOperation
+     JSONRequestOperationWithRequest:request
+     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+         
+         if (success) {
+             success([JSON valueForKey:@"users"]);
+         }
+         
+     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+         
+         if (failure) failure(error);
+     }];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 @end

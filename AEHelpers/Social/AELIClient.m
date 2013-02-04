@@ -82,7 +82,18 @@ static AELIClient *currentLIClient;
     NSMutableURLRequest *profileRequest = [NSMutableURLRequest requestWithURL:profileUrl];
     [self signRequest:profileRequest withBody:nil];
 
-    [AESNClient processJsonRequest:profileRequest success:success failure:failure];
+    AFJSONRequestOperation *operation =
+    [AFJSONRequestOperation
+     JSONRequestOperationWithRequest:profileRequest
+     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+         
+         if(success) success(JSON);
+         
+     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+         
+         if (failure) failure(error);
+     }];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 - (void)friendsInformationWithLimit:(NSInteger)limit
@@ -113,11 +124,20 @@ static AELIClient *currentLIClient;
     NSMutableURLRequest *friendsRequest = [NSMutableURLRequest requestWithURL:friendsUrl];
     [self signRequest:friendsRequest withBody:nil];
     
-    [AESNClient processJsonRequest:friendsRequest success:^(id json) {
-        if(success) {
-            success([json objectForKey:@"values"]);
-        }
-    } failure:failure];
+    AFJSONRequestOperation *operation =
+    [AFJSONRequestOperation
+     JSONRequestOperationWithRequest:friendsRequest
+     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+         
+         if(success) {
+             success([JSON objectForKey:@"values"]);
+         }
+         
+     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+         
+         if (failure) failure(error);
+     }];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 @end

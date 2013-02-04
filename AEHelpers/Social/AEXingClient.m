@@ -79,14 +79,21 @@ static AEXingClient *currentClient;
     NSMutableURLRequest *profileRequest = [NSMutableURLRequest requestWithURL:profileUrl];
     [self signRequest:profileRequest withBody:nil];
     
-    [AESNClient processJsonRequest:profileRequest success:^(id json) {
-        
-        NSArray *users = [json objectForKey:@"users"];
-        if (!users || [users count] <= 0) return;
+    AFJSONRequestOperation *operation =
+    [AFJSONRequestOperation
+     JSONRequestOperationWithRequest:profileRequest
+     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
          
-        if (success) success([users objectAtIndex:0]);
-        
-    } failure:failure];
+         NSArray *users = [JSON objectForKey:@"users"];
+         if (!users || [users count] <= 0) return;
+         
+         if (success) success([users objectAtIndex:0]);
+         
+     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+         
+         if (failure) failure(error);
+     }];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 - (void)friendsInformationWithLimit:(NSInteger)limit
@@ -116,11 +123,20 @@ static AEXingClient *currentClient;
     NSMutableURLRequest *friendsRequest = [NSMutableURLRequest requestWithURL:friendsUrl];
     [self signRequest:friendsRequest withBody:nil];
     
-    [AESNClient processJsonRequest:friendsRequest success:^(id json) {
-        if(success) {
-            success([json objectForKey:@"values"]);
-        }
-    } failure:failure];
+    AFJSONRequestOperation *operation =
+    [AFJSONRequestOperation
+     JSONRequestOperationWithRequest:friendsRequest
+     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+         
+         if(success) {
+             success([JSON objectForKey:@"values"]);
+         }
+         
+     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+         
+         if (failure) failure(error);
+     }];
+    [self enqueueHTTPRequestOperation:operation];
 }
 
 @end
