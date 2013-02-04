@@ -23,17 +23,19 @@
 
 #import "AEFBClient.h"
 
-@interface AEFBClient () <FBSessionDelegate, FBRequestDelegate>
-@property (retain, nonatomic) Facebook *facebook;
-@property (retain, nonatomic) NSMutableDictionary *requestsSuccessCallbacks;
-@property (retain, nonatomic) NSMutableDictionary *requestsFailureCallbacks;
-@property (retain, nonatomic) NSArray *permissions;
+@interface AEFBClient ()
+@property (copy, nonatomic) NSArray *permissions;
+@property (copy, nonatomic) NSString *appId;
+
+@property (retain, nonatomic) NSString *redirectUrlString;
 @end
 
 @implementation AEFBClient
 
-NSString * const fbAccessTokenKey = @"FBAccessTokenKey";
-NSString * const fbExpirationDateKey = @"FBExpirationDateKey";
+static NSString * const baseUrl         = @"https://m.facebook.com/dialog";
+static NSString * const graphBaseUrl    = @"https://graph.facebook.com";
+NSString * const fbAccessTokenKey       = @"FBAccessTokenKey";
+NSString * const fbExpirationDateKey    = @"FBExpirationDateKey";
 
 static AEFBClient *currentClient;
 + (AEFBClient *)currentClient {
@@ -41,25 +43,90 @@ static AEFBClient *currentClient;
 }
 
 - (id)initWithId:(NSString *)appId permissions:(NSArray *)permissions {
-    self = [super init];
+    self = [super initWithBaseURL:[NSURL URLWithString:graphBaseUrl]];
     if (self) {
-        _facebook                       = [[Facebook alloc] initWithAppId:appId andDelegate:self];
         currentClient                   = self;
 
-        self.requestsSuccessCallbacks   = [NSMutableDictionary dictionary];
-        self.requestsFailureCallbacks   = [NSMutableDictionary dictionary];
-        
-        self.permissions                = permissions;
+        self.permissions                = permissions;        
+        self.redirectUrlString          = [NSString stringWithFormat:@"fb%@://authorize", appId];
+        self.appId                      = appId;
     }
     return self;
 }
 
 - (void)dealloc {
-    [_facebook release];
-    [_requestsSuccessCallbacks release];
-    [_requestsFailureCallbacks release];
     [_permissions release];
+    [_appId release];
+    [_redirectUrlString release];
     [super dealloc];
+}
+
+- (void)shareLink:(NSString *)link
+        withTitle:(NSString *)title
+       andMessage:(NSString *)message
+          success:(void (^)())success
+          failure:(void (^)(NSError *error))failure {
+
+    NSString *sharePath                 = [NSString stringWithFormat:@"%@/me/links", graphBaseUrl];
+    NSURL *shareUrl                     = [NSURL URLWithString:sharePath];
+    NSMutableURLRequest *shareRequest   = [NSMutableURLRequest requestWithURL:shareUrl];
+    [shareRequest setHTTPMethod:@"POST"];
+    
+    NSMutableDictionary *params         = [NSMutableDictionary dictionary];
+    [params setValue:link forKey:@"link"];
+    [params setValue:title forKey:@"name"];
+    [params setValue:message forKey:@"message"];
+    [params setValue:self.accessToken forKey:@"access_token"];            
+    
+    [self postPath:@"/me/links"
+        parameters:params
+           success:^(AFHTTPRequestOperation *operation, id responseObject) {
+               
+               if (success) success();
+               
+           } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+            
+               if (failure) failure(error);
+           }];
+}
+
+- (void)profileInformationWithSuccess:(void (^)(NSDictionary *))success failure:(void (^)(NSError *))failure {
+    
+    [self getPath:@"/me"
+       parameters:@{ @"access_token": self.accessToken }
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              
+              if (success) success(responseObject);
+              
+          } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              
+              if (failure) failure(error);
+          }];    
+}
+
+- (void)friendsInformationWithLimit:(NSInteger)limit
+                             offset:(NSInteger)offset
+                            success:(void (^)(NSArray *))success
+                            failure:(void (^)(NSError *))failure {
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   self.accessToken,    @"access_token",
+                                   @(offset),           @"offset",
+                                   nil];
+    if (limit > 0) {
+        [params setValue:@(limit) forKey:@"limit"];
+    }
+    
+    [self getPath:@"/me/friends"
+       parameters:params
+          success:^(AFHTTPRequestOperation *operation, id responseObject) {
+              
+              if (success) success([responseObject valueForKey:@"data"]);
+              
+          } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+              
+              if (failure) failure(error);
+          }];
 }
 
 #pragma mark - overriden
@@ -68,118 +135,63 @@ static AEFBClient *currentClient;
     if ([savedKeysAndValues objectForKey:fbAccessTokenKey] &&
         [savedKeysAndValues objectForKey:fbExpirationDateKey]) {
         
-        _facebook.accessToken       = [savedKeysAndValues objectForKey:fbAccessTokenKey];
-        _facebook.expirationDate    = [savedKeysAndValues objectForKey:fbExpirationDateKey];
+        self.accessToken       = [savedKeysAndValues objectForKey:fbAccessTokenKey];
+        self.expirationDate    = [savedKeysAndValues objectForKey:fbExpirationDateKey];
     }
 }
 
 - (void)doLoginWorkflow {
-    [_facebook authorize:_permissions];
-}
-
-- (BOOL)isSessionValid {
-    return [_facebook isSessionValid];
-}
-
-- (void)shareLink:(NSString *)link
-        withTitle:(NSString *)title
-       andMessage:(NSString *)message
-          success:(void (^)())success
-          failure:(void (^)(NSError *error))failure {
+    if (!self.delegate) {
+        return;
+    }
     
+    NSString *codeRequestPath = [NSString stringWithFormat:@"%@/oauth?type=user_agent&display=touch&sdk=ios", baseUrl];
+    codeRequestPath           = [codeRequestPath stringByAppendingFormat:@"&client_id=%@&redirect_uri=%@&scope=%@",
+                                 _appId,
+                                 _redirectUrlString,
+                                 [_permissions componentsJoinedByString:@","]];
+    
+    NSURL *codeRequestUrl     = [NSURL URLWithString:codeRequestPath];
+    [self.delegate client:self wantsPresentAuthPage:codeRequestUrl];
+
+}
+
+- (BOOL)processWebViewResult:(NSURL *)processUrl {
+    if (![[processUrl absoluteString] hasPrefix:_redirectUrlString]) {
+        return NO;
+    }
+
+    NSString *query             = [processUrl fragment];
+    NSArray *components         = [query componentsSeparatedByString:@"&"];
     NSMutableDictionary *params = [NSMutableDictionary dictionary];
-    [params setObject:link forKey:@"link"];
-    [params setObject:title forKey:@"name"];
-    [params setObject:message forKey:@"message"];
+    [components enumerateObjectsUsingBlock:^(NSString *pairs, NSUInteger idx, BOOL *stop) {
+        
+        NSArray *pairsComponents = [pairs componentsSeparatedByString:@"="];
+        if ([pairsComponents count] < 2) return;
+        
+        [params setValue:[pairsComponents objectAtIndex:1]
+                  forKey:[pairsComponents objectAtIndex:0]];
+    }];    
     
-    FBRequest *request = [_facebook requestWithGraphPath:@"me/links"
-                                               andParams:params
-                                           andHttpMethod:@"POST"
-                                             andDelegate:self];
+    [self clientDidLoginWithParams:params];
     
-    [self setRequestCallbacksForPath:[request graphPath] success:success failure:failure];
-}
-
-- (void)profileInformationWithSuccess:(void (^)(NSDictionary *profile))success
-                              failure:(void (^)(NSError *error))failure {
-    
-    FBRequest *request = [_facebook requestWithGraphPath:@"me" andDelegate:self];
-    [self setRequestCallbacksForPath:[request graphPath] success:success failure:failure];
-}
-
-- (void)friendsInformationWithLimit:(NSInteger)limit
-                             offset:(NSInteger)offset
-                            success:(void (^)(NSArray *friends))success
-                            failure:(void (^)(NSError *error))failure {
-    
-    NSString *path = [NSString stringWithFormat:@"me/friends?offset=%i", offset];
-    if (limit > 0) {
-        path = [path stringByAppendingFormat:@"&limit=%i", limit];
-    }
-    
-    FBRequest *request = [_facebook requestWithGraphPath:path andDelegate:self];
-    [self setRequestCallbacksForPath:[request graphPath] success:success failure:failure];
-}
-
-
-#pragma mark - FBSessionDelegate
-- (void)fbDidLogin {
-    NSMutableDictionary *tokens = [NSMutableDictionary dictionary];
-    [tokens setValue:[_facebook accessToken] forKey:fbAccessTokenKey];
-    [tokens setValue:[_facebook expirationDate] forKey:fbExpirationDateKey];
-    [self saveToken:tokens];
-    
-    if (self.delegate) {
-        [self.delegate clientDidLogin:self];
-    }
-}
-
-- (void)fbDidNotLogin:(BOOL)cancelled {}
-
-- (void)fbDidExtendToken:(NSString *)accessToken expiresAt:(NSDate *)expiresAt {}
-
-- (void)fbDidLogout {}
-
-- (void)fbSessionInvalidated {}
-
-#pragma mark - FBRequestDelegate
-- (void)request:(FBRequest *)request didLoad:(id)result {
-    void (^success)(id profile) = [_requestsSuccessCallbacks valueForKey:request.graphPath];
-    if (success) {
-        success(result && [result valueForKey:@"data"] ? [result valueForKey:@"data"] : result);
-    }
-    
-    [self setRequestCallbacksForPath:[request graphPath] success:nil failure:nil];
-}
-
-- (void)request:(FBRequest *)request didFailWithError:(NSError *)error {
-    void (^failure)(NSError *error) = [_requestsFailureCallbacks valueForKey:request.graphPath];
-    if (failure) {
-        failure(error);
-    }
-    
-    [self setRequestCallbacksForPath:[request graphPath] success:nil failure:nil];
+    return YES;
 }
 
 #pragma mark - private
-- (void)setRequestCallbacksForPath:(NSString *)graphPath
-                           success:(void (^)(id profile))success
-                           failure:(void (^)(NSError *error))failure {
+- (void)clientDidLoginWithParams:(NSDictionary *)params {
+    NSMutableDictionary *tokens = [NSMutableDictionary dictionary];
+    NSNumber *expiresIn         = [params valueForKey:@"expires_in"];
     
-    if (success) {
-        void (^successBlock)(id profile) = [success copy];
-        [_requestsSuccessCallbacks setValue:successBlock forKey:graphPath];
-        [successBlock release];
-    } else {
-        [_requestsSuccessCallbacks removeObjectForKey:graphPath];
-    }
+    self.accessToken            = [params valueForKey:@"access_token"];
+    self.expirationDate         = [NSDate dateWithTimeIntervalSinceNow:[expiresIn doubleValue]];
     
-    if (failure) {
-        void (^failureBlock)(id profile) = [failure copy];
-        [_requestsFailureCallbacks setValue:failureBlock forKey:graphPath];
-        [failureBlock release];
-    } else {
-        [_requestsFailureCallbacks removeObjectForKey:graphPath];
+    [tokens setValue:self.accessToken forKey:fbAccessTokenKey];
+    [tokens setValue:self.expirationDate forKey:fbExpirationDateKey];
+    [self saveToken:tokens];
+
+    if (self.delegate) {
+        [self.delegate clientDidLogin:self];
     }
 }
 

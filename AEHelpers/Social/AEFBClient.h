@@ -22,10 +22,8 @@
 // THE SOFTWARE.
 
 #import "AESNClient.h"
-#import "FBConnect.h"
 
 @interface AEFBClient : AESNClient
-@property(retain, nonatomic, readonly) Facebook *facebook;
 
 + (AEFBClient *)currentClient;
 - (id)initWithId:(NSString *)appId permissions:(NSArray *)permissions;

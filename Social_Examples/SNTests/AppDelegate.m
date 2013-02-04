@@ -38,7 +38,7 @@
     } else if ([[url scheme] isEqualToString:@"xingengine"]) {
         return [[AEXingClient currentClient] processWebViewResult:url];
     } else {
-        return [[AEFBClient currentClient].facebook handleOpenURL:url];
+        return [[AEFBClient currentClient] processWebViewResult:url];
     }
     
     return NO;
