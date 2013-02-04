@@ -32,7 +32,15 @@
 
 @implementation AESNClient
 
-static NSString * const keychainAccount = @"access_token";
+static NSString *keychainAccount;
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        keychainAccount = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleDisplayName"];        
+    }
+    return self;
+}
 
 - (void)dealloc {
     [_accessToken release];
