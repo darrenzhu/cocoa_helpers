@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name         = "AETestHelpers"
-  s.version      = "0.0.9"
+  s.version      = "0.1.1"
   s.summary      = "Helper for test OCUINT test cases."
   s.homepage     = "https://github.com/ap4y/cocoa_helpers"
   s.license      = 'MIT'
   s.author       = { "ap4y" => "lod@pisem.net" }
-  s.source       = { :git => "https://github.com/ap4y/cocoa_helpers.git", :tag => "0.0.9" }
+  s.source       = { :git => "https://github.com/ap4y/cocoa_helpers.git", :tag => "0.1.1" }
   s.platform     = :ios
   s.source_files = 'AEHelpers/Tests'
   s.framework    = 'SenTestingKit'
