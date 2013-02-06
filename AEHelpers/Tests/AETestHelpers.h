@@ -22,7 +22,6 @@
 // THE SOFTWARE.
 
 #import "OHHTTPStubs.h"
-#import "OCMock.h"
 
 @interface AETestHelpers : NSObject
 

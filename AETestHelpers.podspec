@@ -11,6 +11,6 @@ Pod::Spec.new do |s|
   s.framework    = 'SenTestingKit'
   s.xcconfig     = { 'FRAMEWORK_SEARCH_PATHS' => '$(inherited) "$(SDKROOT)/Developer/Library/Frameworks" "$(DEVELOPER_LIBRARY_DIR)/Frameworks"',
                      'GCC_PREPROCESSOR_DEFINITIONS' => '$(GCC_PREPROCESSOR_DEFINITIONS) OCUNIT=1' }
-  s.dependency 'OCMock'
+
   s.dependency 'OHHTTPStubs'
 end
