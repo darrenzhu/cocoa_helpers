@@ -69,31 +69,24 @@ static AEXingClient *currentClient;
                              success:(void (^)(NSDictionary *))success
                              failure:(void (^)(NSError *))failure {
     
-    NSString *profilePath   = [baseUrl stringByAppendingString:@"/v1/users/me.json"];
+    NSDictionary *params = nil;
     if (fields) {
-        profilePath         = [profilePath stringByAppendingFormat:@"?fields=%@",
-                               [fields componentsJoinedByString:@","]];
+        params = @{ @"fields": [fields componentsJoinedByString:@","] };
     }
     
-    NSURL *profileUrl                   = [NSURL URLWithString:profilePath];
-    NSMutableURLRequest *profileRequest = [NSMutableURLRequest requestWithURL:profileUrl];
-    [self signRequest:profileRequest withBody:nil];
-    
-    AFJSONRequestOperation *operation =
-    [AFJSONRequestOperation
-     JSONRequestOperationWithRequest:profileRequest
-     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-         
-         NSArray *users = [JSON objectForKey:@"users"];
-         if (!users || [users count] <= 0) return;
-         
-         if (success) success([users objectAtIndex:0]);
-         
-     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-         
-         if (failure) failure(error);
-     }];
-    [self enqueueHTTPRequestOperation:operation];
+    [self signedGetPath:@"/v1/users/me.json"
+             parameters:params
+                success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    
+                    NSArray *users = [responseObject objectForKey:@"users"];
+                    if (!users || [users count] <= 0) return;
+                    
+                    if (success) success([users objectAtIndex:0]);
+                    
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    
+                    if (failure) failure(error);                    
+                }];
 }
 
 - (void)friendsInformationWithLimit:(NSInteger)limit
@@ -109,34 +102,27 @@ static AEXingClient *currentClient;
                              success:(void (^)(NSArray *))success
                              failure:(void (^)(NSError *))failure {
     
-    NSString *friendsPath   = [baseUrl stringByAppendingString:@"/v1/users/me/contacts.json"];
-    friendsPath             = [friendsPath stringByAppendingFormat:@"?format=json&offset=%i", offset];
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   @"json",     @"format",
+                                   @(offset),   @"offset",
+                                   nil];
     if (limit > 0) {
-        friendsPath         = [friendsPath stringByAppendingFormat:@"&limit=%i", limit];
+        [params setValue:@(limit) forKey:@"limit"];
     }
     if (fields) {
-        friendsPath         = [friendsPath stringByAppendingFormat:@"&user_fields=%@",
-                               [fields componentsJoinedByString:@","]];
+        [params setValue:[fields componentsJoinedByString:@","] forKey:@"user_fields"];
     }
     
-    NSURL *friendsUrl                   = [NSURL URLWithString:friendsPath];
-    NSMutableURLRequest *friendsRequest = [NSMutableURLRequest requestWithURL:friendsUrl];
-    [self signRequest:friendsRequest withBody:nil];
-    
-    AFJSONRequestOperation *operation =
-    [AFJSONRequestOperation
-     JSONRequestOperationWithRequest:friendsRequest
-     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-         
-         if(success) {
-             success([JSON objectForKey:@"values"]);
-         }
-         
-     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-         
-         if (failure) failure(error);
-     }];
-    [self enqueueHTTPRequestOperation:operation];
+    [self signedGetPath:@"/v1/users/me/contacts.json"
+             parameters:params
+                success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    
+                    if(success) success([responseObject objectForKey:@"values"]);
+                    
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                   
+                    if (failure) failure(error);                    
+                }];
 }
 
 @end

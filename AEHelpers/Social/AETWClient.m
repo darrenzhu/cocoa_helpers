@@ -68,46 +68,33 @@ static AETWClient *currentTWClient;
           success:(void (^)())success
           failure:(void (^)(NSError *))failure {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/1.1/statuses/update.json", baseUrl]];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setHTTPMethod:@"POST"];
-    
-    NSMutableDictionary *body = [NSMutableDictionary dictionary];
     NSString *status = [NSString stringWithFormat:@"%@ %@", message, link];
-    [body setValue:status forKey:@"status"];             
+    NSDictionary *params = [NSDictionary dictionaryWithObject:status forKey:@"status"];
     
-    [self signRequest:request withBody:body];
-    
-    AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
-    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-        if (success) success();
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-
-        if (failure) failure(error);
-    }];
-
-    [operation start];
+    [self signedPostPath:@"/1.1/statuses/update.json"
+              parameters:params
+                 success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                     
+                     if (success) success();
+                     
+                 } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                     
+                     if (failure) failure(error);
+                 }];
 }
 
 - (void)profileInformationWithSuccess:(void (^)(NSDictionary *))success failure:(void (^)(NSError *))failure {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/1.1/account/verify_credentials.json", baseUrl]];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [self signRequest:request withBody:nil];
     
-    AFJSONRequestOperation *operation =
-    [AFJSONRequestOperation
-     JSONRequestOperationWithRequest:request
-     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-         
-         if(success) success(JSON);
-         
-     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-         
-         if (failure) failure(error);
-     }];
-    [self enqueueHTTPRequestOperation:operation];
+    [self signedGetPath:@"/1.1/account/verify_credentials.json"
+             parameters:nil
+                success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    
+                    if(success) success(responseObject);
+                    
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    
+                    if (failure) failure(error);
+                }];
 }
 
 - (void)friendsInformationWithLimit:(NSInteger)limit
@@ -115,24 +102,16 @@ static AETWClient *currentTWClient;
                             success:(void (^)(NSArray *))success
                             failure:(void (^)(NSError *))failure {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@/1.1/friends/list.json", baseUrl]];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [self signRequest:request withBody:nil];
-    
-    AFJSONRequestOperation *operation =
-    [AFJSONRequestOperation
-     JSONRequestOperationWithRequest:request
-     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-         
-         if (success) {
-             success([JSON valueForKey:@"users"]);
-         }
-         
-     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-         
-         if (failure) failure(error);
-     }];
-    [self enqueueHTTPRequestOperation:operation];
+    [self signedGetPath:@"/1.1/friends/list.json"
+             parameters:nil
+                success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    
+                    if (success) success([responseObject valueForKey:@"users"]);
+                    
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    
+                    if (failure) failure(error);
+                }];
 }
 
 @end

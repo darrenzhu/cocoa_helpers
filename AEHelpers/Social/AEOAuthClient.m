@@ -99,6 +99,33 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
     [super dealloc];
 }
 
+- (void)signedGetPath:(NSString *)path
+           parameters:(NSDictionary *)parameters
+              success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+              failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
+
+    NSMutableURLRequest *request = [self requestWithMethod:@"GET" path:path parameters:parameters];
+    [self signRequest:request withBody:nil];
+
+    AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];
+}
+
+- (void)signedPostPath:(NSString *)path
+            parameters:(NSDictionary *)parameters
+               success:(void (^)(AFHTTPRequestOperation *operation, id responseObject))success
+               failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
+    
+    NSMutableURLRequest *request = [self requestWithMethod:@"POST" path:path parameters:nil];
+    
+    NSMutableDictionary *mutableParameters = [parameters mutableCopy];
+    [self signRequest:request withBody:mutableParameters];
+    [mutableParameters release];
+    
+	AFHTTPRequestOperation *operation = [self HTTPRequestOperationWithRequest:request success:success failure:failure];
+    [self enqueueHTTPRequestOperation:operation];    
+}
+
 #pragma mark - token saving
 - (NSString *)accessTokenKey {
     return @"AEAccessTokenKey";

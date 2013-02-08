@@ -72,28 +72,21 @@ static AELIClient *currentLIClient;
                              success:(void (^)(NSDictionary *))success
                              failure:(void (^)(NSError *))failure {
 
-    NSString *profilePath   = [baseUrl stringByAppendingString:@"/v1/people/~"];
+    NSString *profilePath   = @"/v1/people/~";
     if (fields) {
         profilePath         = [profilePath stringByAppendingFormat:@":(%@)", [fields componentsJoinedByString:@","]];
     }
-    profilePath             = [profilePath stringByAppendingString:@"?format=json"];
     
-    NSURL *profileUrl                   = [NSURL URLWithString:profilePath];    
-    NSMutableURLRequest *profileRequest = [NSMutableURLRequest requestWithURL:profileUrl];
-    [self signRequest:profileRequest withBody:nil];
-
-    AFJSONRequestOperation *operation =
-    [AFJSONRequestOperation
-     JSONRequestOperationWithRequest:profileRequest
-     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-         
-         if(success) success(JSON);
-         
-     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-         
-         if (failure) failure(error);
-     }];
-    [self enqueueHTTPRequestOperation:operation];
+    [self signedGetPath:profilePath
+             parameters:@{ @"format": @"json" }
+                success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    
+                    if(success) success(responseObject);
+                    
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    
+                    if (failure) failure(error);
+                }];
 }
 
 - (void)friendsInformationWithLimit:(NSInteger)limit
@@ -111,33 +104,29 @@ static AELIClient *currentLIClient;
                              success:(void (^)(NSArray *))success
                              failure:(void (^)(NSError *))failure {
 
-    NSString *friendsPath   = [baseUrl stringByAppendingString:@"/v1/people/~/connections"];
+    NSString *friendsPath   = @"/v1/people/~/connections";
     if (fields) {
         friendsPath         = [friendsPath stringByAppendingFormat:@":(%@)", [fields componentsJoinedByString:@","]];
     }
-    friendsPath             = [friendsPath stringByAppendingFormat:@"?format=json&start=%i", offset];
+    
+    NSMutableDictionary *params = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+                                   @"json",     @"format",
+                                   @(offset),   @"start",
+                                   nil];
     if (limit > 0) {
-        friendsPath         = [friendsPath stringByAppendingFormat:@"&count=%i", limit];
+        [params setValue:@(limit) forKey:@"limit"];
     }
-    
-    NSURL *friendsUrl                   = [NSURL URLWithString:friendsPath];
-    NSMutableURLRequest *friendsRequest = [NSMutableURLRequest requestWithURL:friendsUrl];
-    [self signRequest:friendsRequest withBody:nil];
-    
-    AFJSONRequestOperation *operation =
-    [AFJSONRequestOperation
-     JSONRequestOperationWithRequest:friendsRequest
-     success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-         
-         if(success) {
-             success([JSON objectForKey:@"values"]);
-         }
-         
-     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-         
-         if (failure) failure(error);
-     }];
-    [self enqueueHTTPRequestOperation:operation];
+
+    [self signedGetPath:friendsPath
+             parameters:params
+                success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    
+                    if(success) success([responseObject objectForKey:@"values"]);
+                    
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    
+                    if (failure) failure(error);
+                }];
 }
 
 @end
