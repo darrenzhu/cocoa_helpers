@@ -138,15 +138,20 @@ static AEGPClient *currentGPClient;
     [authorizationRequest setHTTPMethod:@"POST"];
     [authorizationRequest setHTTPBody:[requestBody dataUsingEncoding:NSUTF8StringEncoding]];
     
-    AFJSONRequestOperation *operation =
-        [AFJSONRequestOperation
-         JSONRequestOperationWithRequest:authorizationRequest
-         success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-             [self clientDidLoginWithJsonData:JSON];
-         } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-             NSLog(@"%@", error);
-         }];
-    [operation start];
+    [[AFJSONRequestOperation JSONRequestOperationWithRequest:authorizationRequest
+                                                     success:^(NSURLRequest *request,
+                                                               NSHTTPURLResponse *response,
+                                                               id JSON) {
+                                                         
+                                                         [self clientDidLoginWithJsonData:JSON];
+                                                         
+                                                     } failure:^(NSURLRequest *request,
+                                                                 NSHTTPURLResponse *response,
+                                                                 NSError *error,
+                                                                 id JSON) {
+                                                         
+                                                         NSLog(@"%@", error);
+                                                     }] start];
 }
 
 - (void)clientDidLoginWithJsonData:(id)jsonData {

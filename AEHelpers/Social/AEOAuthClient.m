@@ -72,13 +72,7 @@ static NSString * const oauthSignatureMethodName = @"HMAC-SHA1";
         self.requestTokenPath   = requestTokenPath;
         self.authorizePath      = authorizePath;
         self.accessTokenPath    = accessTokenPath;
-    }
-    return self;
-}
-
-- (id)init {
-    self = [super init];
-    if (self) {
+        
         _accessTokenSecret = nil;
     }
     return self;

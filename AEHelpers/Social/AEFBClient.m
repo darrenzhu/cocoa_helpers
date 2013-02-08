@@ -45,11 +45,11 @@ static AEFBClient *currentClient;
 - (id)initWithId:(NSString *)appId permissions:(NSArray *)permissions {
     self = [super initWithBaseURL:[NSURL URLWithString:graphBaseUrl]];
     if (self) {
-        currentClient                   = self;
+        currentClient           = self;
 
-        self.permissions                = permissions;        
-        self.redirectUrlString          = [NSString stringWithFormat:@"fb%@://authorize", appId];
-        self.appId                      = appId;
+        self.permissions        = permissions;        
+        self.redirectUrlString  = [NSString stringWithFormat:@"fb%@://authorize", appId];
+        self.appId              = appId;
     }
     return self;
 }
@@ -66,17 +66,13 @@ static AEFBClient *currentClient;
        andMessage:(NSString *)message
           success:(void (^)())success
           failure:(void (^)(NSError *error))failure {
-
-    NSString *sharePath                 = [NSString stringWithFormat:@"%@/me/links", graphBaseUrl];
-    NSURL *shareUrl                     = [NSURL URLWithString:sharePath];
-    NSMutableURLRequest *shareRequest   = [NSMutableURLRequest requestWithURL:shareUrl];
-    [shareRequest setHTTPMethod:@"POST"];
     
-    NSMutableDictionary *params         = [NSMutableDictionary dictionary];
-    [params setValue:link forKey:@"link"];
-    [params setValue:title forKey:@"name"];
-    [params setValue:message forKey:@"message"];
-    [params setValue:self.accessToken forKey:@"access_token"];            
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                            link,               @"link",
+                            title,              @"name",
+                            message,            @"message",
+                            self.accessToken,   @"access_token",
+                            nil];
     
     [self postPath:@"/me/links"
         parameters:params
@@ -153,7 +149,6 @@ static AEFBClient *currentClient;
     
     NSURL *codeRequestUrl     = [NSURL URLWithString:codeRequestPath];
     [self.delegate client:self wantsPresentAuthPage:codeRequestUrl];
-
 }
 
 - (BOOL)processWebViewResult:(NSURL *)processUrl {
@@ -179,6 +174,7 @@ static AEFBClient *currentClient;
 }
 
 #pragma mark - private
+
 - (void)clientDidLoginWithParams:(NSDictionary *)params {
     NSMutableDictionary *tokens = [NSMutableDictionary dictionary];
     NSNumber *expiresIn         = [params valueForKey:@"expires_in"];

@@ -54,6 +54,30 @@ static NSString * const expirationDateKey = @"VKExpirationDateKey";
     [super dealloc];
 }
 
+- (void)shareLink:(NSString *)link
+        withTitle:(NSString *)title
+       andMessage:(NSString *)message
+          success:(void (^)())success
+          failure:(void (^)(NSError *))failure {
+    
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+                            link,                       @"attachments",
+                            self.accessToken,           @"access_token",
+                            [message urlEncodedString], @"message",
+                            nil];
+    
+    [self getPath:@"/method/wall.post"
+        parameters:params
+           success:^(AFHTTPRequestOperation *operation, id responseObject) {
+               
+               if (success) success();
+               
+           } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+               
+               if (failure) failure(error);
+           }];
+}
+
 #pragma mark - overrides
 - (void)regainToken:(NSDictionary *)savedKeysAndValues {
     self.accessToken = [savedKeysAndValues valueForKey:accessTokenKey];
@@ -118,31 +142,6 @@ static NSString * const expirationDateKey = @"VKExpirationDateKey";
     }
     
     return NO;
-}
-
-- (void)shareLink:(NSString *)link
-        withTitle:(NSString *)title
-       andMessage:(NSString *)message
-          success:(void (^)())success
-          failure:(void (^)(NSError *))failure {
-
-    NSString *sharePath = [NSString stringWithFormat:@"%@/method/wall.post", baseUrl];
-    sharePath           = [sharePath stringByAppendingFormat:@"?attachments=%@&access_token=%@&message=%@",
-                           link, self.accessToken, [message urlEncodedString]];
-    
-    NSURL *shareUrl                 = [NSURL URLWithString:sharePath];
-    NSMutableURLRequest *request    = [NSMutableURLRequest requestWithURL:shareUrl];
-
-    AFHTTPRequestOperation *operation = [[[AFHTTPRequestOperation alloc] initWithRequest:request] autorelease];
-    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        
-        if (success) success();
-        
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        
-        if (failure) failure(error);
-    }];    
-    [operation start];
 }
 
 @end
