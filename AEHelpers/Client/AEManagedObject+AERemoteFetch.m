@@ -96,7 +96,7 @@ static NSString * const kUnsavedClientSideEntityId = @"0";
 
             NSDictionary *jsonObject = responseObject;
             if ([[self class] jsonRoot]) {
-                jsonObject = [responseObject valueForKey:[[self class] jsonRoot]];
+                jsonObject = [responseObject valueForKeyPath:[[self class] jsonRoot]];
             }
             
             if (![jsonObject isKindOfClass:[NSDictionary class]]) return;
