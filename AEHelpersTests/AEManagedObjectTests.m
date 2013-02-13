@@ -31,6 +31,7 @@
 
 #import "TestEntity.h"
 #import "TestSubentity.h"
+#import "TestChildEntity.h"
 
 #define loopWithRunLoop(interval) \
     NSDate *loopUntil = [NSDate dateWithTimeIntervalSinceNow:2]; \
@@ -305,6 +306,23 @@
         
     loopWithRunLoop(2);
     STAssertTrue(finished, nil);
+}
+
+- (void)testUpdateFromJSONObjectWithParentEntity {
+    
+    NSDictionary *jsonObject = @{
+        @"entity_id": @1,
+        @"testField": @"test value",
+        @"childField": @"child value"
+    };
+    
+    TestChildEntity *childEntity = [NSEntityDescription insertNewObjectForEntityForName:@"TestChildEntity"
+                                                                 inManagedObjectContext:mainThreadContext()];
+    [childEntity updateFromJSONObject:jsonObject];
+    
+    STAssertEqualObjects(@(1),              childEntity.id,         nil);
+    STAssertEqualObjects(@"test value",     childEntity.testField,  nil);
+    STAssertEqualObjects(@"child value",    childEntity.childField, nil);
 }
 
 @end

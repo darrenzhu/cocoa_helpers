@@ -145,7 +145,7 @@
     if (!self || !jsonObject) return;
     
     unsigned int outCount;
-    objc_property_t *properties = class_copyPropertyList([self class], &outCount);
+    objc_property_t *properties = [self classPropertiesWithOutCount:&outCount];
     
     for(int i = 0; i < outCount; i++) {
         objc_property_t property;
@@ -207,6 +207,40 @@
     }
     
     return propertyName;
+}
+
+- (objc_property_t *)classPropertiesWithOutCount:(unsigned int *)outCount {
+    
+    unsigned int selfOutCount, superOutCount;
+    objc_property_t *selfProperties, *superProperties, *properties;
+    size_t selfPropertiesSize, superPropertiesSize;
+    
+    superProperties = NULL;
+    superOutCount   = 0;
+    
+    selfProperties  = class_copyPropertyList([self class], &selfOutCount);
+    
+    if ( [self superclass] != [AEManagedObject class] ) {
+        superProperties = class_copyPropertyList([self superclass], &superOutCount);
+    }
+    
+    selfPropertiesSize   = sizeof(objc_property_t) * selfOutCount;
+    superPropertiesSize  = sizeof(objc_property_t) * superOutCount;
+    
+    properties = malloc(selfPropertiesSize + superPropertiesSize);
+    memcpy(properties, selfProperties, selfPropertiesSize);
+    free(selfProperties);
+    
+    if (superProperties) {
+        memcpy(properties + selfOutCount, superProperties, superPropertiesSize);
+        free(superProperties);
+    }
+    
+    if (outCount) {
+        *outCount = selfOutCount + superOutCount;
+    }
+    
+    return properties;
 }
 
 - (NSString *)propertyNameFromPropertyDescription:(objc_property_t)property {

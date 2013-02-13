@@ -13,6 +13,7 @@
 		95116ED516AE2F7E00EB8C27 /* AEManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116EBB16AE2F7D00EB8C27 /* AEManagedObject.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95116ED616AE2F7E00EB8C27 /* AEAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116EBE16AE2F7D00EB8C27 /* AEAlert.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95116ED716AE2F7E00EB8C27 /* AECoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116EC016AE2F7D00EB8C27 /* AECoreDataHelper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9514E84016CC23D600DCF51D /* TestChildEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 9514E83F16CC23D600DCF51D /* TestChildEntity.m */; };
 		956DFCD916A614B7004858C6 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCD816A614B7004858C6 /* SenTestingKit.framework */; };
 		956DFCDC16A614B7004858C6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCC916A614B6004858C6 /* Foundation.framework */; };
 		956DFCE816A614B7004858C6 /* AECoreDataHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFCE716A614B7004858C6 /* AECoreDataHelperTests.m */; };
@@ -43,6 +44,8 @@
 		95116EBE16AE2F7D00EB8C27 /* AEAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEAlert.m; sourceTree = "<group>"; };
 		95116EBF16AE2F7D00EB8C27 /* AECoreDataHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AECoreDataHelper.h; sourceTree = "<group>"; };
 		95116EC016AE2F7D00EB8C27 /* AECoreDataHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AECoreDataHelper.m; sourceTree = "<group>"; };
+		9514E83E16CC23D600DCF51D /* TestChildEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestChildEntity.h; sourceTree = "<group>"; };
+		9514E83F16CC23D600DCF51D /* TestChildEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestChildEntity.m; sourceTree = "<group>"; };
 		956DFCC916A614B6004858C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		956DFCD716A614B7004858C6 /* AEHelpersTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AEHelpersTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		956DFCD816A614B7004858C6 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -205,6 +208,8 @@
 				956DFDB616A6606C004858C6 /* AEHTTPClient.m */,
 				95DEE7E316B0786700812763 /* TestSubentity.h */,
 				95DEE7E416B0786700812763 /* TestSubentity.m */,
+				9514E83E16CC23D600DCF51D /* TestChildEntity.h */,
+				9514E83F16CC23D600DCF51D /* TestChildEntity.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -342,6 +347,7 @@
 				95DEE7E516B0786700812763 /* TestSubentity.m in Sources */,
 				95DEE7E916B09A9700812763 /* AEManagedObject+AEJSONSerialization.m in Sources */,
 				95DEE7EF16B09F0C00812763 /* AEManagedObject+AERemoteFetch.m in Sources */,
+				9514E84016CC23D600DCF51D /* TestChildEntity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
