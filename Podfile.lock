@@ -1,17 +1,14 @@
 
 PODS:
 - AFNetworking (1.1.0)
-- JSONKit (1.5pre)
 - OHHTTPStubs (1.1.1)
 
 DEPENDENCIES:
 - AFNetworking
-- JSONKit
 - OHHTTPStubs
 
 SPEC CHECKSUMS:
   AFNetworking: 761a418233d280c1e0580bcb76ff9cb4c3073d17
-  JSONKit: 3d4708953ea7ae399a49777372d8b060a43ddd27
   OHHTTPStubs: cb1cef742f2fba18b192fb92ede52a69cf3a04d5
 
-COCOAPODS: 0.16.1
+COCOAPODS: 0.16.2

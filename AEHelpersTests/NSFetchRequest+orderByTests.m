@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 
 #import "NSFetchRequest+orderByTests.h"
-#import "JSONKit.h"
+#import "NSJSONSerializationCategories.h"
 #import "TestEntity.h"
 
 #import "AEManagedObject+AEJSONSerialization.h"

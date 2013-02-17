@@ -23,7 +23,7 @@
 
 #import "AEManagedObjectTests.h"
 #import "OHHTTPStubs.h"
-#import "JSONKit.h"
+#import "NSJSONSerializationCategories.h"
 #import "AEHTTPClient.h"
 
 #import "AEManagedObject+AEJSONSerialization.h"

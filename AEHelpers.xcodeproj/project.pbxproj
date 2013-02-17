@@ -14,6 +14,7 @@
 		95116ED616AE2F7E00EB8C27 /* AEAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116EBE16AE2F7D00EB8C27 /* AEAlert.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95116ED716AE2F7E00EB8C27 /* AECoreDataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116EC016AE2F7D00EB8C27 /* AECoreDataHelper.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9514E84016CC23D600DCF51D /* TestChildEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 9514E83F16CC23D600DCF51D /* TestChildEntity.m */; };
+		95170ED516CD9BC0005760BE /* NSJSONSerializationCategories.m in Sources */ = {isa = PBXBuildFile; fileRef = 95170ED416CD9BC0005760BE /* NSJSONSerializationCategories.m */; };
 		956DFCD916A614B7004858C6 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCD816A614B7004858C6 /* SenTestingKit.framework */; };
 		956DFCDC16A614B7004858C6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCC916A614B6004858C6 /* Foundation.framework */; };
 		956DFCE816A614B7004858C6 /* AECoreDataHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFCE716A614B7004858C6 /* AECoreDataHelperTests.m */; };
@@ -46,6 +47,8 @@
 		95116EC016AE2F7D00EB8C27 /* AECoreDataHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AECoreDataHelper.m; sourceTree = "<group>"; };
 		9514E83E16CC23D600DCF51D /* TestChildEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestChildEntity.h; sourceTree = "<group>"; };
 		9514E83F16CC23D600DCF51D /* TestChildEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestChildEntity.m; sourceTree = "<group>"; };
+		95170ED316CD9BC0005760BE /* NSJSONSerializationCategories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSJSONSerializationCategories.h; sourceTree = "<group>"; };
+		95170ED416CD9BC0005760BE /* NSJSONSerializationCategories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSJSONSerializationCategories.m; sourceTree = "<group>"; };
 		956DFCC916A614B6004858C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		956DFCD716A614B7004858C6 /* AEHelpersTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AEHelpersTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		956DFCD816A614B7004858C6 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -101,6 +104,8 @@
 				95116EB416AE2F7D00EB8C27 /* NSArray+orderBy.m */,
 				95116EB516AE2F7D00EB8C27 /* NSFetchRequest+orderBy.h */,
 				95116EB616AE2F7D00EB8C27 /* NSFetchRequest+orderBy.m */,
+				95170ED316CD9BC0005760BE /* NSJSONSerializationCategories.h */,
+				95170ED416CD9BC0005760BE /* NSJSONSerializationCategories.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -348,6 +353,7 @@
 				95DEE7E916B09A9700812763 /* AEManagedObject+AEJSONSerialization.m in Sources */,
 				95DEE7EF16B09F0C00812763 /* AEManagedObject+AERemoteFetch.m in Sources */,
 				9514E84016CC23D600DCF51D /* TestChildEntity.m in Sources */,
+				95170ED516CD9BC0005760BE /* NSJSONSerializationCategories.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,7 +10,6 @@ Pod::Spec.new do |s|
 
   s.subspec 'REST' do |rest|
     rest.source_files = 'AEHelpers/Categories', 'AEHelpers/Client', 'AEHelpers/Common'
-    rest.dependency 'JSONKit'
     rest.dependency 'AFNetworking'
   end
 

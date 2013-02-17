@@ -23,7 +23,7 @@
 
 #import "AEManagedObject+AEJSONSerialization.h"
 #import <objc/runtime.h>
-#import "JSONKit.h"
+#import "NSJSONSerializationCategories.h"
 
 @implementation NSManagedObject (AEJSONSerialization)
 

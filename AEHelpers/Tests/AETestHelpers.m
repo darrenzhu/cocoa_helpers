@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 
 #import "AETestHelpers.h"
-#import "JSONKit.h"
+#import "NSJSONSerializationCategories.h"
 
 @implementation AETestHelpers
 

@@ -62,8 +62,7 @@ static NSString * const kUnsavedClientSideEntityId = @"0";
                 items = [responseObject valueForKey:[self jsonRoot]];
             }
             
-            if ([items isKindOfClass:[NSArray class]] && [items count] > 0 &&
-                ![[items objectAtIndex:0] isKindOfClass:[NSNull class]]) { //JSONKit returns sometimes array with NSNull
+            if ([items isKindOfClass:[NSArray class]] && [items count] > 0) {
                 
                 dispatch_async([self jsonQueue], ^{
                     [self formatJson:items success:success];
