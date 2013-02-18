@@ -24,12 +24,16 @@
 #import "AEManagedObject+AERemoteFetch.h"
 #import "AEManagedObject+AEJSONSerialization.h"
 
+#import "AFHTTPRequestOperation.h"
+#import "AEManagedObjectsCache.h"
+
 @implementation AEManagedObject (AERemoteFetch)
 
 /**
  With this entity id we will be checking for unsaved entities (decision POST/PUT). Check against string.
  */
 static NSString * const kUnsavedClientSideEntityId = @"0";
+static NSString * const kEtagKeyIdentifier         = @"Etag";
 
 + (void)fetchWithClient:(AFHTTPClient *)client
                    path:(NSString *)path
@@ -56,23 +60,26 @@ static NSString * const kUnsavedClientSideEntityId = @"0";
         if (!responseObject) return;        
         if (jsonResponse) jsonResponse(responseObject);
         
-        if (success) {
-            NSArray *items = responseObject;
-            if ([self jsonRoot]) {
-                items = [responseObject valueForKey:[self jsonRoot]];
-            }
+        if (!success) return;
+        if ([self cachedManagedObjectsForOperation:operation success:success]) return;
+        
+        NSString *etag = [[operation.response allHeaderFields] valueForKey:kEtagKeyIdentifier];
+        NSArray *items = responseObject;
+        if ([self jsonRoot]) {
+            items = [responseObject valueForKeyPath:[self jsonRoot]];
+        }
+        
+        if ([items isKindOfClass:[NSArray class]] && [items count] > 0) {
             
-            if ([items isKindOfClass:[NSArray class]] && [items count] > 0) {
-                
-                dispatch_async([self jsonQueue], ^{
-                    [self formatJson:items success:success];
-                });
-                
-            } else if ([items isKindOfClass:[NSDictionary class]]) {
-                dispatch_async([self jsonQueue], ^{
-                    [self formatJson:@[ items ] success:success];
-                });
-            }
+            dispatch_async([self jsonQueue], ^{
+                [self formatJson:items withEtag:etag success:success];
+            });
+            
+        } else if ([items isKindOfClass:[NSDictionary class]]) {
+            
+            dispatch_async([self jsonQueue], ^{
+                [self formatJson:@[ items ] withEtag:etag success:success];
+            });
         }
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -91,39 +98,39 @@ static NSString * const kUnsavedClientSideEntityId = @"0";
              failure:(void (^)(NSError *error))failure {
     
     void (^successBlock)(AFHTTPRequestOperation *operation, id responseObject) =
-        ^(AFHTTPRequestOperation *operation, id responseObject) {
-
-            NSDictionary *jsonObject = responseObject;
-            if ([[self class] jsonRoot]) {
-                jsonObject = [responseObject valueForKeyPath:[[self class] jsonRoot]];
-            }
+    ^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+        NSDictionary *jsonObject = responseObject;
+        if ([[self class] jsonRoot]) {
+            jsonObject = [responseObject valueForKey:[[self class] jsonRoot]];
+        }
+        
+        if (![jsonObject isKindOfClass:[NSDictionary class]]) return;
+        
+        dispatch_async([[self class] jsonQueue], ^{
+            NSManagedObjectContext *context = [AECoreDataHelper createManagedObjectContext];
+            [AECoreDataHelper addMergeNotificationForMainContext:context];
             
-            if (![jsonObject isKindOfClass:[NSDictionary class]]) return;
+            AEManagedObject *objectCopyInBackContext = [self createOrUpdateFromJsonObject:jsonObject
+                                                                   inManagedObjectContext:context];
+            [AECoreDataHelper save:context];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                /**
+                 We are removing previous entity because it was a temp client side representation
+                 */
+                [record.managedObjectContext rollback];
                 
-            dispatch_async([[self class] jsonQueue], ^{
-                NSManagedObjectContext *context = [AECoreDataHelper createManagedObjectContext];
-                [AECoreDataHelper addMergeNotificationForMainContext:context];
-                
-                AEManagedObject *objectCopyInBackContext = [self createOrUpdateFromJsonObject:jsonObject
-                                                                       inManagedObjectContext:context];
-                [AECoreDataHelper save:context];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    /**
-                     We are removing previous entity because it was a temp client side representation
-                     */
-                    [record.managedObjectContext rollback];
-                    
-                    if (success) success([mainThreadContext() objectWithID:[objectCopyInBackContext objectID]]);
-                });
+                if (success) success([mainThreadContext() objectWithID:[objectCopyInBackContext objectID]]);
             });
-        };
-
+        });
+    };
+    
     void (^failureBlock)(AFHTTPRequestOperation *operation, id responseObject) =
-        ^(AFHTTPRequestOperation *operation, NSError *error) {
-            
-            if (failure) failure(error);
-        };
+    ^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        if (failure) failure(error);
+    };
     
     NSString *entityId = [NSString stringWithFormat:@"%@", [record valueForKey:@"id"]];
     if ([record valueForKey:@"id"] && [entityId length] > 0 && ![entityId isEqual:kUnsavedClientSideEntityId]) {
@@ -142,21 +149,20 @@ static NSString * const kUnsavedClientSideEntityId = @"0";
     static dispatch_queue_t _jsonQueue;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _jsonQueue = dispatch_queue_create("com.or.json_proccess", 0);
+        _jsonQueue = dispatch_queue_create("com.ae.json_proccess", DISPATCH_QUEUE_SERIAL);
     });
     
     return _jsonQueue;
 }
 
-+ (void)formatJson:(NSArray *)items success:(void (^)(NSArray *entities))success {
++ (void)formatJson:(NSArray *)items withEtag:(NSString *)etag success:(void (^)(NSArray *entities))success {
     
     NSManagedObjectContext *context = [[AECoreDataHelper createManagedObjectContext] retain];
     [AECoreDataHelper addMergeNotificationForMainContext:context];
     NSMutableArray *result = [NSMutableArray array];
     
     for (id jsonString in items) {
-        AEManagedObject *entity = [self createOrUpdateFromJsonObject:jsonString
-                                              inManagedObjectContext:context];
+        AEManagedObject *entity = [self createOrUpdateFromJsonObject:jsonString inManagedObjectContext:context];
         [result addObject:entity];
     }
     
@@ -164,15 +170,65 @@ static NSString * const kUnsavedClientSideEntityId = @"0";
         [AECoreDataHelper save:context];
     }
     
+    NSArray *objectIds = [result valueForKeyPath:@"objectID"];
+    dispatch_async([self jsonQueue], ^{
+        
+        [[AEManagedObjectsCache sharedCache] setObjectIds:objectIds forEtag:etag];
+    });
+    
     dispatch_async(dispatch_get_main_queue(), ^{
-        NSMutableArray *resultInMainThread = [NSMutableArray array];
-        for (AEManagedObject *entity in result) {
-            AEManagedObject *entityInMainThread = (AEManagedObject *)[mainThreadContext() objectWithID:entity.objectID];
-            [resultInMainThread addObject:entityInMainThread];
-        }
-        success(resultInMainThread);
+        
+        success([self managedObjectsInMainThreadWithObjectIds:objectIds]);
         [context release];
     });
+}
+
++ (BOOL)cachedManagedObjectsForOperation:(AFHTTPRequestOperation *)operation
+                                 success:(void (^)(NSArray *entities))success {
+    
+    NSCachedURLResponse *cachedResponse;
+    NSHTTPURLResponse *cachedHTTPResponse;
+    NSString *prevEtag, *etag;
+    
+    cachedResponse     = [[NSURLCache sharedURLCache] cachedResponseForRequest:operation.request];
+    cachedHTTPResponse = (NSHTTPURLResponse *)cachedResponse.response;
+    
+    if (!cachedHTTPResponse) return NO;
+    
+    prevEtag    = [[cachedHTTPResponse allHeaderFields] valueForKey:kEtagKeyIdentifier];
+    etag        = [[operation.response allHeaderFields] valueForKey:kEtagKeyIdentifier];
+    
+    if (![etag isEqualToString:prevEtag]) {
+        
+        dispatch_async([self jsonQueue], ^{
+            [[AEManagedObjectsCache sharedCache] removeObjectIdsForEtag:prevEtag];
+        });
+        return NO;
+    }
+    
+    if (![[AEManagedObjectsCache sharedCache] containsObjectIdsForEtag:etag]) return NO;
+    
+    dispatch_async([self jsonQueue], ^{
+        NSArray *objectIds = [[AEManagedObjectsCache sharedCache] objectIdsForEtag:etag];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            success([self managedObjectsInMainThreadWithObjectIds:objectIds]);
+        });
+    });
+    
+    return YES;
+}
+
++ (NSArray *)managedObjectsInMainThreadWithObjectIds:(NSArray *)objectIds {
+    
+    NSMutableArray *resultInMainThread = [NSMutableArray array];
+    for (NSManagedObjectID *objectID in objectIds) {
+        
+        [resultInMainThread addObject:[mainThreadContext() objectWithID:objectID]];
+    }
+    
+    return resultInMainThread;
 }
 
 @end

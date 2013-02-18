@@ -25,9 +25,11 @@
 #import "OHHTTPStubs.h"
 #import "NSJSONSerializationCategories.h"
 #import "AEHTTPClient.h"
+#import "OCMock.h"
 
 #import "AEManagedObject+AEJSONSerialization.h"
 #import "AEManagedObject+AERemoteFetch.h"
+#import "AEManagedObjectsCache.h"
 
 #import "TestEntity.h"
 #import "TestSubentity.h"
@@ -108,7 +110,6 @@
 - (void)testRequestAll {
     [[TestEntity alloc] initFromJSONObject:_jsonObject inManagedObjectContext:mainThreadContext()];
     [[TestEntity alloc] initFromJSONObject:_jsonObject inManagedObjectContext:mainThreadContext()];
-    [AECoreDataHelper save:mainThreadContext()];
     
     NSArray *entities = [TestEntity requestResult:[TestEntity all]
                              managedObjectContext:mainThreadContext()];
@@ -323,6 +324,111 @@
     STAssertEqualObjects(@(1),              childEntity.id,         nil);
     STAssertEqualObjects(@"test value",     childEntity.testField,  nil);
     STAssertEqualObjects(@"child value",    childEntity.childField, nil);
+}
+
+- (void)testCacheRequestedManagedObjects {
+    
+    [OHHTTPStubs shouldStubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+        return YES;        
+    } withStubResponse:^OHHTTPStubsResponse *(NSURLRequest *request) {
+        
+        NSDictionary *headers = @{
+            @"Content-Type": @"application/json",
+            @"Etag": @"1234"
+        };
+        return [OHHTTPStubsResponse responseWithFile:@"mocked_response.json"
+                                   statusCode:200
+                                 responseTime:0.0
+                                      headers:headers];
+    }];
+    
+    id partialCacheMock = [OCMockObject partialMockForObject:[AEManagedObjectsCache sharedCache]];
+    [[partialCacheMock expect] setObjectIds:OCMOCK_ANY forEtag:@"1234"];
+    
+    __block BOOL finished = NO;
+    [TestEntity fetchWithClient:[AEHTTPClient sharedClient]
+                           path:@"/test"
+                     parameters:nil
+                        success:^(NSArray *entities) {
+                                                      
+                            finished = YES;
+                            
+                        } failure:^(NSError *error) {
+                            STFail(nil);
+                        }];
+    
+    loopWithRunLoop(0.1);
+    STAssertTrue(finished, nil);
+    [partialCacheMock verify];
+}
+
+- (void)testReturnCachedRecords {
+    
+    /**
+     Stubbing response
+     */
+    [OHHTTPStubs shouldStubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+        return YES;
+    } withStubResponse:^OHHTTPStubsResponse *(NSURLRequest *request) {
+        
+        NSDictionary *headers = @{
+            @"Content-Type": @"application/json",
+            @"Etag": @"1234"
+        };
+        return [OHHTTPStubsResponse responseWithFile:@"mocked_response.json"
+                                          statusCode:200
+                                        responseTime:0.0
+                                             headers:headers];
+    }];
+    
+    /**
+     Stubbing cached response
+     */
+    NSURLRequest *stubRequest;
+    NSHTTPURLResponse *stubResponse;
+    NSCachedURLResponse *stubCachedResponse;
+    NSDictionary *headers;
+    
+    stubRequest         = [[AEHTTPClient sharedClient] requestWithMethod:@"GET"
+                                                                    path:@"/test"
+                                                              parameters:nil];
+    headers             = @{
+        @"Content-Type": @"application/json",
+        @"Etag": @"1234"
+    };
+    stubResponse        = [[NSHTTPURLResponse alloc] initWithURL:[stubRequest URL]
+                                               statusCode:200
+                                              HTTPVersion:@"1.0"
+                                             headerFields:headers];
+    stubCachedResponse  = [[NSCachedURLResponse alloc] initWithResponse:stubResponse data:nil];
+    [[NSURLCache sharedURLCache] storeCachedResponse:stubCachedResponse forRequest:stubRequest];
+    
+    /**
+     Preparing expectation
+     */
+    id partialCacheMock = [OCMockObject partialMockForObject:[AEManagedObjectsCache sharedCache]];
+    BOOL positiveResult = YES;
+    [[[partialCacheMock expect] andReturnValue:OCMOCK_VALUE(positiveResult)] containsObjectIdsForEtag:@"1234"];
+    [[partialCacheMock expect] objectIdsForEtag:@"1234"];
+    
+    /**
+     Test fetch
+     */
+    __block BOOL finished = NO;
+    [TestEntity fetchWithClient:[AEHTTPClient sharedClient]
+                           path:@"/test"
+                     parameters:nil
+                        success:^(NSArray *entities) {
+                            
+                            finished = YES;
+                            
+                        } failure:^(NSError *error) {
+                            STFail(nil);
+                        }];
+    
+    loopWithRunLoop(0.1);
+    STAssertTrue(finished, nil);
+    [partialCacheMock verify];
 }
 
 @end
