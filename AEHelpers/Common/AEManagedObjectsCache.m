@@ -88,7 +88,7 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
 
 - (BOOL)containsObjectIdsForEtag:(NSString *)etag {
     
-    AEManagedObjectsCacheRecord *cacheRecord = [self cacheRecordForEtag:etag inMangedContext:[self newContext]];
+    AEManagedObjectsCacheRecord *cacheRecord = [self cacheRecordForEtag:etag inMangedContext:[self createContext]];
     
     if (!cacheRecord || !cacheRecord.objectIdsArchieve) return NO;
     
@@ -97,8 +97,8 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
 
 - (NSArray *)objectIdsForEtag:(NSString *)etag {
         
-    AEManagedObjectsCacheRecord *cacheRecord = [self cacheRecordForEtag:etag inMangedContext:[self newContext]];
 
+    AEManagedObjectsCacheRecord *cacheRecord = [self cacheRecordForEtag:etag inMangedContext:[self createContext]];
     if (!cacheRecord || !cacheRecord.objectIdsArchieve) return nil;
     
     NSArray *objectIdURLs       = [NSKeyedUnarchiver unarchiveObjectWithData:cacheRecord.objectIdsArchieve];
@@ -123,7 +123,7 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
     
     NSArray *objectIdURLS = [objectIds valueForKeyPath:@"URIRepresentation"];
     
-    context     = [self newContext];
+    context     = [self createContext];
     cacheRecord = [NSEntityDescription insertNewObjectForEntityForName:@"AEManagedObjectsCacheRecord"
                                                 inManagedObjectContext:context];
     cacheRecord.etag                = etag;
@@ -134,7 +134,7 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
 
 - (BOOL)removeObjectIdsForEtag:(NSString *)etag {
 
-    NSManagedObjectContext *context = [self newContext];
+    NSManagedObjectContext *context = [self createContext];
     AEManagedObjectsCacheRecord *cacheRecord = [self cacheRecordForEtag:etag inMangedContext:context];
 
     [context deleteObject:cacheRecord];
@@ -177,7 +177,7 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
     return [model autorelease];
 }
 
-- (NSManagedObjectContext *)newContext {
+- (NSManagedObjectContext *)createContext {
     
     NSManagedObjectContext *context = [[NSManagedObjectContext alloc] init];
     [context setPersistentStoreCoordinator:_coordinator];
