@@ -32,11 +32,11 @@
     dispatch_once(&onceToken, ^{
         NSLocale *enUSPOSIXLocale;
         
-        _rfc3339DateFormatter   = [[[NSDateFormatter alloc] init] autorelease];
+        _rfc3339DateFormatter   = [[NSDateFormatter alloc] init];
         enUSPOSIXLocale         = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease];
         
         [_rfc3339DateFormatter setLocale:enUSPOSIXLocale];
-        [_rfc3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'"];
+        [_rfc3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"];
         [_rfc3339DateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
     });
     
