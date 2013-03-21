@@ -25,6 +25,8 @@
 		955A16CE16FBB93500158D6F /* TestSubentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 955A16C716FBB93500158D6F /* TestSubentity.m */; };
 		955A16D116FBB95400158D6F /* UIView+RelativePositioningTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 955A16D016FBB95400158D6F /* UIView+RelativePositioningTests.m */; };
 		955A16D416FBB99F00158D6F /* UIView+RelativePositioning.m in Sources */ = {isa = PBXBuildFile; fileRef = 955A16D316FBB99F00158D6F /* UIView+RelativePositioning.m */; };
+		955A16D716FBBA0C00158D6F /* UIViewController+iPhoneModalController.m in Sources */ = {isa = PBXBuildFile; fileRef = 955A16D616FBBA0C00158D6F /* UIViewController+iPhoneModalController.m */; };
+		955A16DA16FBBA3900158D6F /* UIViewController+iPhoneModalControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 955A16D916FBBA3900158D6F /* UIViewController+iPhoneModalControllerTests.m */; };
 		956DFCD916A614B7004858C6 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCD816A614B7004858C6 /* SenTestingKit.framework */; };
 		956DFCDC16A614B7004858C6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFCC916A614B6004858C6 /* Foundation.framework */; };
 		956DFCE816A614B7004858C6 /* AECoreDataHelperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFCE716A614B7004858C6 /* AECoreDataHelperTests.m */; };
@@ -70,6 +72,10 @@
 		955A16D016FBB95400158D6F /* UIView+RelativePositioningTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+RelativePositioningTests.m"; sourceTree = "<group>"; };
 		955A16D216FBB99F00158D6F /* UIView+RelativePositioning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+RelativePositioning.h"; sourceTree = "<group>"; };
 		955A16D316FBB99F00158D6F /* UIView+RelativePositioning.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+RelativePositioning.m"; sourceTree = "<group>"; };
+		955A16D516FBBA0C00158D6F /* UIViewController+iPhoneModalController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+iPhoneModalController.h"; sourceTree = "<group>"; };
+		955A16D616FBBA0C00158D6F /* UIViewController+iPhoneModalController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+iPhoneModalController.m"; sourceTree = "<group>"; };
+		955A16D816FBBA3900158D6F /* UIViewController+iPhoneModalControllerTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+iPhoneModalControllerTests.h"; sourceTree = "<group>"; };
+		955A16D916FBBA3900158D6F /* UIViewController+iPhoneModalControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+iPhoneModalControllerTests.m"; sourceTree = "<group>"; };
 		956DFCC916A614B6004858C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		956DFCD716A614B7004858C6 /* AEHelpersTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AEHelpersTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		956DFCD816A614B7004858C6 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -120,6 +126,8 @@
 				95170ED416CD9BC0005760BE /* NSJSONSerializationCategories.m */,
 				955A16D216FBB99F00158D6F /* UIView+RelativePositioning.h */,
 				955A16D316FBB99F00158D6F /* UIView+RelativePositioning.m */,
+				955A16D516FBBA0C00158D6F /* UIViewController+iPhoneModalController.h */,
+				955A16D616FBBA0C00158D6F /* UIViewController+iPhoneModalController.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";
@@ -234,6 +242,8 @@
 				955A16CF16FBB95400158D6F /* UIView+RelativePositioningTests.h */,
 				955A16D016FBB95400158D6F /* UIView+RelativePositioningTests.m */,
 				956DFCE116A614B7004858C6 /* Supporting Files */,
+				955A16D816FBBA3900158D6F /* UIViewController+iPhoneModalControllerTests.h */,
+				955A16D916FBBA3900158D6F /* UIViewController+iPhoneModalControllerTests.m */,
 			);
 			path = AEHelpersTests;
 			sourceTree = "<group>";
@@ -386,6 +396,8 @@
 				955A16CE16FBB93500158D6F /* TestSubentity.m in Sources */,
 				955A16D116FBB95400158D6F /* UIView+RelativePositioningTests.m in Sources */,
 				955A16D416FBB99F00158D6F /* UIView+RelativePositioning.m in Sources */,
+				955A16D716FBBA0C00158D6F /* UIViewController+iPhoneModalController.m in Sources */,
+				955A16DA16FBBA3900158D6F /* UIViewController+iPhoneModalControllerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
