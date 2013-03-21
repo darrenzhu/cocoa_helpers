@@ -19,4 +19,12 @@ Pod::Spec.new do |s|
     soc.dependency 'NSData+Base64'
     soc.dependency 'SSKeychain'
   end
+
+  s.subspec 'Tests' do |tests|
+    tests.source_files = 'AEHelpers/Tests'
+    tests.dependency 'OHHTTPStubs'
+    tests.framework    = 'SenTestingKit'
+    tests.xcconfig     = { 'FRAMEWORK_SEARCH_PATHS'       => '$(inherited) "$(SDKROOT)/Developer/Library/Frameworks" "$(DEVELOPER_LIBRARY_DIR)/Frameworks"',
+                           'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) OCUNIT=1' }
+  end
 end
