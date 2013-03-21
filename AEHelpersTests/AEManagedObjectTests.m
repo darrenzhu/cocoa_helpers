@@ -160,7 +160,7 @@
 
 - (void)testParsePosixDate {
     NSDate *date = [[TestEntity dateFormatter] dateFromString:@"2013-01-04T01:22:40Z"];
-    STAssertEqualObjects(@"2013-01-04T01:22:40Z", [[TestEntity dateFormatter] stringFromDate:date], nil);
+    STAssertEqualObjects(@"2013-01-04T01:22:40+0000", [[TestEntity dateFormatter] stringFromDate:date], nil);
 }
 
 - (void)testRespectMappingsDictionary {
