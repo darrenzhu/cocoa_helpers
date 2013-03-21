@@ -1,0 +1,954 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="html/html; charset=utf-8" />
+		<title>AECoreDataHelper Class Reference</title>
+		<meta id="xcode-display" name="xcode-display" content="render"/>
+		<meta name="viewport" content="width=550" />
+		<link rel="stylesheet" type="text/css" href="../css/styles.css" media="all" />
+		<link rel="stylesheet" type="text/css" media="print" href="../css/stylesPrint.css" />
+		<meta name="generator" content="appledoc 2.1 (build 840)" />
+	</head>
+	<body>
+		<header id="top_header">
+			<div id="library" class="hideInXcode">
+				<h1><a id="libraryTitle" href="../index.html">AEHelpers </a></h1>
+				<a id="developerHome" href="../index.html">ap4y</a>
+			</div>
+			
+			<div id="title" role="banner">
+				<h1 class="hideInXcode">AECoreDataHelper Class Reference</h1>
+			</div>
+			<ul id="headerButtons" role="toolbar">
+				<li id="toc_button">
+					<button aria-label="Show Table of Contents" role="checkbox" class="open" id="table_of_contents"><span class="disclosure"></span>Table of Contents</button>
+				</li>
+				<li id="jumpto_button" role="navigation">
+					<select id="jumpTo">
+	<option value="top">Jump To&#133;</option>
+	
+	<option value="overview">Overview</option>
+	
+	
+	
+	
+	<option value="tasks">Tasks</option>
+	
+	
+	
+	
+	
+	
+	
+	<option value="class_methods">Class Methods</option>
+	
+	<option value="//api/name/addMergeNotificationForMainContext:">&nbsp;&nbsp;&nbsp;&nbsp;+ addMergeNotificationForMainContext:</option>
+	
+	<option value="//api/name/createManagedObjectContext">&nbsp;&nbsp;&nbsp;&nbsp;+ createManagedObjectContext</option>
+	
+	<option value="//api/name/mainThreadContext">&nbsp;&nbsp;&nbsp;&nbsp;+ mainThreadContext</option>
+	
+	<option value="//api/name/managedObjectModel">&nbsp;&nbsp;&nbsp;&nbsp;+ managedObjectModel</option>
+	
+	<option value="//api/name/persistentStoreCoordinator">&nbsp;&nbsp;&nbsp;&nbsp;+ persistentStoreCoordinator</option>
+	
+	<option value="//api/name/requestEntityWithDesctiption:withPredicate:andSortingDescriptors:">&nbsp;&nbsp;&nbsp;&nbsp;+ requestEntityWithDesctiption:withPredicate:andSortingDescriptors:</option>
+	
+	<option value="//api/name/requestEntityWithName:withPredicate:andSortingDescriptors:inManagedObjectContext:">&nbsp;&nbsp;&nbsp;&nbsp;+ requestEntityWithName:withPredicate:andSortingDescriptors:inManagedObjectContext:</option>
+	
+	<option value="//api/name/requestFirstResult:managedObjectContext:">&nbsp;&nbsp;&nbsp;&nbsp;+ requestFirstResult:managedObjectContext:</option>
+	
+	<option value="//api/name/requestResult:managedObjectContext:">&nbsp;&nbsp;&nbsp;&nbsp;+ requestResult:managedObjectContext:</option>
+	
+	<option value="//api/name/requestWithPredicate:andSortingDescriptors:">&nbsp;&nbsp;&nbsp;&nbsp;+ requestWithPredicate:andSortingDescriptors:</option>
+	
+	<option value="//api/name/save:">&nbsp;&nbsp;&nbsp;&nbsp;+ save:</option>
+	
+	
+	
+	
+	
+</select>
+				</li>
+			</ul>
+		</header>
+		<nav id="tocContainer" class="isShowingTOC">
+			<ul id="toc" role="tree">
+				
+<li role="treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#overview">Overview</a></span></li>
+
+
+
+
+<li role="treeitem" id="task_treeitem"><span class="nodisclosure"></span><span class="sectionName"><a href="#tasks">Tasks</a></span><ul>
+	
+</ul></li>
+
+
+
+
+
+
+
+<li role="treeitem" class="children"><span class="disclosure"></span><span class="sectionName"><a href="#class_methods">Class Methods</a></span><ul>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/addMergeNotificationForMainContext:">addMergeNotificationForMainContext:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/createManagedObjectContext">createManagedObjectContext</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/mainThreadContext">mainThreadContext</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/managedObjectModel">managedObjectModel</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/persistentStoreCoordinator">persistentStoreCoordinator</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/requestEntityWithDesctiption:withPredicate:andSortingDescriptors:">requestEntityWithDesctiption:withPredicate:andSortingDescriptors:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/requestEntityWithName:withPredicate:andSortingDescriptors:inManagedObjectContext:">requestEntityWithName:withPredicate:andSortingDescriptors:inManagedObjectContext:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/requestFirstResult:managedObjectContext:">requestFirstResult:managedObjectContext:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/requestResult:managedObjectContext:">requestResult:managedObjectContext:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/requestWithPredicate:andSortingDescriptors:">requestWithPredicate:andSortingDescriptors:</a></span></li>
+	
+	<li><span class="nodisclosure"></span><span class="sectionName"><a href="#//api/name/save:">save:</a></span></li>
+	
+</ul></li>
+
+
+
+
+			</ul>
+		</nav>
+		<article>
+			<div id="contents" class="isShowingTOC" role="main">
+				<a title="AECoreDataHelper Class Reference" name="top"></a>
+				<div class="main-navigation navigation-top">
+					<ul>
+	<li><a href="../index.html">Index</a></li>
+	<li><a href="../hierarchy.html">Hierarchy</a></li>
+</ul>
+				</div>
+				<div id="header">
+					<div class="section-header">
+						<h1 class="title title-header">AECoreDataHelper Class Reference</h1>
+					</div>		
+				</div>
+				<div id="container">	
+					
+					<div class="section section-specification"><table cellspacing="0"><tbody>
+						<tr>
+	<td class="specification-title">Inherits from</td>
+	<td class="specification-value">NSObject</td>
+</tr><tr>
+	<td class="specification-title">Declared in</td>
+	<td class="specification-value">AECoreDataHelper.h</td>
+</tr>
+						</tbody></table></div>
+					
+					
+					
+					
+					<div class="section section-overview">
+						<a title="Overview" name="overview"></a>
+						<h2 class="subtitle subtitle-overview">Overview</h2>
+						<p>Set of class methods for solving common <code>CoreData</code> tasks.</p>
+					</div>
+					
+					
+					
+					
+					
+					<div class="section section-tasks">
+						<a title="Tasks" name="tasks"></a>
+						<h2 class="subtitle subtitle-tasks">Tasks</h2>
+						
+						
+						
+						
+
+						<ul class="task-list">
+							<li>
+	<span class="tooltip">
+		<code><a href="#//api/name/mainThreadContext">+&nbsp;mainThreadContext</a></code>
+		<span class="tooltip"><p>Returns singleton instance of <code>NSManagedObjectContext</code>. By convention, this context is only for the main thread.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/addMergeNotificationForMainContext:">+&nbsp;addMergeNotificationForMainContext:</a></code>
+		<span class="tooltip"><p>Subscribes main thread context to merge notifications from provided thread.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/managedObjectModel">+&nbsp;managedObjectModel</a></code>
+		<span class="tooltip"><p>Returns singleton instance of application object model.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/persistentStoreCoordinator">+&nbsp;persistentStoreCoordinator</a></code>
+		<span class="tooltip"><p>Returns singleton instance of application <code>NSPersistentStoreCoordinator</code>.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/createManagedObjectContext">+&nbsp;createManagedObjectContext</a></code>
+		<span class="tooltip"><p>Creates new <code>NSManagedObjectContext</code></p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/requestResult:managedObjectContext:">+&nbsp;requestResult:managedObjectContext:</a></code>
+		<span class="tooltip"><p>Performs request in provided context.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/requestFirstResult:managedObjectContext:">+&nbsp;requestFirstResult:managedObjectContext:</a></code>
+		<span class="tooltip"><p>Performs request in provided context. Request will be limited by 1 object.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/save:">+&nbsp;save:</a></code>
+		<span class="tooltip"><p>Saves provided context.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/requestEntityWithName:withPredicate:andSortingDescriptors:inManagedObjectContext:">+&nbsp;requestEntityWithName:withPredicate:andSortingDescriptors:inManagedObjectContext:</a></code>
+		<span class="tooltip"><p>Composes new fetch request.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/requestEntityWithDesctiption:withPredicate:andSortingDescriptors:">+&nbsp;requestEntityWithDesctiption:withPredicate:andSortingDescriptors:</a></code>
+		<span class="tooltip"><p>Composes new fetch request.</p></span>
+	</span>
+	
+	
+</li><li>
+	<span class="tooltip">
+		<code><a href="#//api/name/requestWithPredicate:andSortingDescriptors:">+&nbsp;requestWithPredicate:andSortingDescriptors:</a></code>
+		<span class="tooltip"><p>Composes new fetch request.</p></span>
+	</span>
+	
+	
+</li>
+						</ul>
+						
+					</div>
+					
+					
+					
+					
+					
+					
+					
+					<div class="section section-methods">
+						<a title="Class Methods" name="class_methods"></a>
+						<h2 class="subtitle subtitle-methods">Class Methods</h2>
+						
+						<div class="section-method">
+	<a name="//api/name/addMergeNotificationForMainContext:" title="addMergeNotificationForMainContext:"></a>
+	<h3 class="subsubtitle method-title">addMergeNotificationForMainContext:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Subscribes main thread context to merge notifications from provided thread.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>+ (void)addMergeNotificationForMainContext:(NSManagedObjectContext *)<em>context</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>context</em></dt>
+			<dd><p>A context object which will emit merge notifications.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">AECoreDataHelper.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/createManagedObjectContext" title="createManagedObjectContext"></a>
+	<h3 class="subsubtitle method-title">createManagedObjectContext</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Creates new <code>NSManagedObjectContext</code></p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>+ (NSManagedObjectContext *)createManagedObjectContext</code></div>
+
+    
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>An instance of the managed context.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">AECoreDataHelper.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/mainThreadContext" title="mainThreadContext"></a>
+	<h3 class="subsubtitle method-title">mainThreadContext</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Returns singleton instance of <code>NSManagedObjectContext</code>. By convention, this context is only for the main thread.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>+ (NSManagedObjectContext *)mainThreadContext</code></div>
+
+    
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>An managed context instance.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">AECoreDataHelper.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/managedObjectModel" title="managedObjectModel"></a>
+	<h3 class="subsubtitle method-title">managedObjectModel</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Returns singleton instance of application object model.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>+ (NSManagedObjectModel *)managedObjectModel</code></div>
+
+    
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>An instance of managed object model.</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>@discussion By converntion, application data model should be called <code>DataModel</code>.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">AECoreDataHelper.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/persistentStoreCoordinator" title="persistentStoreCoordinator"></a>
+	<h3 class="subsubtitle method-title">persistentStoreCoordinator</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Returns singleton instance of application <code>NSPersistentStoreCoordinator</code>.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>+ (NSPersistentStoreCoordinator *)persistentStoreCoordinator</code></div>
+
+    
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>An instance of the persistence storage coordinator.</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>@discussion When OCUNIT compiler flag is defined, this method uses <code>NSInMemoryStoreType</code> storage, otherwise it uses <code>NSSQLiteStoreType</code></p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">AECoreDataHelper.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/requestEntityWithDesctiption:withPredicate:andSortingDescriptors:" title="requestEntityWithDesctiption:withPredicate:andSortingDescriptors:"></a>
+	<h3 class="subsubtitle method-title">requestEntityWithDesctiption:withPredicate:andSortingDescriptors:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Composes new fetch request.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>+ (NSFetchRequest *)requestEntityWithDesctiption:(NSEntityDescription *)<em>entityDescription</em> withPredicate:(NSPredicate *)<em>predicate</em> andSortingDescriptors:(NSArray *)<em>sortingDescriptors</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>entityDescription</em></dt>
+			<dd><p>Entity description to request.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>predicate</em></dt>
+			<dd><p>Requests predicate</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>sortingDescriptors</em></dt>
+			<dd><p>An array of sorting descriptors</p>
+
+<p>@discussion This method do not setup context for the request.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>A fetch request object.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">AECoreDataHelper.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/requestEntityWithName:withPredicate:andSortingDescriptors:inManagedObjectContext:" title="requestEntityWithName:withPredicate:andSortingDescriptors:inManagedObjectContext:"></a>
+	<h3 class="subsubtitle method-title">requestEntityWithName:withPredicate:andSortingDescriptors:inManagedObjectContext:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Composes new fetch request.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>+ (NSFetchRequest *)requestEntityWithName:(NSString *)<em>entityName</em> withPredicate:(NSPredicate *)<em>predicate</em> andSortingDescriptors:(NSArray *)<em>sortingDescriptors</em> inManagedObjectContext:(NSManagedObjectContext *)<em>context</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>entityName</em></dt>
+			<dd><p>Entity name to request.</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>predicate</em></dt>
+			<dd><p>Requests predicate</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>sortingDescriptors</em></dt>
+			<dd><p>An array of sorting descriptors</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>managedObjectContext</em></dt>
+			<dd><p>A context used for request</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>A fetch request object.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">AECoreDataHelper.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/requestFirstResult:managedObjectContext:" title="requestFirstResult:managedObjectContext:"></a>
+	<h3 class="subsubtitle method-title">requestFirstResult:managedObjectContext:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Performs request in provided context. Request will be limited by 1 object.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>+ (id)requestFirstResult:(NSFetchRequest *)<em>request</em> managedObjectContext:(NSManagedObjectContext *)<em>managedObjectContext</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>request</em></dt>
+			<dd><p>A request to perform</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>managedObjectContext</em></dt>
+			<dd><p>A context used for request</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>Requested object.</p>
+	</div>
+	
+	
+	
+	
+	
+	<div class="method-subsection discussion-section">
+		<h4 class="method-subtitle">Discussion</h4>
+		<p>@discussion This method will set fetchLimit to 1.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">AECoreDataHelper.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/requestResult:managedObjectContext:" title="requestResult:managedObjectContext:"></a>
+	<h3 class="subsubtitle method-title">requestResult:managedObjectContext:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Performs request in provided context.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>+ (NSArray *)requestResult:(NSFetchRequest *)<em>request</em> managedObjectContext:(NSManagedObjectContext *)<em>managedObjectContext</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>request</em></dt>
+			<dd><p>A request to perform</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>managedObjectContext</em></dt>
+			<dd><p>A context used for request</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>An array of requested objects.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">AECoreDataHelper.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/requestWithPredicate:andSortingDescriptors:" title="requestWithPredicate:andSortingDescriptors:"></a>
+	<h3 class="subsubtitle method-title">requestWithPredicate:andSortingDescriptors:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Composes new fetch request.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>+ (NSFetchRequest *)requestWithPredicate:(NSPredicate *)<em>predicate</em> andSortingDescriptors:(NSArray *)<em>sortingDescriptors</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>predicate</em></dt>
+			<dd><p>Requests predicate</p></dd>
+		</dl>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>sortingDescriptors</em></dt>
+			<dd><p>An array of sorting descriptors</p>
+
+<p>@discussion This method do not setup context and entity description for the request.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p>A fetch request object.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">AECoreDataHelper.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+						<div class="section-method">
+	<a name="//api/name/save:" title="save:"></a>
+	<h3 class="subsubtitle method-title">save:</h3>
+	
+	
+	
+	<div class="method-subsection brief-description">
+		<p>Saves provided context.</p>
+	</div>		
+	
+    
+
+	<div class="method-subsection method-declaration"><code>+ (BOOL)save:(NSManagedObjectContext *)<em>managedObjectContext</em></code></div>
+
+    
+	
+	<div class="method-subsection arguments-section parameters">
+		<h4 class="method-subtitle parameter-title">Parameters</h4>
+		
+		<dl class="argument-def parameter-def">
+			<dt><em>managedObjectContext</em></dt>
+			<dd><p>A managed object context to save.</p></dd>
+		</dl>
+		
+	</div>
+	
+	
+	
+	<div class="method-subsection return">
+		<h4 class="method-subtitle parameter-title">Return Value</h4>
+		<p><code>YES</code> if operation successfull, otherwise <code>NO</code>.</p>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<div class="method-subsection declared-in-section">
+		<h4 class="method-subtitle">Declared In</h4>
+		<code class="declared-in-ref">AECoreDataHelper.h</code><br />
+	</div>				
+	
+	
+</div>
+						
+					</div>
+					
+					
+					
+					
+				</div>
+				<div class="main-navigation navigation-bottom">
+					<ul>
+	<li><a href="../index.html">Index</a></li>
+	<li><a href="../hierarchy.html">Hierarchy</a></li>
+</ul>
+				</div>
+				<div id="footer">
+					<hr />
+					<div class="footer-copyright">
+						<p><span class="copyright">&copy; 2013 ap4y. All rights reserved. (Last updated: 2013-03-22)</span><br />
+						
+						<span class="generator">Generated by <a href="http://appledoc.gentlebytes.com">appledoc 2.1 (build 840)</a>.</span></p>
+						
+					</div>
+				</div>
+			</div>
+		</article>
+		<script type="text/javascript">
+			function jumpToChange()
+			{
+				window.location.hash = this.options[this.selectedIndex].value;
+			}
+			
+			function toggleTOC()
+			{
+				var contents = document.getElementById('contents');
+				var tocContainer = document.getElementById('tocContainer');
+				
+				if (this.getAttribute('class') == 'open')
+				{
+					this.setAttribute('class', '');
+					contents.setAttribute('class', '');
+					tocContainer.setAttribute('class', '');
+					
+					window.name = "hideTOC";
+				}
+				else
+				{
+					this.setAttribute('class', 'open');
+					contents.setAttribute('class', 'isShowingTOC');
+					tocContainer.setAttribute('class', 'isShowingTOC');
+					
+					window.name = "";
+				}
+				return false;
+			}
+			
+			function toggleTOCEntryChildren(e)
+			{
+				e.stopPropagation();
+				var currentClass = this.getAttribute('class');
+				if (currentClass == 'children') {
+					this.setAttribute('class', 'children open');
+				}
+				else if (currentClass == 'children open') {
+					this.setAttribute('class', 'children');
+				}
+				return false;
+			}
+			
+			function tocEntryClick(e)
+			{
+				e.stopPropagation();
+				return true;
+			}
+			
+			function init()
+			{
+				var selectElement = document.getElementById('jumpTo');
+				selectElement.addEventListener('change', jumpToChange, false);
+				
+				var tocButton = document.getElementById('table_of_contents');
+				tocButton.addEventListener('click', toggleTOC, false);
+				
+				var taskTreeItem = document.getElementById('task_treeitem');
+				if (taskTreeItem.getElementsByTagName('li').length > 0)
+				{
+					taskTreeItem.setAttribute('class', 'children');
+					taskTreeItem.firstChild.setAttribute('class', 'disclosure');
+				}
+				
+				var tocList = document.getElementById('toc');
+				
+				var tocEntries = tocList.getElementsByTagName('li');
+				for (var i = 0; i < tocEntries.length; i++) {
+					tocEntries[i].addEventListener('click', toggleTOCEntryChildren, false);
+				}
+				
+				var tocLinks = tocList.getElementsByTagName('a');
+				for (var i = 0; i < tocLinks.length; i++) {
+					tocLinks[i].addEventListener('click', tocEntryClick, false);
+				}
+				
+				if (window.name == "hideTOC") {
+					toggleTOC.call(tocButton);
+				}
+			}
+			
+			window.onload = init;
+			
+			// If showing in Xcode, hide the TOC and Header
+			if (navigator.userAgent.match(/xcode/i)) {
+				document.getElementById("contents").className = "hideInXcode"
+				document.getElementById("tocContainer").className = "hideInXcode"
+				document.getElementById("top_header").className = "hideInXcode"
+			}
+			
+		</script>
+	</body>
+</html>
