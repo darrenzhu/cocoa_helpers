@@ -1,56 +1,22 @@
-## NSManagedObject with JSON support and refined fetched requests
+Helpers for common cocoa tasks (`CoreData`, `REST`, `Unit Testing`, `Social Networking`)
 
- Common base class for `JSON` based managed objects. Solves general tasks:
+## Documentation
 
- - `JSON` serialization and desirialization. Fast serialization process via `JSONKit` with type-checking and mappings.
- - Fetching remote items. All actions performed in background (using `GCD`), main thread active only when synthesizing saved entites from `objectID`.
- - Simplified fetch requests. ActiveRecord-like behaviour.
-
- ```objective-c
-NSFetchRequest *request = [[TestEntity find:@(1)] orderBy:@"id", nil];
-NSFetchRequest *request = [TestEntity find:@(1)];
-NSFetchRequest *request = [TestEntity where:predicate];
-```
-
- - Handles json root objects, dates and allow to create temporary requested entities.
-
-## CoreData helpers
-
-Solves common `CoreData` task:
-
-- Creating contexts, model, coordinator.
-- Dedicated context singleton for the main thread.
-- Simple fetched requests.
-- Merging notifications.
-- Automatic switching to memory store for unit tests
-
-## Social networks
-
-Clients for social networks with common interface, authentication, credentials caching.
-
-- Generic `OAuth1.x` implementation.
-- `Keychain` token storage.
-- `SSO` supported where possible.
-- Implemented wrappers for fetching user `profile`, `connections` and creating `shares`.
-- Implemented clients for: `Facebook`, `Twitter`, `LinkedIn`, `Google+`, `Xing`, `Vkontakte`.
-
-## Unit testing
-
-Async test looping with blocks:
-
- ```objective-c
-- (void)runAsyncTestUntil:(NSTimeInterval)interval
-                   test:(void (^)())test;
-- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test
-        withInterval:(NSTimeInterval)interval;
-- (void)runAsyncTest:(void (^)(AsyncTestConditon* endCondition))test;
-```
-
-implement your async test in block and return `endCondition.trigger` after getting callback result, looping continues till interval expiration.
+`appledoc` documentation available [online](http://ap4y.github.com/cocoa_helpers/Documentation/index.html)
 
 ## Installation
 
-[cocoapods](http://cocoapods.org) `podspec` included. Unit test included. Social network client examples included.
+Install via [cocoapods](http://cocoapods.org)
+
+    pod AEHelpers/REST', :git => 'https://github.com/ap4y/cocoa_helpers.git.
+
+## Unit Tests
+
+`OCUnit` unit test included integrated into the project.
+
+##  Examples
+
+Social network client examples located in `Social_Examples` folder.
 
 ## License ##
 
