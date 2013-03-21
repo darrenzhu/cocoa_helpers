@@ -28,61 +28,26 @@
         </ul>
       </header>
       <section>
-        <h2>NSManagedObject with JSON support and refined fetched requests</h2>
+        <p>Helpers for common cocoa tasks (<code>CoreData</code>, <code>REST</code>, <code>Unit Testing</code>, <code>Social Networking</code>)</p>
 
-<p>Common base class for <code>JSON</code> based managed objects. Solves general tasks:</p>
+<h2>Documentation</h2>
 
-<ul>
-<li>
-<code>JSON</code> serialization and desirialization. Fast serialization process via <code>JSONKit</code> with type-checking and mappings.</li>
-<li>Fetching remote items. All actions performed in background (using <code>GCD</code>), main thread active only when synthesizing saved entites from <code>objectID</code>.</li>
-<li>
-<p>Simplified fetch requests. ActiveRecord-like behaviour.</p>
-
-<div class="highlight"><pre><span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[[</span><span class="n">TestEntity</span> <span class="n">find</span><span class="o">:</span><span class="err">@</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span> <span class="n">orderBy</span><span class="o">:</span><span class="s">@"id"</span><span class="p">,</span> <span class="nb">nil</span><span class="p">];</span>
-<span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">TestEntity</span> <span class="n">find</span><span class="o">:</span><span class="err">@</span><span class="p">(</span><span class="mi">1</span><span class="p">)];</span>
-<span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">TestEntity</span> <span class="n">where</span><span class="o">:</span><span class="n">predicate</span><span class="p">];</span>
-</pre></div>
-</li>
-<li><p>Handles json root objects, dates and allow to create temporary requested entities.</p></li>
-</ul><h2>CoreData helpers</h2>
-
-<p>Solves common <code>CoreData</code> task:</p>
-
-<ul>
-<li>Creating contexts, model, coordinator.</li>
-<li>Dedicated context singleton for the main thread.</li>
-<li>Simple fetched requests.</li>
-<li>Merging notifications.</li>
-<li>Automatic switching to memory store for unit tests</li>
-</ul><h2>Social networks</h2>
-
-<p>Clients for social networks with common interface, authentication, credentials caching.</p>
-
-<ul>
-<li>Generic <code>OAuth1.x</code> implementation.</li>
-<li>
-<code>Keychain</code> token storage.</li>
-<li>
-<code>SSO</code> supported where possible.</li>
-<li>Implemented wrappers for fetching user <code>profile</code>, <code>connections</code> and creating <code>shares</code>.</li>
-<li>Implemented clients for: <code>Facebook</code>, <code>Twitter</code>, <code>LinkedIn</code>, <code>Google+</code>, <code>Xing</code>, <code>Vkontakte</code>.</li>
-</ul><h2>Unit testing</h2>
-
-<p>Async test looping with blocks:</p>
-
-<div class="highlight"><pre><span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">runAsyncTestUntil:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">interval</span>
-                   <span class="nl">test:</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)())</span><span class="nv">test</span><span class="p">;</span>
-<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">runAsyncTest:</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n">AsyncTestConditon</span><span class="o">*</span> <span class="n">endCondition</span><span class="p">))</span><span class="nv">test</span>
-        <span class="nl">withInterval:</span><span class="p">(</span><span class="n">NSTimeInterval</span><span class="p">)</span><span class="nv">interval</span><span class="p">;</span>
-<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">runAsyncTest:</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="n">AsyncTestConditon</span><span class="o">*</span> <span class="n">endCondition</span><span class="p">))</span><span class="nv">test</span><span class="p">;</span>
-</pre></div>
-
-<p>implement your async test in block and return <code>endCondition.trigger</code> after getting callback result, looping continues till interval expiration.</p>
+<p><code>appledoc</code> documentation available <a href="http://ap4y.github.com/cocoa_helpers/Documentation/index.html">online</a></p>
 
 <h2>Installation</h2>
 
-<p><a href="http://cocoapods.org">cocoapods</a> <code>podspec</code> included. Unit test included. Social network client examples included.</p>
+<p>Install via <a href="http://cocoapods.org">cocoapods</a></p>
+
+<pre><code>pod AEHelpers/REST', :git =&gt; 'https://github.com/ap4y/cocoa_helpers.git.
+</code></pre>
+
+<h2>Unit Tests</h2>
+
+<p><code>OCUnit</code> unit test included integrated into the project.</p>
+
+<h2>Examples</h2>
+
+<p>Social network client examples located in <code>Social_Examples</code> folder.</p>
 
 <h2>License</h2>
 
