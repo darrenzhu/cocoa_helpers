@@ -22,12 +22,12 @@
 // THE SOFTWARE.
 
 #import "AEManagedObject+AEJSONSerialization.h"
-#import <objc/runtime.h>
 #import "NSJSONSerializationCategories.h"
 
 @implementation NSManagedObject (AEJSONSerialization)
 
 #pragma mark - Initialization
+
 - (id)initFromJSONObject:(id)jsonObject inManagedObjectContext:(NSManagedObjectContext *)context {
     NSEntityDescription *description = [self.class enityDescriptionInContext:context];
     self = [self initWithEntity:description insertIntoManagedObjectContext:context];
@@ -162,7 +162,7 @@
         
         if ([jsonValue isEqual:[NSNull null]] || !jsonValue) return;
         if (type == NSDateAttributeType && [[self class] dateFormatter]) {
-        
+            
             [self setValue:[[[self class] dateFormatter] dateFromString:jsonValue] forKey:name];
             return;
         }
@@ -172,9 +172,9 @@
             [self setValue:jsonValue forKey:name];
         }
     }];
-            
+    
     if (withRelations) {
-            
+        
         relations = [[self entity] relationshipsByName];
         [relations enumerateKeysAndObjectsUsingBlock:^(id name, NSRelationshipDescription *relation, BOOL *stop) {
             
@@ -183,91 +183,41 @@
             if ([jsonValue isEqual:[NSNull null]] || !jsonValue) return;
             
             if ([relation isToMany]) {
-            
+                
                 if (![jsonValue isKindOfClass:[NSArray class]] || [jsonValue count] <= 0) return;
-            
-            NSSet *manyRelation = [self manyRelationsFromJson:jsonValue
+                
+                NSSet *manyRelation = [self manyRelationsFromJson:jsonValue
                                                   forPropertyName:name
-                                        inManagedObjectContet:self.managedObjectContext];
+                                            inManagedObjectContet:self.managedObjectContext];
                 if (!manyRelation) return;
                 
                 [self setValue:manyRelation forKey:name];
-            
+                
             } else {
-            
+                
                 NSEntityDescription *entity = [relation destinationEntity];
                 Class destinationClass      = NSClassFromString([entity managedObjectClassName]);
                 if (!destinationClass || ![destinationClass isSubclassOfClass:[AEManagedObject class]]) return;
-            
+                
                 id propertyValue = [destinationClass createOrUpdateFromJsonObject:jsonValue
-                                                                               withRelations:NO
-                                                                      inManagedObjectContext:self.managedObjectContext];
+                                                                    withRelations:NO
+                                                           inManagedObjectContext:self.managedObjectContext];
                 if (propertyValue) [self setValue:propertyValue forKey:name];
-        }
+            }
         }];
     }
 }
 
 #pragma mark - private
+
 + (NSString *)mappedPropertyNameForPropertyName:(NSString *)propertyName {
     NSDictionary *mappingsDictionary = [[self class] propertyMappings];
     NSString *mappedProperty;
-    if (mappingsDictionary && ( mappedProperty = [mappingsDictionary objectForKey:propertyName] )) {
+    if (mappingsDictionary && (mappedProperty = [mappingsDictionary objectForKey:propertyName])) {
         return mappedProperty;
     }
     
     return propertyName;
-}
-
-- (objc_property_t *)classPropertiesWithOutCount:(unsigned int *)outCount {
-    
-    unsigned int selfOutCount, superOutCount;
-    objc_property_t *selfProperties, *superProperties, *properties;
-    size_t selfPropertiesSize, superPropertiesSize;
-    
-    superProperties = NULL;
-    superOutCount   = 0;
-    
-    selfProperties  = class_copyPropertyList([self class], &selfOutCount);
-    
-    if ( [self superclass] != [AEManagedObject class] ) {
-        superProperties = class_copyPropertyList([self superclass], &superOutCount);
-    }
-    
-    selfPropertiesSize   = sizeof(objc_property_t) * selfOutCount;
-    superPropertiesSize  = sizeof(objc_property_t) * superOutCount;
-    
-    properties = malloc(selfPropertiesSize + superPropertiesSize);
-    memcpy(properties, selfProperties, selfPropertiesSize);
-    free(selfProperties);
-    
-    if (superProperties) {
-        memcpy(properties + selfOutCount, superProperties, superPropertiesSize);
-        free(superProperties);
-    }
-    
-    if (outCount) {
-        *outCount = selfOutCount + superOutCount;
-    }
-    
-    return properties;
-}
-
-- (NSString *)propertyNameFromPropertyDescription:(objc_property_t)property {
-    return [NSString stringWithCString:property_getName(property) encoding:NSUTF8StringEncoding];
-}
-
-- (NSString *)propertyTypeFromPropertyDescription:(objc_property_t)property {
-    NSString *propertyAtr, *typeAttribute, *propertyType;
-    NSArray *attributes;
-    
-    propertyAtr     = [NSString stringWithCString:property_getAttributes(property) encoding:NSUTF8StringEncoding];
-    attributes      = [propertyAtr componentsSeparatedByString:@","];
-    typeAttribute   = [attributes objectAtIndex:0];
-    propertyType    = [typeAttribute substringFromIndex:2];
-    propertyType    = [propertyType stringByReplacingOccurrencesOfString:@"\"" withString:@""];
-    
-    return propertyType;
 }
 
 - (NSSet *)manyRelationsFromJson:(id)jsonObject
