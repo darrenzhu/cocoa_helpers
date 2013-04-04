@@ -85,51 +85,59 @@
 /**
  This method support serialization with 1 level depth, because reverse association can produce infinity loops.
  */
-- (id)toJSONObjectWithRootObject:(BOOL)withRootObject andRelations:(BOOL)withRelations {
-    unsigned int outCount;
-    objc_property_t *properties     = class_copyPropertyList([self class], &outCount);
-    NSMutableDictionary *jsonObject = [NSMutableDictionary dictionary];
-    NSArray *supportedTypes         = @[ @"NSString", @"NSNumber", @"NSArray", @"NSDictionary" ];
+- (NSDictionary *)toJSONObjectWithRootObject:(BOOL)withRootObject andRelations:(BOOL)withRelations {
     
-    for(int i = 0; i < outCount; i++) {
-        objc_property_t property    = properties[i];
-        NSString *propertyName      = [self propertyNameFromPropertyDescription:property];
-        NSString *propertyType      = [self propertyTypeFromPropertyDescription:property];
+    NSArray *attributes, *relations;
+    NSMutableDictionary *jsonObject;
+    
+    attributes  = [[[self entity] attributesByName] allKeys];
+    jsonObject  = [NSMutableDictionary dictionary];
+    [attributes enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         
-        BOOL hasSupportedType       = [supportedTypes containsObject:propertyType];        
-        id propertyValue            = [self valueForKey:propertyName];
-        NSString *mappedKey         = [[self class] mappedPropertyNameForPropertyName:propertyName];
-        
-        if (hasSupportedType) {
+        NSString *mappedKey = [[self class] mappedPropertyNameForPropertyName:obj];
+        id propertyValue    = [self valueForKey:obj];
+        if ([propertyValue isKindOfClass:[NSDate class]]) {
             
-            [jsonObject setValue:propertyValue forKey:mappedKey];
-            
-        } else if (!withRelations) {
-            
-            continue;
-            
-        } else if ([propertyValue respondsToSelector:@selector(toJSONObjectWithRootObject:andRelations:)]) {
-            
-            [jsonObject setValue:[propertyValue toJSONObjectWithRootObject:NO andRelations:NO] forKey:mappedKey];
-            
-        } else if ([propertyValue isKindOfClass:[NSSet class]] || [propertyValue isKindOfClass:[NSOrderedSet class]]) {
-            
-            /* NSOrderedSet is not a subclass of NSSet */
-            NSSet *manyAssociations     = (NSSet *)propertyValue;
-            NSMutableArray *accumulator = [NSMutableArray array];
-            [manyAssociations enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
-                if ([obj respondsToSelector:@selector(toJSONObjectWithRootObject:andRelations:)]) {
-                    [accumulator addObject:[obj toJSONObjectWithRootObject:NO andRelations:NO]];
-                }
-            }];
-            
-            if ([accumulator count] > 0) [jsonObject setValue:accumulator forKey:mappedKey];
+            [jsonObject setObject:[[[self class] dateFormatter] stringFromDate:propertyValue] forKey:mappedKey];
+            return;
         }
+        
+        if (propertyValue) [jsonObject setObject:propertyValue forKey:mappedKey];
+    }];
+    
+    if (withRelations) {
+        
+        relations = [[[self entity] relationshipsByName] allKeys];
+        [relations enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            
+            id propertyValue    = [self valueForKey:obj];
+            NSString *mappedKey = [[self class] mappedPropertyNameForPropertyName:obj];
+            
+            if ([propertyValue isKindOfClass:[NSSet class]] || [propertyValue isKindOfClass:[NSOrderedSet class]]) {
+                
+                /* NSOrderedSet is not a subclass of NSSet */
+                NSSet *manyAssociations     = (NSSet *)propertyValue;
+                NSMutableArray *accumulator = [NSMutableArray array];
+                [manyAssociations enumerateObjectsUsingBlock:^(id obj, BOOL *stop) {
+                    
+                    if ([obj respondsToSelector:@selector(toJSONObjectWithRootObject:andRelations:)]) {
+                        [accumulator addObject:[obj toJSONObjectWithRootObject:NO andRelations:NO]];
+                    }
+                }];
+                
+                if ([accumulator count] > 0) [jsonObject setValue:accumulator forKey:mappedKey];
+                
+            } else if ([propertyValue respondsToSelector:@selector(toJSONObjectWithRootObject:andRelations:)]) {
+                
+                id relationValue = [propertyValue toJSONObjectWithRootObject:NO andRelations:NO];
+                if (relationValue) [jsonObject setValue:relationValue forKey:mappedKey];
+            }
+        }];
     }
-    free(properties);
     
     if (withRootObject && [[self class] jsonRoot]) {
-        jsonObject = [NSDictionary dictionaryWithObject:jsonObject forKey:[[self class] jsonRoot]];
+        
+        return @{ [[self class] jsonRoot]: jsonObject };
     }
     
     return jsonObject;
