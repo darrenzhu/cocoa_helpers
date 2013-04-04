@@ -152,58 +152,60 @@
 - (void)updateFromJSONObject:(id)jsonObject withRelations:(BOOL)withRelations {
     if (!self || !jsonObject) return;
     
-    unsigned int outCount;
-    objc_property_t *properties = [self classPropertiesWithOutCount:&outCount];
-    
-    for(int i = 0; i < outCount; i++) {
-        objc_property_t property;
-        NSString *propertyName, *propertyType, *mappedKey;
-        id jsonValue;
+    NSDictionary *attributes, *relations;
+    attributes  = [[self entity] attributesByName];
+    [attributes enumerateKeysAndObjectsUsingBlock:^(id name, id attribute, BOOL *stop) {
         
-        property        = properties[i];
-        propertyName    = [self propertyNameFromPropertyDescription:property];
+        NSString *mappedKey     = [[self class] mappedPropertyNameForPropertyName:name];
+        id jsonValue            = [jsonObject valueForKey:mappedKey];
+        NSAttributeType type    = [attribute attributeType];
         
-        mappedKey       = [[self class] mappedPropertyNameForPropertyName:propertyName];
-        jsonValue       = [jsonObject valueForKey:mappedKey];
+        if ([jsonValue isEqual:[NSNull null]] || !jsonValue) return;
+        if (type == NSDateAttributeType && [[self class] dateFormatter]) {
         
-        if ([jsonValue isEqual:[NSNull null]] || !jsonValue) continue;
+            [self setValue:[[[self class] dateFormatter] dateFromString:jsonValue] forKey:name];
+            return;
+        }
         
-        propertyType    = [self propertyTypeFromPropertyDescription:property];
-        
-        if ([propertyType isEqualToString:@"NSDate"] && [[self class] dateFormatter]) {
+        if ([[jsonValue class] isSubclassOfClass:NSClassFromString([attribute attributeValueClassName])]) {
             
-            [self setValue:[[[self class] dateFormatter] dateFromString:jsonValue] forKey:propertyName];
+            [self setValue:jsonValue forKey:name];
+        }
+    }];
             
-        } else if ([jsonValue isKindOfClass:NSClassFromString(propertyType)]) {
+    if (withRelations) {
             
-            [self setValue:jsonValue forKey:propertyName];
+        relations = [[self entity] relationshipsByName];
+        [relations enumerateKeysAndObjectsUsingBlock:^(id name, NSRelationshipDescription *relation, BOOL *stop) {
             
-        } else if (!withRelations) {
+            NSString *mappedKey     = [[self class] mappedPropertyNameForPropertyName:name];
+            id jsonValue            = [jsonObject valueForKey:mappedKey];
+            if ([jsonValue isEqual:[NSNull null]] || !jsonValue) return;
             
-            continue;
+            if ([relation isToMany]) {
             
-        } if ([propertyType isEqualToString:@"NSSet"] || [propertyType isEqualToString:@"NSOrderedSet"]) {
-            
-            /* NSOrderedSet is not a subclass of NSSet */
-            if (![jsonValue isKindOfClass:[NSArray class]] || [jsonValue count] <= 0) continue;
+                if (![jsonValue isKindOfClass:[NSArray class]] || [jsonValue count] <= 0) return;
             
             NSSet *manyRelation = [self manyRelationsFromJson:jsonValue
-                                              forPropertyName:propertyName
+                                                  forPropertyName:name
                                         inManagedObjectContet:self.managedObjectContext];
-            if (!manyRelation) continue;
+                if (!manyRelation) return;
+                
+                [self setValue:manyRelation forKey:name];
             
-            [self setValue:manyRelation forKey:propertyName];
+            } else {
             
-        } else if ([NSClassFromString(propertyType) isSubclassOfClass:[AEManagedObject class]]) {
+                NSEntityDescription *entity = [relation destinationEntity];
+                Class destinationClass      = NSClassFromString([entity managedObjectClassName]);
+                if (!destinationClass || ![destinationClass isSubclassOfClass:[AEManagedObject class]]) return;
             
-            id propertyValue = [NSClassFromString(propertyType) createOrUpdateFromJsonObject:jsonValue
+                id propertyValue = [destinationClass createOrUpdateFromJsonObject:jsonValue
                                                                                withRelations:NO
                                                                       inManagedObjectContext:self.managedObjectContext];
-            [self setValue:propertyValue forKey:propertyName];
+                if (propertyValue) [self setValue:propertyValue forKey:name];
         }
+        }];
     }
-    
-    free(properties);
 }
 
 #pragma mark - private
