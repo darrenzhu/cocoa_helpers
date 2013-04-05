@@ -25,6 +25,14 @@
 
 @implementation AEManagedObject
 
+#pragma mark - predefined entityId
+/**
+ *  Fallback for previous API
+ */
++ (NSString *)entityIdPropertyName {
+    return @"id";
+}
+
 #pragma mark - Local fetch
 + (NSEntityDescription *)enityDescriptionInContext:(NSManagedObjectContext *)context {
     return [NSEntityDescription entityForName:NSStringFromClass(self.class)
@@ -36,7 +44,7 @@
 }
 
 + (NSFetchRequest *)find:(id)itemId {
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"id = %@", itemId];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"%K = %@", [self entityIdPropertyName], itemId];
     return [AECoreDataHelper requestWithPredicate:predicate andSortingDescriptors:nil];
 }
 

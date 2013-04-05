@@ -132,8 +132,9 @@ static NSString * const kEtagKeyIdentifier         = @"Etag";
         if (failure) failure(error);
     };
     
-    NSString *entityId = [NSString stringWithFormat:@"%@", [record valueForKey:@"id"]];
-    if ([record valueForKey:@"id"] && [entityId length] > 0 && ![entityId isEqual:kUnsavedClientSideEntityId]) {
+    NSString *idField   = [self entityIdPropertyName];
+    NSString *entityId  = [NSString stringWithFormat:@"%@", [record valueForKey:idField]];
+    if ([record valueForKey:idField] && [entityId length] > 0 && ![entityId isEqual:kUnsavedClientSideEntityId]) {
         
         NSString *putPath = [path stringByAppendingFormat:@"/%@", entityId];
         [client putPath:putPath parameters:[record toJSONObject] success:successBlock failure:failureBlock];

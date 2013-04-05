@@ -37,7 +37,7 @@
  
  Tasks are separated by categories, so you can use only neccessary modules.
  
- @discussion Some methods use property `id` (server side id of the entity). You should create this property with dynamic accessors.
+ @discussion Some methods use property `entityId` (server side id of the entity). You should create this property with dynamic accessors.
  */
 @interface AEManagedObject : NSManagedObject
 
@@ -101,3 +101,16 @@
     managedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 @end
 
+
+@interface AEManagedObject (EntityId)
+
+/**
+ Objects property name that holds server-side entity id.
+ 
+ @discussion By overriding this method you can configure actual entity id of your objects. By default this methods returns `id`.
+ 
+ @return A property name that represents server-side entity id.
+ */
++ (NSString *)entityIdPropertyName;
+
+@end

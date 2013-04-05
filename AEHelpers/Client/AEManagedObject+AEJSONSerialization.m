@@ -24,7 +24,7 @@
 #import "AEManagedObject+AEJSONSerialization.h"
 #import "NSJSONSerializationCategories.h"
 
-@implementation NSManagedObject (AEJSONSerialization)
+@implementation AEManagedObject (AEJSONSerialization)
 
 #pragma mark - entity settings
 
@@ -90,7 +90,7 @@
                                     withRelations:(BOOL)withRelations
                            inManagedObjectContext:(NSManagedObjectContext *)context {
     
-    id curId = [json valueForKeyPath:[self mappedPropertyNameForPropertyName:@"id"]];
+    id curId = [json valueForKeyPath:[self mappedPropertyNameForPropertyName:[self entityIdPropertyName]]];
     if (!curId) {
         return [self createFromJsonObject:json inManagedObjectContext:context];;
     }

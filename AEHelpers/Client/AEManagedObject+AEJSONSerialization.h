@@ -42,7 +42,7 @@
  @param json Parsed JSON dictionary.
  @param context A context used for managed object.
  
- @discussion This method will request from coordinator saved object by field `id`. This behaviour can be redefined via mapping.
+ @discussion This method will request from coordinator saved object by field `entityId`. This behaviour can be redefined via mapping.
  
  @return Created or updated managed object with property values from json object in requested context.
  */
@@ -55,7 +55,7 @@
  @param withRelations Defines wheither result object should contain deserialized relations.
  @param context A context used for managed object.
  
- @discussion This method will request from coordinator saved object by field `id`. This behaviour can be redefined via mapping.
+ @discussion This method will request from coordinator saved object by field `entityId`. This behaviour can be redefined via mapping.
  
  @return Created or updated managed object with property values from json object in requested context.
  */
