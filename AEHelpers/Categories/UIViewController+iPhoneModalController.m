@@ -37,11 +37,9 @@ static UIButton *currentHudButton;
     [controller.view setFrameBySettingNonZeroCoordinates:CGRectMake(0.0f, self.view.bounds.size.height, 0.0f, 0.0f)];
     [self.view addSubview:controller.view];
     
-    CGRect viewFrame        = self.view.bounds;
-    viewFrame.size.height  -= controller.view.bounds.size.height;
-    UIButton *hudButton     = [self hudButtonWithFrame:viewFrame];
+    UIButton *hudButton     = [self hudButtonWithFrame:self.view.bounds];
     hudButton.alpha         = 0.0f;
-    [self.view addSubview:hudButton];
+    [self.view insertSubview:hudButton belowSubview:controller.view];
     
     [UIView animateWithDuration:kDefaultAnimationInterval animations:^{
         
