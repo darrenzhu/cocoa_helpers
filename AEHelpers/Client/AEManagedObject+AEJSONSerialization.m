@@ -26,6 +26,38 @@
 
 @implementation NSManagedObject (AEJSONSerialization)
 
+#pragma mark - entity settings
+
++ (NSDateFormatter *)dateFormatter {
+    static NSDateFormatter *_rfc3339DateFormatter = nil;
+    
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSLocale *enUSPOSIXLocale;
+        
+        _rfc3339DateFormatter   = [[NSDateFormatter alloc] init];
+        enUSPOSIXLocale         = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease];
+        
+        [_rfc3339DateFormatter setLocale:enUSPOSIXLocale];
+        [_rfc3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"];
+        [_rfc3339DateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+    });
+    
+    return _rfc3339DateFormatter;
+}
+
++ (NSString *)jsonRoot {
+    return nil;
+}
+
++ (BOOL)requiresPersistence {
+    return YES;
+}
+
++ (NSDictionary *)propertyMappings {
+    return nil;
+}
+
 #pragma mark - Initialization
 
 - (id)initFromJSONObject:(id)jsonObject inManagedObjectContext:(NSManagedObjectContext *)context {

@@ -25,36 +25,6 @@
 
 @implementation AEManagedObject
 
-+ (NSDateFormatter *)dateFormatter {
-    static NSDateFormatter *_rfc3339DateFormatter = nil;
-    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSLocale *enUSPOSIXLocale;
-        
-        _rfc3339DateFormatter   = [[NSDateFormatter alloc] init];
-        enUSPOSIXLocale         = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease];
-        
-        [_rfc3339DateFormatter setLocale:enUSPOSIXLocale];
-        [_rfc3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"];
-        [_rfc3339DateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-    });
-    
-    return _rfc3339DateFormatter;
-}
-
-+ (NSString *)jsonRoot {
-    return @"data";
-}
-
-+ (BOOL)requiresPersistence {
-    return YES;
-}
-
-+ (NSDictionary *)propertyMappings {
-    return nil;
-}
-
 #pragma mark - Local fetch
 + (NSEntityDescription *)enityDescriptionInContext:(NSManagedObjectContext *)context {
     return [NSEntityDescription entityForName:NSStringFromClass(self.class)

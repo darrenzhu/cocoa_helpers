@@ -43,7 +43,7 @@
 
 #pragma mark - Local fetch (new syntax)
 /**
- Returns current class `NSEntityDescription` object. 
+ Returns current class `NSEntityDescription` object.
  
  @param context An entity context.
  
@@ -101,40 +101,3 @@
     managedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 @end
 
-@interface AEManagedObject (Pivate)
-/**
- Defines date formatter used to parse date strings to `NSDate`
- 
- @discussion By default uses POSIX date formatter. Identifies fields to parse via objective-c runtime library (by field type).
- 
- @return A singleton instance of the date formatter.
- */
-+ (NSDateFormatter *)dateFormatter;
-
-/**
- Defines root object of the json object.
- 
- @discussion By default looks for `data` object.
- 
- @return Root object name for json serialization/deserialization.
- */
-+ (NSString *)jsonRoot;
-
-/**
- Defines if object should be saved after serialization.
- 
- @discussion By default `YES`.
- 
- @return `YES` if object should be saved, otherwise `NO`.
- */
-+ (BOOL)requiresPersistence;
-
-/**
- Defines property mappings between managed object and json object.
- 
- @discussion By default we are looking for property in json object with the same name as on managed object. You can redefined this looking proccess by providing mappings dictionary, where key defines property to remap(managed object property) and value defines property to map to(json object property). You don't need to define mapping for the properties with same name in managed and json objects.
- 
- @return A dictionary with mappings.
- */
-+ (NSDictionary *)propertyMappings;
-@end
