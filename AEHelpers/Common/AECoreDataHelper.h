@@ -46,22 +46,43 @@
 + (void)addMergeNotificationForMainContext:(NSManagedObjectContext *)context;
 
 /**
- Returns singleton instance of application object model.
- 
- @discussion By converntion, application data model should be called `DataModel`.
+ Returns `NSManagedObjectModel` instance for `momd` model with provided name from `[NSBundle mainBundle]`.
  
  @return An instance of managed object model.
  */
-+ (NSManagedObjectModel *)managedObjectModel;
++ (NSManagedObjectModel *)managedObjectModelWithSchemeName:(NSString *)scheme;
 
 /**
- Returns singleton instance of application `NSPersistentStoreCoordinator`.
+ Registers provided coordinator as default coordinator for app session. You can register only once per app.
  
- @discussion When OCUNIT compiler flag is defined, this method uses `NSInMemoryStoreType` storage, otherwise it uses `NSSQLiteStoreType`
- 
- @return An instance of the persistence storage coordinator.
+ @param coordinator A store coordinator to register.
  */
-+ (NSPersistentStoreCoordinator *)persistentStoreCoordinator;
++ (void)registerDefaultPersistenceStoreCoordinator:(NSPersistentStoreCoordinator *)coordinator;
+
+/**
+ Returns current registered store coordinator
+ 
+ @return Registered store coordinator.
+ */
++ (NSPersistentStoreCoordinator *)defaultStoreCoordinator;
+
+/**
+ Adds in memory storage for default store coordinator.
+ 
+ @param error A pointer to the `NSError` instance. This pointer will be used to provide failure reason.
+ 
+ @return Return `YES` if operation is successfull.
+ */
++ (BOOL)addInMemoryStorage:(NSError **)error;
+
+/**
+ Adds in SQLite storage for default store coordinator.
+ 
+ @param error A pointer to the `NSError` instance. This pointer will be used to provide failure reason.
+ 
+ @return Return `YES` if operation is successfull.
+ */
++ (BOOL)addInSQLStorageWithName:(NSString *)dbFileName error:(NSError **)error;
 
 /**
  Creates new `NSManagedObjectContext`

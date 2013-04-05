@@ -24,20 +24,19 @@
 #import "AECoreDataHelper.h"
 
 @implementation AECoreDataHelper
-static NSString* scheme = @"DataModel";
+static NSPersistentStoreCoordinator *defaultCoordinator;
 
 + (NSManagedObjectContext *)mainThreadContext {
-    static NSManagedObjectContext *_managedObjectContext = nil;                
+    static NSManagedObjectContext *_managedObjectContext = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSPersistentStoreCoordinator *coorditantor =
-            [AECoreDataHelper persistentStoreCoordinator];
+        NSPersistentStoreCoordinator *coorditantor = defaultCoordinator;
         if (coorditantor) {
             _managedObjectContext = [[NSManagedObjectContext alloc] init];
             [_managedObjectContext setPersistentStoreCoordinator:coorditantor];
             [_managedObjectContext setMergePolicy:NSMergeByPropertyStoreTrumpMergePolicy];
         }
-    });        
+    });
     
     return _managedObjectContext;
 }
@@ -52,63 +51,96 @@ static NSString* scheme = @"DataModel";
 + (void)mergeChangesFromNotification:(NSNotification *)notification {
     SEL action = @selector(mergeChangesFromContextDidSaveNotification:);
 	[mainThreadContext() performSelectorOnMainThread:action
-                                          withObject:notification 
+                                          withObject:notification
                                        waitUntilDone:NO];
 }
 
-+ (NSManagedObjectModel *)managedObjectModel {
-    static NSManagedObjectModel *_managedObjectModel;    
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:scheme withExtension:@"momd"];
-        _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];  
-    });
-    return _managedObjectModel;
++ (NSManagedObjectModel *)managedObjectModelWithSchemeName:(NSString *)scheme {
+    
+    NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:scheme withExtension:@"momd"];
+    return [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 }
 
-+ (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
-    static NSPersistentStoreCoordinator *_persistentStoreCoordinator;
++ (void)registerDefaultPersistenceStoreCoordinator:(NSPersistentStoreCoordinator *)coordinator {
+    
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSDictionary *options = @{
-            NSMigratePersistentStoresAutomaticallyOption: [NSNumber numberWithBool:YES],
-            NSInferMappingModelAutomaticallyOption: [NSNumber numberWithBool:YES]
-        };
         
-        NSError *error = nil;
-        NSManagedObjectModel *model = [self managedObjectModel];
-        _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
-#if OCUNIT
-        if (![_persistentStoreCoordinator addPersistentStoreWithType:NSInMemoryStoreType
-                                                      configuration:nil
-                                                                URL:nil
-                                                            options:options
-                                                              error:&error])
-#else
-        NSString *fileName = [NSString stringWithFormat:@"%@.sqlite", scheme];
-        NSArray *pathes = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
-        NSString *appPath = [pathes lastObject];
-        appPath = [appPath stringByAppendingPathComponent:fileName];
-        NSURL *storeURL = [NSURL fileURLWithPath:appPath isDirectory:NO];
-        if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                                      configuration:nil 
-                                                                URL:storeURL 
-                                                            options:options 
-                                                              error:&error])
-#endif                            
-        {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        }
+        defaultCoordinator = [coordinator retain];
     });
-    return _persistentStoreCoordinator;
+}
+
++ (NSPersistentStoreCoordinator *)defaultStoreCoordinator {
+    
+    return defaultCoordinator;
+}
+
++ (BOOL)addInMemoryStorage:(NSError **)error {
+    
+    if (!defaultCoordinator) {
+        
+        if (error) {
+            
+            NSDictionary *errorInfo = @{
+                                        NSLocalizedDescriptionKey: NSLocalizedString(@"Default coordinator is not registered.", nil)
+                                        };
+            *error = [NSError errorWithDomain:NSCocoaErrorDomain
+                                         code:NSCoreDataError
+                                     userInfo:errorInfo];
+        }
+        return NO;
+    }
+    
+    NSDictionary *options = @{
+                              NSMigratePersistentStoresAutomaticallyOption:   [NSNumber numberWithBool:YES],
+                              NSInferMappingModelAutomaticallyOption:         [NSNumber numberWithBool:YES]
+                              };
+    
+    return [defaultCoordinator addPersistentStoreWithType:NSInMemoryStoreType
+                                            configuration:nil
+                                                      URL:nil
+                                                  options:options
+                                                    error:error];
+}
+
++ (BOOL)addInSQLStorageWithName:(NSString *)dbFileName error:(NSError **)error {
+    
+    if (!defaultCoordinator) {
+        
+        if (error) {
+            
+            NSDictionary *errorInfo = @{
+                                        NSLocalizedDescriptionKey: NSLocalizedString(@"Default coordinator is not registered.", nil)
+                                        };
+            *error = [NSError errorWithDomain:NSCocoaErrorDomain
+                                         code:NSCoreDataError
+                                     userInfo:errorInfo];
+        }
+        return NO;
+    }
+    NSDictionary *options = @{
+                              NSMigratePersistentStoresAutomaticallyOption:   [NSNumber numberWithBool:YES],
+                              NSInferMappingModelAutomaticallyOption:         [NSNumber numberWithBool:YES]
+                              };
+    
+    NSString *fileName = [NSString stringWithFormat:@"%@.sqlite", dbFileName];
+    NSArray *pathes = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    NSString *appPath = [pathes lastObject];
+    appPath = [appPath stringByAppendingPathComponent:fileName];
+    NSURL *storeURL = [NSURL fileURLWithPath:appPath isDirectory:NO];
+    return [defaultCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                            configuration:nil
+                                                      URL:storeURL
+                                                  options:options
+                                                    error:error];
 }
 
 + (NSManagedObjectContext *)createManagedObjectContext {
     NSManagedObjectContext *managedObjectContext;
-    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    NSPersistentStoreCoordinator *coordinator = defaultCoordinator;
     if (coordinator != nil) {
         managedObjectContext = [[[NSManagedObjectContext alloc] init] autorelease];
-        [managedObjectContext setPersistentStoreCoordinator:coordinator];  
+        [managedObjectContext setPersistentStoreCoordinator:coordinator];
         return managedObjectContext;
     }
     return nil;
@@ -140,16 +172,16 @@ static NSString* scheme = @"DataModel";
 }
 
 + (BOOL)save:(NSManagedObjectContext *)managedObjectContext {
-    if (managedObjectContext.hasChanges) {        
+    if (managedObjectContext.hasChanges) {
         NSError *error = nil;
         if (![managedObjectContext save:&error]) {
             NSLog(@"Unresolved error %@", error.localizedDescription);
             return NO;
-        }        
+        }
         
         return YES;
     }
-        
+    
     return NO;
 }
 
@@ -160,25 +192,25 @@ static NSString* scheme = @"DataModel";
     
     NSEntityDescription *entityDesc = [NSEntityDescription entityForName:entityName
                                                   inManagedObjectContext:context];
-    return [self requestEntityWithDesctiption:entityDesc 
-                                withPredicate:predicate 
+    return [self requestEntityWithDesctiption:entityDesc
+                                withPredicate:predicate
                         andSortingDescriptors:sortingDescriptors];
 }
 
-+ (NSFetchRequest *)requestEntityWithDesctiption:(NSEntityDescription *)entityDescription 
++ (NSFetchRequest *)requestEntityWithDesctiption:(NSEntityDescription *)entityDescription
                                    withPredicate:(NSPredicate *)predicate
                            andSortingDescriptors:(NSArray *)sortingDescriptors {
     
-    NSFetchRequest *fetchRequest = [self requestWithPredicate:predicate 
+    NSFetchRequest *fetchRequest = [self requestWithPredicate:predicate
                                         andSortingDescriptors:sortingDescriptors];
-    [fetchRequest setEntity:entityDescription];     
+    [fetchRequest setEntity:entityDescription];
     return fetchRequest;
 }
 
 + (NSFetchRequest *)requestWithPredicate:(NSPredicate *)predicate
                    andSortingDescriptors:(NSArray *)sortingDescriptors {
     
-    NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];        
+    NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
     
     if (predicate) {
         [fetchRequest setPredicate:predicate];

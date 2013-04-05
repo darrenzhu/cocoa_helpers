@@ -29,6 +29,13 @@
 
 - (void)setUp {
     [super setUp];
+    
+    NSPersistentStoreCoordinator *storeCoordinator;
+    NSManagedObjectModel *managedObjectModel;
+    managedObjectModel  = [AECoreDataHelper managedObjectModelWithSchemeName:@"DataModel"];
+    storeCoordinator    = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:managedObjectModel];
+    [AECoreDataHelper registerDefaultPersistenceStoreCoordinator:storeCoordinator];
+    [AECoreDataHelper addInMemoryStorage:nil];
 }
 
 - (void)tearDown {
@@ -36,11 +43,11 @@
 }
 
 - (void)testReturnManagedObjectModel {
-    STAssertNotNil([AECoreDataHelper managedObjectModel], nil);
+    STAssertNotNil([AECoreDataHelper managedObjectModelWithSchemeName:@"DataModel"], nil);
 }
 
 - (void)testReturnStoreCoordinator {
-    STAssertNotNil([AECoreDataHelper persistentStoreCoordinator], nil);
+    STAssertNotNil([AECoreDataHelper defaultStoreCoordinator], nil);
 }
 
 - (void)testReturnNewManagedObjectContext {
