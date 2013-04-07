@@ -69,7 +69,7 @@
     return self;
 }
 
-+ (AEManagedObject *)createFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
++ (id)createFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
     Class class = self.class;
     
     if (class) {
@@ -80,15 +80,14 @@
     return nil;
 }
 
-+ (AEManagedObject *)createOrUpdateFromJsonObject:(id)json
-                           inManagedObjectContext:(NSManagedObjectContext *)context {
++ (id)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
     
     return [self createOrUpdateFromJsonObject:json withRelations:YES inManagedObjectContext:context];
 }
 
-+ (AEManagedObject *)createOrUpdateFromJsonObject:(id)json
-                                    withRelations:(BOOL)withRelations
-                           inManagedObjectContext:(NSManagedObjectContext *)context {
++ (id)createOrUpdateFromJsonObject:(id)json
+                     withRelations:(BOOL)withRelations
+            inManagedObjectContext:(NSManagedObjectContext *)context {
     
     id curId = [json valueForKeyPath:[self mappedPropertyNameForPropertyName:[self entityIdPropertyName]]];
     if (!curId) {

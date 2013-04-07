@@ -46,7 +46,7 @@
  
  @return Created or updated managed object with property values from json object in requested context.
  */
-+ (AEManagedObject *)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
++ (id)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
 
 /**
  Factory method for creating or updating managed object from json object in requested context.
@@ -59,9 +59,9 @@
  
  @return Created or updated managed object with property values from json object in requested context.
  */
-+ (AEManagedObject *)createOrUpdateFromJsonObject:(id)json
-                                    withRelations:(BOOL)withRelations
-                           inManagedObjectContext:(NSManagedObjectContext *)context;
++ (id)createOrUpdateFromJsonObject:(id)json
+                     withRelations:(BOOL)withRelations
+            inManagedObjectContext:(NSManagedObjectContext *)context;
 
 #pragma mark - Deserialization
 /**
