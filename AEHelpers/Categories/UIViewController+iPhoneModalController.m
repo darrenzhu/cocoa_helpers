@@ -26,48 +26,86 @@
 
 @implementation UIViewController (iPhoneModalController)
 
-static const CGFloat kDefaultAnimationInterval = 0.2f;
+static const CGFloat kDefaultAnimationInterval  = 0.2f;
+static const CGFloat kPageSheetSideGaps         = 20.0f;
 
-static UIViewController *currentModalController;
-static UIButton *currentHudButton;
+static NSMutableArray *modalControllers;
 
 - (void)presentInIphoneModalViewController:(UIViewController *)controller {
     
+    [self presentInIphoneModalViewController:controller completion:nil];
+}
+
+- (void)presentInIphoneModalViewController:(UIViewController *)controller completion:(void (^)())completion {
+    
     [self addChildViewController:controller];
-    [controller.view setFrameBySettingNonZeroCoordinates:CGRectMake(0.0f, self.view.bounds.size.height, 0.0f, 0.0f)];
+    
+    CGRect childRect = CGRectMake(0.0f, self.view.bounds.size.height, 0.0f, 0.0f);
+    if (controller.modalPresentationStyle == UIModalPresentationPageSheet) {
+        
+        childRect = CGRectMake(kPageSheetSideGaps,
+                               kPageSheetSideGaps,
+                               [self windowSize].width - 2 * kPageSheetSideGaps,
+                               [self windowSize].height - 3 * kPageSheetSideGaps);
+        controller.view.alpha = 0.0f;
+    }
+    
+    [controller.view setFrameBySettingNonZeroCoordinates:childRect];
     [self.view addSubview:controller.view];
     
-    UIButton *hudButton     = [self hudButtonWithFrame:self.view.bounds];
-    hudButton.alpha         = 0.0f;
+    UIButton *hudButton = [self hudButtonWithFrame:self.view.bounds];
+    hudButton.alpha     = 0.0f;
+    hudButton.tag       = controller.hash;
     [self.view insertSubview:hudButton belowSubview:controller.view];
     
     [UIView animateWithDuration:kDefaultAnimationInterval animations:^{
         
-        hudButton.alpha     = 1.0f;
-        [controller.view setFrameByAddingCoordinates:CGRectMake(0.0f, -controller.view.bounds.size.height, 0.0f, 0.0f)];
+        hudButton.alpha = 1.0f;
+        if (controller.modalPresentationStyle == UIModalPresentationPageSheet) {
+            
+            controller.view.alpha = 1.0f;
+            
+        } else {
+            
+            [controller.view setFrameByAddingCoordinates:CGRectMake(0.0f, -controller.view.bounds.size.height,
+                                                                    0.0f, 0.0f)];
+        }
         
     } completion:^(BOOL finished) {
         
-        currentHudButton        = hudButton;
+        [self pushController:controller];
+        
+        if (completion) completion();
     }];
-    
-    currentModalController = controller;
 }
 
 - (void)dismissIphoneModalViewController:(UIViewController *)controller {
+    
+    [self dismissIphoneModalViewController:controller completion:nil];
+}
 
-    [currentHudButton removeFromSuperview];
-
+- (void)dismissIphoneModalViewController:(UIViewController *)controller completion:(void (^)())completion {
+    
+    [[self.view viewWithTag:controller.hash] removeFromSuperview];
+    
     [UIView animateWithDuration:kDefaultAnimationInterval animations:^{
         
-        [controller.view setFrameByAddingCoordinates:CGRectMake(0.0f, self.view.bounds.size.height, 0.0f, 0.0f)];
+        if (controller.modalPresentationStyle == UIModalPresentationPageSheet) {
+            
+            controller.view.alpha = 0.0f;
+            
+        } else {
+            
+            [controller.view setFrameByAddingCoordinates:CGRectMake(0.0f, self.view.bounds.size.height, 0.0f, 0.0f)];
+        }
         
     } completion:^(BOOL finished) {
         
         [controller.view removeFromSuperview];
         [controller removeFromParentViewController];
-        currentModalController  = nil;
-        currentHudButton        = nil;
+        [self popController];
+        
+        if (completion) completion();
     }];
 }
 
@@ -77,7 +115,8 @@ static UIButton *currentHudButton;
     
     UIButton *hudButton = [[UIButton alloc] initWithFrame:frame];
     [hudButton setBackgroundColor:[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.3f]];
-    [hudButton addTarget:self action:@selector(dismissCurrentModalController:)
+    [hudButton addTarget:self
+                  action:@selector(dismissCurrentModalController:)
         forControlEvents:UIControlEventTouchUpInside];
     
     return hudButton;
@@ -85,9 +124,29 @@ static UIButton *currentHudButton;
 
 - (void)dismissCurrentModalController:(id)sender {
     
+    UIViewController *currentModalController = [modalControllers lastObject];
     if (!currentModalController) return;
     
     [self dismissIphoneModalViewController:currentModalController];
+}
+
+- (CGSize)windowSize
+{
+    UIWindow *mainWindow = [UIApplication sharedApplication].keyWindow;
+    return mainWindow.bounds.size;
+}
+
+- (void)pushController:(UIViewController *)controller {
+    
+    if (!modalControllers) modalControllers = [NSMutableArray new];
+    [modalControllers addObject:controller];
+}
+
+- (UIViewController *)popController {
+    
+    UIViewController *controller = [modalControllers lastObject];
+    [modalControllers removeLastObject];
+    return controller;
 }
 
 @end
