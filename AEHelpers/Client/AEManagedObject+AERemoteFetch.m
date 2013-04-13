@@ -57,7 +57,7 @@ static NSString * const kEtagKeyIdentifier         = @"Etag";
                 failure:(void (^)(NSError *error))failure {
     
     [client getPath:path parameters:parameters success:^(AFHTTPRequestOperation *operation, id responseObject) {
-        if (!responseObject) return;        
+        if (!responseObject) return;
         if (jsonResponse) jsonResponse(responseObject);
         
         if (!success) return;
@@ -198,6 +198,8 @@ static NSString * const kEtagKeyIdentifier         = @"Etag";
     
     prevEtag    = [[cachedHTTPResponse allHeaderFields] valueForKey:kEtagKeyIdentifier];
     etag        = [[operation.response allHeaderFields] valueForKey:kEtagKeyIdentifier];
+    
+    if ([etag length] <= 0) return NO;
     
     if (![etag isEqualToString:prevEtag]) {
         
