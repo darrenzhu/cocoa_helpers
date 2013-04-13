@@ -54,7 +54,7 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
     
     NSPersistentStoreCoordinator *coordinator;
     coordinator         = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self cachedRecordModel]];
-    self.coordinator    = coordinator;    
+    self.coordinator    = coordinator;
     [coordinator release];
     
     NSArray *currentStores = [[AECoreDataHelper defaultStoreCoordinator] persistentStores];
@@ -64,14 +64,14 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
     if ([currentStores count] > 0) mainStore = currentStores[0];
     if ([mainStore.type isEqualToString:NSSQLiteStoreType]) {
         
-    NSArray *pathes     = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
-    NSString *appPath   = [[pathes lastObject] stringByAppendingPathComponent:kSQLiteDBFileName];
-    NSURL *storeURL     = [NSURL fileURLWithPath:appPath isDirectory:NO];    
+        NSArray *pathes     = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+        NSString *appPath   = [[pathes lastObject] stringByAppendingPathComponent:kSQLiteDBFileName];
+        NSURL *storeURL     = [NSURL fileURLWithPath:appPath isDirectory:NO];
         storeCreated        = [coordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                                    configuration:nil
-                                                              URL:storeURL
-                                                          options:nil
-                                                            error:nil];    
+                                                        configuration:nil
+                                                                  URL:storeURL
+                                                              options:nil
+                                                                error:nil];
     } else {
         
         storeCreated        = [coordinator addPersistentStoreWithType:NSInMemoryStoreType
@@ -85,7 +85,7 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
         [self release];
         return nil;
     }
-        
+    
     return self;
 }
 
@@ -96,6 +96,8 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
 
 - (BOOL)containsObjectIdsForEtag:(NSString *)etag {
     
+    if ([etag length] <= 0) return NO;
+    
     AEManagedObjectsCacheRecord *cacheRecord = [self cacheRecordForEtag:etag inMangedContext:[self createContext]];
     
     if (!cacheRecord || !cacheRecord.objectIdsArchieve) return NO;
@@ -104,8 +106,8 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
 }
 
 - (NSArray *)objectIdsForEtag:(NSString *)etag {
-        
-
+    
+    
     AEManagedObjectsCacheRecord *cacheRecord = [self cacheRecordForEtag:etag inMangedContext:[self createContext]];
     if (!cacheRecord || !cacheRecord.objectIdsArchieve) return nil;
     
@@ -141,11 +143,11 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
 }
 
 - (BOOL)removeObjectIdsForEtag:(NSString *)etag {
-
+    
     NSManagedObjectContext *context = [self createContext];
     AEManagedObjectsCacheRecord *cacheRecord = [self cacheRecordForEtag:etag inMangedContext:context];
-
-    [context deleteObject:cacheRecord];
+    
+    if (cacheRecord) [context deleteObject:cacheRecord];
     return [AECoreDataHelper save:context];
 }
 
@@ -170,9 +172,9 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
     [objIdsAttribute setAttributeType:NSTransformableAttributeType];
     [objIdsAttribute setOptional:NO];
     
-    NSEntityDescription *cacheRecordEntity = [[NSEntityDescription alloc] init];    
+    NSEntityDescription *cacheRecordEntity = [[NSEntityDescription alloc] init];
     [cacheRecordEntity setName:@"AEManagedObjectsCacheRecord"];
-    [cacheRecordEntity setManagedObjectClassName:@"AEManagedObjectsCacheRecord"];    
+    [cacheRecordEntity setManagedObjectClassName:@"AEManagedObjectsCacheRecord"];
     [cacheRecordEntity setProperties:@[ etagAttribute, objIdsAttribute ]];
     
     NSManagedObjectModel *model = [[NSManagedObjectModel alloc] init];
