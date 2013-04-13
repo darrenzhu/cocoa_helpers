@@ -57,22 +57,30 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
     self.coordinator    = coordinator;    
     [coordinator release];
     
-#if OCUNIT
-    BOOL storeCreated   = [coordinator addPersistentStoreWithType:NSInMemoryStoreType
-                                                    configuration:nil
-                                                              URL:nil
-                                                          options:nil
-                                                            error:nil];
-#else
+    NSArray *currentStores = [[AECoreDataHelper defaultStoreCoordinator] persistentStores];
+    NSPersistentStore *mainStore;  // main store will be calculated as first. Backing store not accounted.
+    BOOL storeCreated;
+    
+    if ([currentStores count] > 0) mainStore = currentStores[0];
+    if ([mainStore.type isEqualToString:NSSQLiteStoreType]) {
+        
     NSArray *pathes     = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
     NSString *appPath   = [[pathes lastObject] stringByAppendingPathComponent:kSQLiteDBFileName];
     NSURL *storeURL     = [NSURL fileURLWithPath:appPath isDirectory:NO];    
-    BOOL storeCreated   = [coordinator addPersistentStoreWithType:NSSQLiteStoreType
+        storeCreated        = [coordinator addPersistentStoreWithType:NSSQLiteStoreType
                                                     configuration:nil
                                                               URL:storeURL
                                                           options:nil
                                                             error:nil];    
-#endif
+    } else {
+        
+        storeCreated        = [coordinator addPersistentStoreWithType:NSInMemoryStoreType
+                                                        configuration:nil
+                                                                  URL:nil
+                                                              options:nil
+                                                                error:nil];
+    }
+    
     if (!storeCreated) {
         [self release];
         return nil;
