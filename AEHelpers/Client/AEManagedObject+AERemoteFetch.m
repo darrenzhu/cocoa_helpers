@@ -69,7 +69,7 @@ static NSString * const kEtagKeyIdentifier         = @"Etag";
             items = [responseObject valueForKeyPath:[self jsonRoot]];
         }
         
-        if ([items isKindOfClass:[NSArray class]] && [items count] > 0) {
+        if ([items isKindOfClass:[NSArray class]]) {
             
             dispatch_async([self jsonQueue], ^{
                 [self formatJson:items withEtag:etag success:success];
