@@ -192,7 +192,7 @@
         NSAttributeType type    = [attribute attributeType];
         
         if ([jsonValue isEqual:[NSNull null]] || !jsonValue) return;
-        if (type == NSDateAttributeType && [[self class] dateFormatter]) {
+        if (type == NSDateAttributeType && [[self class] dateFormatter] && [jsonValue isKindOfClass:[NSString class]]) {
             
             [self setValue:[[[self class] dateFormatter] dateFromString:jsonValue] forKey:name];
             return;
