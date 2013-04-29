@@ -114,6 +114,7 @@ static NSMutableArray *modalControllers;
 - (UIButton *)hudButtonWithFrame:(CGRect)frame {
     
     UIButton *hudButton = [[UIButton alloc] initWithFrame:frame];
+    [hudButton setAutoresizingMask:(UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight)];
     [hudButton setBackgroundColor:[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:0.3f]];
     [hudButton addTarget:self
                   action:@selector(dismissCurrentModalController:)
