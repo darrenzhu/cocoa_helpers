@@ -58,7 +58,7 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
     [coordinator release];
     
     NSArray *currentStores = [[AECoreDataHelper defaultStoreCoordinator] persistentStores];
-    NSPersistentStore *mainStore;  // main store will be calculated as first. Backing store not accounted.
+    NSPersistentStore *mainStore = nil;  // main store will be calculated as first. Backing store not accounted.
     BOOL storeCreated;
     
     if ([currentStores count] > 0) mainStore = currentStores[0];
