@@ -58,7 +58,7 @@ static NSPersistentStoreCoordinator *defaultCoordinator;
 + (NSManagedObjectModel *)managedObjectModelWithSchemeName:(NSString *)scheme {
     
     NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:scheme withExtension:@"momd"];
-    return [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    return [[[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL] autorelease];
 }
 
 + (void)registerDefaultPersistenceStoreCoordinator:(NSPersistentStoreCoordinator *)coordinator {
