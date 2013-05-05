@@ -144,7 +144,7 @@ static NSString * const kEtagKeyIdentifier         = @"Etag";
     }
 }
 
-+ (void)managedObjectsFromJson:(NSArray *)jsonObjects block:(void (^)(NSArray *managedObject))block {
++ (void)managedObjectsFromJson:(NSArray *)jsonObjects block:(void (^)(NSArray *managedObjects))block {
 
     dispatch_async([self jsonQueue], ^{
 

@@ -83,6 +83,6 @@
  @param jsonObjects An array of json objects to parse
  @param block A block in which objects should be returned
  */
-+ (void)managedObjectsFromJson:(NSArray *)jsonObjects block:(void (^)(NSArray *managedObject))block;
++ (void)managedObjectsFromJson:(NSArray *)jsonObjects block:(void (^)(NSArray *managedObjects))block;
 
 @end
