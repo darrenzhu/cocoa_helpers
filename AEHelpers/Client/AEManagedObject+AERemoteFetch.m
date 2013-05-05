@@ -144,6 +144,22 @@ static NSString * const kEtagKeyIdentifier         = @"Etag";
     }
 }
 
++ (void)managedObjectsFromJson:(NSArray *)jsonObjects block:(void (^)(NSArray *managedObject))block {
+
+    dispatch_async([self jsonQueue], ^{
+
+        NSManagedObjectContext *context = [[AECoreDataHelper createManagedObjectContext] retain];
+        NSArray *managedObjects         = [self managedObjectsFromJson:jsonObjects inContext:context];
+
+        NSArray *objectIds = [managedObjects valueForKeyPath:@"objectID"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            block([self managedObjectsInMainThreadWithObjectIds:objectIds]);
+            [context release];
+        });
+    });
+}
+
 #pragma mark - private
 
 + (dispatch_queue_t)jsonQueue {
@@ -156,22 +172,29 @@ static NSString * const kEtagKeyIdentifier         = @"Etag";
     return _jsonQueue;
 }
 
-+ (void)formatJson:(NSArray *)items withEtag:(NSString *)etag success:(void (^)(NSArray *entities))success {
-    
-    NSManagedObjectContext *context = [[AECoreDataHelper createManagedObjectContext] retain];
++ (NSArray *)managedObjectsFromJson:(NSArray *)jsonObjects inContext:(NSManagedObjectContext *)context {
+
     [AECoreDataHelper addMergeNotificationForMainContext:context];
     NSMutableArray *result = [NSMutableArray array];
     
-    for (id jsonString in items) {
-        AEManagedObject *entity = [self createOrUpdateFromJsonObject:jsonString inManagedObjectContext:context];
+    for (id jsonObject in jsonObjects) {
+        AEManagedObject *entity = [self createOrUpdateFromJsonObject:jsonObject inManagedObjectContext:context];
         [result addObject:entity];
     }
     
     if ([self requiresPersistence]) {
         [AECoreDataHelper save:context];
     }
+
+    return result;
+}
+
++ (void)formatJson:(NSArray *)items withEtag:(NSString *)etag success:(void (^)(NSArray *entities))success {
     
-    NSArray *objectIds = [result valueForKeyPath:@"objectID"];
+    NSManagedObjectContext *context = [[AECoreDataHelper createManagedObjectContext] retain];
+    NSArray *managedObjects         = [self managedObjectsFromJson:items inContext:context];
+
+    NSArray *objectIds = [managedObjects valueForKeyPath:@"objectID"];
     dispatch_async([self jsonQueue], ^{
         
         [[AEManagedObjectsCache sharedCache] setObjectIds:objectIds forEtag:etag];

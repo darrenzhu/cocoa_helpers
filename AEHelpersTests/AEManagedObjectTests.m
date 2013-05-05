@@ -431,4 +431,22 @@
     [partialCacheMock verify];
 }
 
+- (void)testParseObjectsInBackgroundThread {
+    
+    NSDictionary *jsonObject = @{
+        @"entity_id": @1,
+        @"testField": @"foo"
+    };
+    
+    __block BOOL finished = NO;
+    [TestEntity managedObjectsFromJson:@[ jsonObject ] block:^(NSArray *managedObjects) {
+        
+        STAssertEquals(1U, [managedObjects count], nil);
+        TestEntity *entity = [managedObjects lastObject];
+        
+        STAssertEqualObjects(@1,      entity.id,         nil);
+        STAssertEqualObjects(@"foo",  entity.testField,  nil);
+    }];
+    loopWithRunLoop(0.1);
+}
 @end
