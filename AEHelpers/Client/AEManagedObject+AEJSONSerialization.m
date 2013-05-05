@@ -94,7 +94,7 @@
         return [self createFromJsonObject:json inManagedObjectContext:context];;
     }
     
-    NSFetchRequest *findRequest = [AEManagedObject find:curId];
+    NSFetchRequest *findRequest = [self find:curId];
     [findRequest setEntity:[NSEntityDescription entityForName:NSStringFromClass([self class])
                                        inManagedObjectContext:context]];
     AEManagedObject *entity     = [AECoreDataHelper requestFirstResult:findRequest managedObjectContext:context];
