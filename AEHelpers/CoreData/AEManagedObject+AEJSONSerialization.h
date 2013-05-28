@@ -51,7 +51,7 @@
  
  @return Created or updated managed object with property values from json object in requested context.
  */
-+ (id)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
++ (instancetype)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context;
 
 /**
  Factory method for creating or updating managed object from json object in requested context.
@@ -64,9 +64,9 @@
  
  @return Created or updated managed object with property values from json object in requested context.
  */
-+ (id)createOrUpdateFromJsonObject:(id)json
-                     withRelations:(BOOL)withRelations
-            inManagedObjectContext:(NSManagedObjectContext *)context;
++ (instancetype)createOrUpdateFromJsonObject:(id)json
+                               withRelations:(BOOL)withRelations
+                      inManagedObjectContext:(NSManagedObjectContext *)context;
 
 /**
  Parses `json` objects into managed objects in `current thread` in provided context.

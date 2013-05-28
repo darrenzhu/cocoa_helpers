@@ -79,14 +79,14 @@
     return self;
 }
 
-+ (id)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
++ (instancetype)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
     
     return [self createOrUpdateFromJsonObject:json withRelations:YES inManagedObjectContext:context];
 }
 
-+ (id)createOrUpdateFromJsonObject:(id)json
-                     withRelations:(BOOL)withRelations
-            inManagedObjectContext:(NSManagedObjectContext *)context {
++ (instancetype)createOrUpdateFromJsonObject:(id)json
+                               withRelations:(BOOL)withRelations
+                      inManagedObjectContext:(NSManagedObjectContext *)context {
     
     id curId = [json valueForKeyPath:[self mappedPropertyNameForPropertyName:[self entityIdPropertyName]]];
     if (!curId) {
@@ -273,7 +273,7 @@
 
 #pragma mark - private
 
-+ (id)createFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
++ (instancetype)createFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
     Class class = self.class;
     
     if (class) {
