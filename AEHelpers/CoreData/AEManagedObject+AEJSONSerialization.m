@@ -26,6 +26,16 @@
 
 @implementation AEManagedObject (AEJSONSerialization)
 
++ (dispatch_queue_t)jsonQueue {
+    static dispatch_queue_t _jsonQueue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _jsonQueue = dispatch_queue_create("com.ae.json_proccess", DISPATCH_QUEUE_SERIAL);
+    });
+    
+    return _jsonQueue;
+}
+
 #pragma mark - entity settings
 
 + (NSDateFormatter *)dateFormatter {
@@ -69,17 +79,6 @@
     return self;
 }
 
-+ (id)createFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
-    Class class = self.class;
-    
-    if (class) {
-        AEManagedObject *entity = [[[class alloc] initFromJSONObject:json inManagedObjectContext:context] autorelease];
-        return entity;
-    }
-    
-    return nil;
-}
-
 + (id)createOrUpdateFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
     
     return [self createOrUpdateFromJsonObject:json withRelations:YES inManagedObjectContext:context];
@@ -105,6 +104,39 @@
     
     [entity updateFromJSONObject:json withRelations:withRelations];
     return entity;
+}
+
++ (NSArray *)managedObjectsFromJson:(NSArray *)jsonObjects inContext:(NSManagedObjectContext *)context {
+    
+    [AECoreDataHelper addMergeNotificationForMainContext:context];
+    NSMutableArray *result = [NSMutableArray array];
+    
+    for (id jsonObject in jsonObjects) {
+        AEManagedObject *entity = [self createOrUpdateFromJsonObject:jsonObject inManagedObjectContext:context];
+        [result addObject:entity];
+    }
+    
+    if ([self requiresPersistence]) {
+        [AECoreDataHelper save:context];
+    }
+    
+    return result;
+}
+
++ (void)managedObjectsFromJson:(NSArray *)jsonObjects block:(void (^)(NSArray *managedObjects))block {
+    
+    dispatch_async([self jsonQueue], ^{
+        
+        NSManagedObjectContext *context = [[AECoreDataHelper createManagedObjectContext] retain];
+        NSArray *managedObjects         = [self managedObjectsFromJson:jsonObjects inContext:context];
+        
+        NSArray *objectIds = [managedObjects valueForKeyPath:@"objectID"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            block([self managedObjectsInMainThreadWithObjectIds:objectIds]);
+            [context release];
+        });
+    });
 }
 
 #pragma mark - serialization
@@ -240,6 +272,17 @@
 }
 
 #pragma mark - private
+
++ (id)createFromJsonObject:(id)json inManagedObjectContext:(NSManagedObjectContext *)context {
+    Class class = self.class;
+    
+    if (class) {
+        AEManagedObject *entity = [[[class alloc] initFromJSONObject:json inManagedObjectContext:context] autorelease];
+        return entity;
+    }
+    
+    return nil;
+}
 
 + (NSString *)mappedPropertyNameForPropertyName:(NSString *)propertyName {
     NSDictionary *mappingsDictionary = [[self class] propertyMappings];

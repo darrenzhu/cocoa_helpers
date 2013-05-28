@@ -113,4 +113,13 @@
  */
 + (NSString *)entityIdPropertyName;
 
+#pragma mark - threading helper
+
+/**
+ Returns managed objects with provided managed object ids in main thread context
+ 
+ @param objectIds An array of managed object ids.
+ */
++ (NSArray *)managedObjectsInMainThreadWithObjectIds:(NSArray *)objectIds;
+    
 @end

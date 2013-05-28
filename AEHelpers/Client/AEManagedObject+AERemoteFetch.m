@@ -144,50 +144,7 @@ static NSString * const kEtagKeyIdentifier         = @"Etag";
     }
 }
 
-+ (void)managedObjectsFromJson:(NSArray *)jsonObjects block:(void (^)(NSArray *managedObjects))block {
-
-    dispatch_async([self jsonQueue], ^{
-
-        NSManagedObjectContext *context = [[AECoreDataHelper createManagedObjectContext] retain];
-        NSArray *managedObjects         = [self managedObjectsFromJson:jsonObjects inContext:context];
-
-        NSArray *objectIds = [managedObjects valueForKeyPath:@"objectID"];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            block([self managedObjectsInMainThreadWithObjectIds:objectIds]);
-            [context release];
-        });
-    });
-}
-
 #pragma mark - private
-
-+ (dispatch_queue_t)jsonQueue {
-    static dispatch_queue_t _jsonQueue;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _jsonQueue = dispatch_queue_create("com.ae.json_proccess", DISPATCH_QUEUE_SERIAL);
-    });
-    
-    return _jsonQueue;
-}
-
-+ (NSArray *)managedObjectsFromJson:(NSArray *)jsonObjects inContext:(NSManagedObjectContext *)context {
-
-    [AECoreDataHelper addMergeNotificationForMainContext:context];
-    NSMutableArray *result = [NSMutableArray array];
-    
-    for (id jsonObject in jsonObjects) {
-        AEManagedObject *entity = [self createOrUpdateFromJsonObject:jsonObject inManagedObjectContext:context];
-        [result addObject:entity];
-    }
-    
-    if ([self requiresPersistence]) {
-        [AECoreDataHelper save:context];
-    }
-
-    return result;
-}
 
 + (void)formatJson:(NSArray *)items withEtag:(NSString *)etag success:(void (^)(NSArray *entities))success {
     
@@ -244,17 +201,6 @@ static NSString * const kEtagKeyIdentifier         = @"Etag";
     });
     
     return YES;
-}
-
-+ (NSArray *)managedObjectsInMainThreadWithObjectIds:(NSArray *)objectIds {
-    
-    NSMutableArray *resultInMainThread = [NSMutableArray array];
-    for (NSManagedObjectID *objectID in objectIds) {
-        
-        [resultInMainThread addObject:[mainThreadContext() objectWithID:objectID]];
-    }
-    
-    return resultInMainThread;
 }
 
 @end

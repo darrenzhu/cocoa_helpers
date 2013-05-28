@@ -25,6 +25,11 @@
 
 @interface AEManagedObject (AEJSONSerialization)
 
+/**
+ Returns serial GCD queue used for json serialization backgrounding.
+ */
++ (dispatch_queue_t)jsonQueue;
+    
 #pragma mark - Initialization
 /**
  Initializes new managed object from json object in requested context.
@@ -62,6 +67,22 @@
 + (id)createOrUpdateFromJsonObject:(id)json
                      withRelations:(BOOL)withRelations
             inManagedObjectContext:(NSManagedObjectContext *)context;
+
+/**
+ Parses `json` objects into managed objects in `current thread` in provided context.
+ 
+ @param jsonObjects An array of json objects to parse.
+ @param context A context used for managed object.
+ */
++ (NSArray *)managedObjectsFromJson:(NSArray *)jsonObjects inContext:(NSManagedObjectContext *)context;
+
+/**
+ Parses `json` objects into managed objects in `background thread`, fetches them into `main thread context` and returns created objects in block in `main thread`.
+ 
+ @param jsonObjects An array of json objects to parse
+ @param block A block in which objects should be returned
+ */
++ (void)managedObjectsFromJson:(NSArray *)jsonObjects block:(void (^)(NSArray *managedObjects))block;
 
 #pragma mark - Deserialization
 /**

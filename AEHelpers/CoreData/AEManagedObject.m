@@ -70,4 +70,17 @@
     return [result objectAtIndex:0];
 }
 
+#pragma mark - threading helper
+
++ (NSArray *)managedObjectsInMainThreadWithObjectIds:(NSArray *)objectIds {
+    
+    NSMutableArray *resultInMainThread = [NSMutableArray array];
+    for (NSManagedObjectID *objectID in objectIds) {
+        
+        [resultInMainThread addObject:[mainThreadContext() objectWithID:objectID]];
+    }
+    
+    return resultInMainThread;
+}
+
 @end

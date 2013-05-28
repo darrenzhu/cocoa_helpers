@@ -77,12 +77,4 @@
              success:(void (^)(id entity))success
              failure:(void (^)(NSError *error))failure;
 
-/**
- Parses `json` objects into managed objects in `background thread`, fetches them into `main thread context` and returns created objects in block in `main thread`.
- 
- @param jsonObjects An array of json objects to parse
- @param block A block in which objects should be returned
- */
-+ (void)managedObjectsFromJson:(NSArray *)jsonObjects block:(void (^)(NSArray *managedObjects))block;
-
 @end
