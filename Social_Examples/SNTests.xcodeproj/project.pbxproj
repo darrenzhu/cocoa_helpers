@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1C683D0BF18F4547ACA8FD22 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1CA7B2FE82704E849FFCDFAE /* libPods.a */; };
-		95116F0616AE302D00EB8C27 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116EF216AE302D00EB8C27 /* NSString+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95116F0716AE302D00EB8C27 /* AEFBClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116EF516AE302D00EB8C27 /* AEFBClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95116F0816AE302D00EB8C27 /* AEGPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116EF716AE302D00EB8C27 /* AEGPClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95116F0916AE302D00EB8C27 /* AELIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116EF916AE302D00EB8C27 /* AELIClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -17,6 +16,7 @@
 		95116F0C16AE302D00EB8C27 /* AETWClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116EFF16AE302D00EB8C27 /* AETWClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95116F0D16AE302D00EB8C27 /* AEVKClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116F0116AE302D00EB8C27 /* AEVKClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95116F0E16AE302D00EB8C27 /* AEXingClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95116F0316AE302D00EB8C27 /* AEXingClient.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9514701317556DF100B2A7BF /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9514701217556DF100B2A7BF /* NSString+Additions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		95B2FBA216A7AEFB007A1A00 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95B2FBA116A7AEFB007A1A00 /* UIKit.framework */; };
 		95B2FBA416A7AEFB007A1A00 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95B2FBA316A7AEFB007A1A00 /* Foundation.framework */; };
 		95B2FBA616A7AEFB007A1A00 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95B2FBA516A7AEFB007A1A00 /* CoreGraphics.framework */; };
@@ -33,8 +33,6 @@
 /* Begin PBXFileReference section */
 		06557171705A4A13ADAD9F1B /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		1CA7B2FE82704E849FFCDFAE /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		95116EF116AE302D00EB8C27 /* NSString+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Additions.h"; sourceTree = "<group>"; };
-		95116EF216AE302D00EB8C27 /* NSString+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Additions.m"; sourceTree = "<group>"; };
 		95116EF416AE302D00EB8C27 /* AEFBClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEFBClient.h; sourceTree = "<group>"; };
 		95116EF516AE302D00EB8C27 /* AEFBClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEFBClient.m; sourceTree = "<group>"; };
 		95116EF616AE302D00EB8C27 /* AEGPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEGPClient.h; sourceTree = "<group>"; };
@@ -51,6 +49,8 @@
 		95116F0116AE302D00EB8C27 /* AEVKClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEVKClient.m; sourceTree = "<group>"; };
 		95116F0216AE302D00EB8C27 /* AEXingClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEXingClient.h; sourceTree = "<group>"; };
 		95116F0316AE302D00EB8C27 /* AEXingClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AEXingClient.m; sourceTree = "<group>"; };
+		9514701117556DF100B2A7BF /* NSString+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Additions.h"; sourceTree = "<group>"; };
+		9514701217556DF100B2A7BF /* NSString+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Additions.m"; sourceTree = "<group>"; };
 		95B2FB9D16A7AEFB007A1A00 /* SNTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SNTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		95B2FBA116A7AEFB007A1A00 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		95B2FBA316A7AEFB007A1A00 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -84,19 +84,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		95116EEC16AE302D00EB8C27 /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				95116EF116AE302D00EB8C27 /* NSString+Additions.h */,
-				95116EF216AE302D00EB8C27 /* NSString+Additions.m */,
-			);
-			name = Categories;
-			path = ../../AEHelpers/Categories;
-			sourceTree = "<group>";
-		};
 		95116EF316AE302D00EB8C27 /* Social */ = {
 			isa = PBXGroup;
 			children = (
+				9514701117556DF100B2A7BF /* NSString+Additions.h */,
+				9514701217556DF100B2A7BF /* NSString+Additions.m */,
 				95116EF416AE302D00EB8C27 /* AEFBClient.h */,
 				95116EF516AE302D00EB8C27 /* AEFBClient.m */,
 				95116EF616AE302D00EB8C27 /* AEGPClient.h */,
@@ -150,7 +142,6 @@
 		95B2FBA716A7AEFB007A1A00 /* SNTests */ = {
 			isa = PBXGroup;
 			children = (
-				95116EEC16AE302D00EB8C27 /* Categories */,
 				95116EF316AE302D00EB8C27 /* Social */,
 				95B2FBB016A7AEFB007A1A00 /* AppDelegate.h */,
 				95B2FBB116A7AEFB007A1A00 /* AppDelegate.m */,
@@ -263,7 +254,6 @@
 				95B2FBAE16A7AEFB007A1A00 /* main.m in Sources */,
 				95B2FBB216A7AEFB007A1A00 /* AppDelegate.m in Sources */,
 				95B2FBBB16A7AEFB007A1A00 /* AEViewController.m in Sources */,
-				95116F0616AE302D00EB8C27 /* NSString+Additions.m in Sources */,
 				95116F0716AE302D00EB8C27 /* AEFBClient.m in Sources */,
 				95116F0816AE302D00EB8C27 /* AEGPClient.m in Sources */,
 				95116F0916AE302D00EB8C27 /* AELIClient.m in Sources */,
@@ -272,6 +262,7 @@
 				95116F0C16AE302D00EB8C27 /* AETWClient.m in Sources */,
 				95116F0D16AE302D00EB8C27 /* AEVKClient.m in Sources */,
 				95116F0E16AE302D00EB8C27 /* AEXingClient.m in Sources */,
+				9514701317556DF100B2A7BF /* NSString+Additions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
