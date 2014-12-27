@@ -148,7 +148,7 @@ static NSString * const kEtagKeyIdentifier         = @"Etag";
 
 + (void)formatJson:(NSArray *)items withEtag:(NSString *)etag success:(void (^)(NSArray *entities))success {
     
-    NSManagedObjectContext *context = [[AECoreDataHelper createManagedObjectContext] retain];
+    NSManagedObjectContext *context = [AECoreDataHelper createManagedObjectContext];
     NSArray *managedObjects         = [self managedObjectsFromJson:items inContext:context];
 
     NSArray *objectIds = [managedObjects valueForKeyPath:@"objectID"];
@@ -160,7 +160,6 @@ static NSString * const kEtagKeyIdentifier         = @"Etag";
     dispatch_async(dispatch_get_main_queue(), ^{
         
         success([self managedObjectsInMainThreadWithObjectIds:objectIds]);
-        [context release];
     });
 }
 

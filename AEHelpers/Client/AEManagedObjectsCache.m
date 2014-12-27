@@ -55,7 +55,6 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
     NSPersistentStoreCoordinator *coordinator;
     coordinator         = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self cachedRecordModel]];
     self.coordinator    = coordinator;
-    [coordinator release];
     
     NSArray *currentStores = [[AECoreDataHelper defaultStoreCoordinator] persistentStores];
     NSPersistentStore *mainStore = nil;  // main store will be calculated as first. Backing store not accounted.
@@ -82,17 +81,12 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
     }
     
     if (!storeCreated) {
-        [self release];
         return nil;
     }
     
     return self;
 }
 
-- (void)dealloc {
-    [_coordinator release];
-    [super dealloc];
-}
 
 - (BOOL)containsObjectIdsForEtag:(NSString *)etag {
     
@@ -180,11 +174,8 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
     NSManagedObjectModel *model = [[NSManagedObjectModel alloc] init];
     [model setEntities:@[ cacheRecordEntity ]];
     
-    [cacheRecordEntity release];
-    [objIdsAttribute release];
-    [etagAttribute release];
     
-    return [model autorelease];
+    return model;
 }
 
 - (NSManagedObjectContext *)createContext {
@@ -192,7 +183,7 @@ static NSString * const kSQLiteDBFileName = @"AEManagedObjectsCache.sqlite";
     NSManagedObjectContext *context = [[NSManagedObjectContext alloc] init];
     [context setPersistentStoreCoordinator:_coordinator];
     
-    return [context autorelease];
+    return context;
 }
 
 @end

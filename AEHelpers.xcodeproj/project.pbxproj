@@ -39,11 +39,12 @@
 		956DFD5216A63BFC004858C6 /* AEManagedObjectTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFD5116A63BFC004858C6 /* AEManagedObjectTests.m */; };
 		956DFD7816A65031004858C6 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 956DFD3F16A62DF4004858C6 /* UIKit.framework */; };
 		956DFDDA16A738A3004858C6 /* NSArray+orderByTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDD916A738A3004858C6 /* NSArray+orderByTests.m */; };
-		956DFDDF16A73B43004858C6 /* NSFetchRequest+orderByTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDDE16A73B43004858C6 /* NSFetchRequest+orderByTests.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		956DFDDF16A73B43004858C6 /* NSFetchRequest+orderByTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 956DFDDE16A73B43004858C6 /* NSFetchRequest+orderByTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		48184CA2F2DC4D2DB127331E /* Pods-AEHelpersTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEHelpersTests.xcconfig"; path = "Pods/Pods-AEHelpersTests.xcconfig"; sourceTree = SOURCE_ROOT; };
+		11A8785ACA95D9C2CE491F11 /* Pods-AEHelpersTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEHelpersTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-AEHelpersTests/Pods-AEHelpersTests.release.xcconfig"; sourceTree = "<group>"; };
+		38E937C05C15AD50FD353EC1 /* Pods-AEHelpersTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AEHelpersTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-AEHelpersTests/Pods-AEHelpersTests.debug.xcconfig"; sourceTree = "<group>"; };
 		95146FC817556C7D00B2A7BF /* AEManagedObject+AERemoteFetch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AEManagedObject+AERemoteFetch.h"; sourceTree = "<group>"; };
 		95146FC917556C7D00B2A7BF /* AEManagedObject+AERemoteFetch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AEManagedObject+AERemoteFetch.m"; sourceTree = "<group>"; };
 		95146FCA17556C7D00B2A7BF /* AEManagedObjectsCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEManagedObjectsCache.h; sourceTree = "<group>"; };
@@ -214,7 +215,7 @@
 				956DFCE016A614B7004858C6 /* AEHelpersTests */,
 				956DFCC816A614B6004858C6 /* Frameworks */,
 				956DFCC716A614B6004858C6 /* Products */,
-				48184CA2F2DC4D2DB127331E /* Pods-AEHelpersTests.xcconfig */,
+				EBC2F6EB6A21F64D086CB8F4 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -269,6 +270,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		EBC2F6EB6A21F64D086CB8F4 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				38E937C05C15AD50FD353EC1 /* Pods-AEHelpersTests.debug.xcconfig */,
+				11A8785ACA95D9C2CE491F11 /* Pods-AEHelpersTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -290,7 +300,7 @@
 			name = AEHelpersTests;
 			productName = AEHelpersTests;
 			productReference = 956DFCD716A614B7004858C6 /* AEHelpersTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -342,7 +352,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-AEHelpersTests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AEHelpersTests/Pods-AEHelpersTests-resources.sh\"\n";
 		};
 		4D1D8E10C3334EC589C076B7 /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -356,7 +366,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-AEHelpersTests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-AEHelpersTests/Pods-AEHelpersTests-resources.sh\"\n";
 		};
 		956DFCD516A614B7004858C6 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -457,8 +467,9 @@
 		};
 		956DFCEF16A614B7004858C6 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 48184CA2F2DC4D2DB127331E /* Pods-AEHelpersTests.xcconfig */;
+			baseConfigurationReference = 38E937C05C15AD50FD353EC1 /* Pods-AEHelpersTests.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
@@ -476,8 +487,9 @@
 		};
 		956DFCF016A614B7004858C6 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 48184CA2F2DC4D2DB127331E /* Pods-AEHelpersTests.xcconfig */;
+			baseConfigurationReference = 11A8785ACA95D9C2CE491F11 /* Pods-AEHelpersTests.release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",

@@ -58,7 +58,7 @@ static NSPersistentStoreCoordinator *defaultCoordinator;
 + (NSManagedObjectModel *)managedObjectModelWithSchemeName:(NSString *)scheme {
     
     NSURL *modelURL = [[NSBundle bundleForClass:self.class] URLForResource:scheme withExtension:@"momd"];
-    return [[[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL] autorelease];
+    return [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 }
 
 + (void)registerDefaultPersistenceStoreCoordinator:(NSPersistentStoreCoordinator *)coordinator {
@@ -66,7 +66,7 @@ static NSPersistentStoreCoordinator *defaultCoordinator;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        defaultCoordinator = [coordinator retain];
+        defaultCoordinator = coordinator;
     });
 }
 
@@ -139,7 +139,7 @@ static NSPersistentStoreCoordinator *defaultCoordinator;
     NSManagedObjectContext *managedObjectContext;
     NSPersistentStoreCoordinator *coordinator = defaultCoordinator;
     if (coordinator != nil) {
-        managedObjectContext = [[[NSManagedObjectContext alloc] init] autorelease];
+        managedObjectContext = [[NSManagedObjectContext alloc] init];
         [managedObjectContext setPersistentStoreCoordinator:coordinator];
         return managedObjectContext;
     }
@@ -210,7 +210,7 @@ static NSPersistentStoreCoordinator *defaultCoordinator;
 + (NSFetchRequest *)requestWithPredicate:(NSPredicate *)predicate
                    andSortingDescriptors:(NSArray *)sortingDescriptors {
     
-    NSFetchRequest *fetchRequest = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
     if (predicate) {
         [fetchRequest setPredicate:predicate];

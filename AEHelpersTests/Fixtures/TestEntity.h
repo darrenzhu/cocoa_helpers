@@ -25,11 +25,11 @@
 
 @class TestSubentity;
 @interface TestEntity : AEManagedObject
-@property (nonatomic, retain) NSNumber *id;
-@property (nonatomic, retain) NSString *testField;
-@property (nonatomic, retain) NSString *anotherField;
-@property (retain, nonatomic) NSSet *oneToMany;
-@property (retain, nonatomic) TestSubentity *oneToOne;
+@property (nonatomic, strong) NSNumber *id;
+@property (nonatomic, strong) NSString *testField;
+@property (nonatomic, strong) NSString *anotherField;
+@property (strong, nonatomic) NSSet *oneToMany;
+@property (strong, nonatomic) TestSubentity *oneToOne;
 @end
 
 @interface TestEntity (CoreDataGeneratedAccessors)

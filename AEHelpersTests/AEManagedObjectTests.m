@@ -43,7 +43,7 @@
     }
 
 @interface AEManagedObjectTests ()
-@property(retain, nonatomic) id jsonObject;
+@property(strong, nonatomic) id jsonObject;
 @end
 
 @implementation AEManagedObjectTests

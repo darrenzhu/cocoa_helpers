@@ -25,8 +25,8 @@
 #import "NSArray+orderBy.h"
 
 @interface NSArray_orderByTests ()
-@property (retain, nonatomic) NSArray *testArray;
-@property (retain, nonatomic) NSArray *assertArray;
+@property (strong, nonatomic) NSArray *testArray;
+@property (strong, nonatomic) NSArray *assertArray;
 @end
 
 @implementation NSArray_orderByTests

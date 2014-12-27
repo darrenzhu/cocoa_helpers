@@ -9,5 +9,5 @@
 #import "TestEntity.h"
 
 @interface TestChildEntity : TestEntity
-@property (nonatomic, retain) NSString * childField;
+@property (nonatomic, strong) NSString * childField;
 @end

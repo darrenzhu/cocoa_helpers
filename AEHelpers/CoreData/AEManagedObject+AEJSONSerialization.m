@@ -46,7 +46,7 @@
         NSLocale *enUSPOSIXLocale;
         
         _rfc3339DateFormatter   = [[NSDateFormatter alloc] init];
-        enUSPOSIXLocale         = [[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"] autorelease];
+        enUSPOSIXLocale         = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
         
         [_rfc3339DateFormatter setLocale:enUSPOSIXLocale];
         [_rfc3339DateFormatter setDateFormat:@"yyyy'-'MM'-'dd'T'HH':'mm':'ssZ"];
@@ -127,14 +127,13 @@
     
     dispatch_async([self jsonQueue], ^{
         
-        NSManagedObjectContext *context = [[AECoreDataHelper createManagedObjectContext] retain];
+        NSManagedObjectContext *context = [AECoreDataHelper createManagedObjectContext];
         NSArray *managedObjects         = [self managedObjectsFromJson:jsonObjects inContext:context];
         
         NSArray *objectIds = [managedObjects valueForKeyPath:@"objectID"];
         dispatch_async(dispatch_get_main_queue(), ^{
             
             block([self managedObjectsInMainThreadWithObjectIds:objectIds]);
-            [context release];
         });
     });
 }
@@ -277,7 +276,7 @@
     Class class = self.class;
     
     if (class) {
-        AEManagedObject *entity = [[[class alloc] initFromJSONObject:json inManagedObjectContext:context] autorelease];
+        AEManagedObject *entity = [[class alloc] initFromJSONObject:json inManagedObjectContext:context];
         return entity;
     }
     

@@ -25,8 +25,8 @@
 
 @class TestEntity;
 @interface TestSubentity : AEManagedObject
-@property (retain, nonatomic) NSNumber *id;
-@property (retain, nonatomic) NSString *title;
-@property (retain, nonatomic) TestEntity *oneToMany;
-@property (retain, nonatomic) TestEntity *oneToOne;
+@property (strong, nonatomic) NSNumber *id;
+@property (strong, nonatomic) NSString *title;
+@property (strong, nonatomic) TestEntity *oneToMany;
+@property (strong, nonatomic) TestEntity *oneToOne;
 @end
